@@ -1,4 +1,6 @@
-package ink.abb.pogo.scraper;
+package dekk.pw.pokemate.tasks;
+
+import dekk.pw.pokemate.Context;
 
 /**
  * Created by TimD on 7/21/2016.

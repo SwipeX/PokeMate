@@ -1,7 +1,6 @@
-package ink.abb.pogo.scraper;
+package dekk.pw.pokemate;
 
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
-import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.player.PlayerProfile;
@@ -12,24 +11,31 @@ import okhttp3.OkHttpClient;
  */
 public class Context {
     private OkHttpClient http;
-    private PokemonGo go;
-    private AtomicDouble lat = new AtomicDouble();
-    private AtomicDouble lng = new AtomicDouble();
+    private PokemonGo api;
+
     private PlayerProfile profile;
     private double speed;
     private boolean walking;
     private RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo;
     private MapObjects mapObjects;
+    private int preferredBall;
 
-    public Context(PokemonGo go, AtomicDouble lat, AtomicDouble lng, PlayerProfile profile, double speed, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
-        this.go = go;
-        this.lat = lat;
-        this.lng = lng;
+    public Context(PokemonGo go, PlayerProfile profile, double speed, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
+        this.api = go;
+
         this.profile = profile;
         this.speed = speed;
         this.walking = walking;
         this.authInfo = authInfo;
         this.http = http;
+    }
+
+    public int getPreferredBall() {
+        return preferredBall;
+    }
+
+    public void setPreferredBall(int preferredBall) {
+        this.preferredBall = preferredBall;
     }
 
     public MapObjects getMapObjects() {
@@ -49,27 +55,11 @@ public class Context {
     }
 
     public PokemonGo getApi() {
-        return go;
+        return api;
     }
 
-    public void setGo(PokemonGo go) {
-        this.go = go;
-    }
-
-    public AtomicDouble getLat() {
-        return lat;
-    }
-
-    public void setLat(AtomicDouble lat) {
-        this.lat = lat;
-    }
-
-    public AtomicDouble getLng() {
-        return lng;
-    }
-
-    public void setLng(AtomicDouble lng) {
-        this.lng = lng;
+    public void setApi(PokemonGo api) {
+        this.api = api;
     }
 
     public PlayerProfile getProfile() {

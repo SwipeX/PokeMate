@@ -21,7 +21,6 @@ public class Context {
     private double speed;
     private AtomicBoolean walking = new AtomicBoolean(false);
     private RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo;
-    private MapObjects mapObjects;
     private int preferredBall;
 
     public Context(PokemonGo go, PlayerProfile profile, double speed, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
@@ -48,14 +47,6 @@ public class Context {
 
     public void setPreferredBall(int preferredBall) {
         this.preferredBall = preferredBall;
-    }
-
-    public MapObjects getMapObjects() {
-        return mapObjects;
-    }
-
-    public void setMapObjects(MapObjects mapObjects) {
-        this.mapObjects = mapObjects;
     }
 
     public OkHttpClient getHttp() {

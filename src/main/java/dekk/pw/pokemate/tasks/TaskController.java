@@ -13,6 +13,7 @@ public class TaskController extends Thread {
 
     public TaskController(Context context) {
         this.context = context;
+        tasks.add(new Update());
         tasks.add(new CatchPokemon());
         tasks.add(new ReleasePokemon());
         tasks.add(new NavigatePokestop());

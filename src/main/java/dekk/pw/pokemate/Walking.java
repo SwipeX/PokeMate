@@ -2,6 +2,8 @@ package dekk.pw.pokemate;
 
 import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +53,7 @@ public class Walking {
                     context.getWalking().set(false);
                     cancel();
                 }
-                System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
+             //   System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
             }
         }, 0, timeout);
     }

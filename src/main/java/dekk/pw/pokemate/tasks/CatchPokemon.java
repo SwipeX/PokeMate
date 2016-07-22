@@ -23,7 +23,7 @@ public class CatchPokemon implements Task {
         try {
             Pokeball pokeball;
             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
-            if (!pokemon.isEmpty()) {
+            if (pokemon.size() > 0) {
                 Item ball = context.getApi().getBag().getItem(ItemIdOuterClass.ItemId.forNumber(context.getPreferredBall()));
                 if (ball != null && ball.getCount() > 0) {
                     pokeball = getBall(context.getPreferredBall());
@@ -43,8 +43,6 @@ public class CatchPokemon implements Task {
                         }
                     }
                 }
-            } else{
-                System.out.println("No nearby pokemon");
             }
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();

@@ -2,7 +2,6 @@ package dekk.pw.pokemate;
 
 import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
-import dekk.pw.pokemate.tasks.MoveLocation;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,7 +30,7 @@ public class Walking {
     public static void walk(S2LatLng end, final Context context) {
         if (context.isWalking())
             return;
-        context.setWalking(true);
+        context.getWalking().set(true);
         S2LatLng start = S2LatLng.fromDegrees(context.getLat().get(), context.getLng().get());
         S2LatLng diff = end.sub(start);
         double distance = start.getEarthDistance(end);
@@ -49,9 +48,10 @@ public class Walking {
                 stepsRequired.getAndAdd(-1);
                 if (stepsRequired.get() <= 0) {
                     System.out.println("Destination reached.");
-                    context.setWalking(false);
+                    context.getWalking().set(false);
                     cancel();
                 }
+                System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
             }
         }, 0, timeout);
     }

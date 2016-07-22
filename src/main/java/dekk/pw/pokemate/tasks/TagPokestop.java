@@ -17,19 +17,18 @@ import java.util.*;
 public class TagPokestop implements Task {
     public void run(final Context context) {
         try {
-            MapObjects map = context.getMapObjects();
+            MapObjects map = context.getApi().getMap().getMapObjects();
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() > 0) {
-                Collections.sort(pokestops, (a, b) -> {
+                Optional<Pokestop> optional = pokestops.stream().sorted((a, b) -> {
                     S2LatLng locationA = S2LatLng.fromDegrees(a.getLatitude(), a.getLongitude());
                     S2LatLng locationB = S2LatLng.fromDegrees(b.getLatitude(), b.getLongitude());
                     S2LatLng self = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
                     Double distanceA = self.getEarthDistance(locationA);
                     Double distanceB = self.getEarthDistance(locationB);
                     return distanceA.compareTo(distanceB);
-                });
-                Optional<Pokestop> optional = pokestops.stream().filter(Pokestop::canLoot).findFirst();
-                if (optional != null && optional.isPresent()) {
+                }).filter(Pokestop::canLoot).findFirst();
+                if (optional.isPresent()) {
                     Pokestop near = optional.get();
                     Walking.setLocation(context);
                     PokestopLootResult result = near.loot();

@@ -7,6 +7,8 @@ import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.player.PlayerProfile;
 import okhttp3.OkHttpClient;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Created by TimD on 7/21/2016.
  */
@@ -17,7 +19,7 @@ public class Context {
     private AtomicDouble lng = new AtomicDouble();
     private PlayerProfile profile;
     private double speed;
-    private boolean walking;
+    private AtomicBoolean walking = new AtomicBoolean(false);
     private RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo;
     private MapObjects mapObjects;
     private int preferredBall;
@@ -27,7 +29,7 @@ public class Context {
 
         this.profile = profile;
         this.speed = speed;
-        this.walking = walking;
+        this.walking.set(walking);
         this.authInfo = authInfo;
         this.http = http;
     }
@@ -89,11 +91,11 @@ public class Context {
     }
 
     public boolean isWalking() {
-        return walking;
+        return walking.get();
     }
 
-    public void setWalking(boolean walking) {
-        this.walking = walking;
+    public AtomicBoolean getWalking() {
+        return walking;
     }
 
     public RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo getAuthInfo() {

@@ -4,7 +4,7 @@ import POGOProtos.Inventory.ItemIdOuterClass;
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.GoogleLogin;
-import com.pokegoapi.auth.PTCLogin;
+import com.pokegoapi.auth.PtcLogin;
 import com.pokegoapi.exceptions.LoginFailedException;
 import dekk.pw.pokemate.tasks.TaskController;
 import okhttp3.OkHttpClient;
@@ -38,7 +38,7 @@ public class PokeMate {
                 new PrintWriter("token.txt").println(auth.getToken().getUnknown2());
             }
         } else {
-            auth = new PTCLogin(http).login(username, properties.getProperty("password"));
+            auth = new PtcLogin(http).login(username, properties.getProperty("password"));
         }
         System.out.println("Logged in as " + properties.getProperty("username"));
         PokemonGo go = new PokemonGo(auth, http);
@@ -48,7 +48,12 @@ public class PokeMate {
         context.getLat().set(Double.parseDouble(properties.getProperty("latitude")));
         context.getLng().set(Double.parseDouble(properties.getProperty("longitude")));
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
+        //new Map(context);
         taskControllor = new TaskController(context);
         taskControllor.start();
+    }
+
+    public static Context getContext() {
+        return context;
     }
 }

@@ -9,13 +9,14 @@ import java.util.ArrayList;
  * Created by TimD on 7/21/2016.
  */
 public class TaskController extends Thread {
+    public static final double VARIANCE = .004;
     private Context context;
     private static ArrayList<Task> tasks = new ArrayList<Task>();
 
     public TaskController(Context context) {
         this.context = context;
-        tasks.add(new Navigate(context, new LatLng(context.getLat().get() + -.004, context.getLng().get() + -.004),
-                new LatLng(context.getLat().get() + .004, context.getLng().get() + .004)));
+        tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+                new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
         tasks.add(new ReleasePokemon());

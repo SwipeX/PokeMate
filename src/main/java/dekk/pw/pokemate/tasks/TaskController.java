@@ -27,11 +27,10 @@ public class TaskController extends Thread {
     public void run() {
         try {
             while (true) {
-                long loopStart = System.currentTimeMillis();
                 for (Task task : tasks) {
                     task.run(context);
                 }
-                Thread.sleep(5000 - Math.max(0, System.currentTimeMillis() - loopStart));
+                Thread.sleep(5000);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

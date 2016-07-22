@@ -41,7 +41,7 @@ public class Walking {
         final AtomicDouble stepsRequired = new AtomicDouble(timeRequired / (timeout / 1000D));
         double deltaLat = diff.latDegrees() / stepsRequired.get();
         double deltaLng = diff.lngDegrees() / stepsRequired.get();
-        //Schedule a timer to walk every 100 ms
+        //Schedule a timer to walk every 200 ms
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {

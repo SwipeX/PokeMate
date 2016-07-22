@@ -1,5 +1,5 @@
-rootProject.name = 'pogo.scraper'
-rootProject.name = 'pogo.scraper'
+rootProject.name = 'pokemate'
+rootProject.name = 'pokemate'
 
 /*include ':PokeGOAPI-Java'
 project(':PokeGOAPI-Java').projectDir = file('../PokeGOAPI-Java')*/

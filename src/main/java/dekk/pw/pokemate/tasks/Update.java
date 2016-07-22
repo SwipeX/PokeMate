@@ -18,11 +18,11 @@ public class Update implements Task {
     public void run(Context context) {
         PlayerProfile player;
         context.setProfile(player = context.getApi().getPlayerProfile(true));
-        int nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
-        long curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
+        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
+        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
         System.out.println("Profile update : " + player.getStats().getExperience() + " XP on LVL " + player.getStats().getLevel() +
-                " " + curLevelXP/nextXP + " % to LVL " + (player.getStats().getLevel() + 1));
+                " " + ratio + " % to LVL " + (player.getStats().getLevel() + 1));
 
     }
 }

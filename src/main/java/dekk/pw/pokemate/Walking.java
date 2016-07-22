@@ -1,7 +1,11 @@
 package dekk.pw.pokemate;
 
 import com.google.common.geometry.S2LatLng;
+import com.google.common.util.concurrent.AtomicDouble;
 import dekk.pw.pokemate.tasks.MoveLocation;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -12,28 +16,43 @@ public class Walking {
         return Math.random() * 0.0001 - 0.00005;
     }
 
+    public static void setLocation(Context context) {
+        setLocation(false, context);
+    }
+
+    public static void setLocation(boolean random, Context context) {
+        if (random) {
+            context.getApi().setLocation(context.getLat().get() + getSmallRandom(), context.getLng().get() + getSmallRandom(), 0);
+        } else {
+            context.getApi().setLocation(context.getLat().get(), context.getLng().get(), 0);
+        }
+    }
+
     public static void walk(S2LatLng end, final Context context) {
         if (context.isWalking())
             return;
         context.setWalking(true);
-        S2LatLng start = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
+        S2LatLng start = S2LatLng.fromDegrees(context.getLat().get(), context.getLng().get());
         S2LatLng diff = end.sub(start);
-        double stepsRequired = 20;
-        final double deltaLat = diff.latDegrees() / stepsRequired;
-        final double deltaLng = diff.lngDegrees() / stepsRequired;
-        double x = start.latDegrees();
-        double y = start.lngDegrees();
-        for (int i = 0; i < stepsRequired + 1; i++) {
-            x += deltaLat;
-            y += deltaLng;
-        }
-        context.getApi().setLocation(x, y, 0);
-        context.setWalking(false);
-        MoveLocation.resetTime();
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        double distance = start.getEarthDistance(end);
+        long timeout = 200L;
+        double timeRequired = distance / context.getSpeed();
+        final AtomicDouble stepsRequired = new AtomicDouble(timeRequired / (timeout / 1000D));
+        double deltaLat = diff.latDegrees() / stepsRequired.get();
+        double deltaLng = diff.lngDegrees() / stepsRequired.get();
+        //Schedule a timer to walk every 100 ms
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                context.getLat().addAndGet(deltaLat);
+                context.getLng().addAndGet(deltaLng);
+                stepsRequired.getAndAdd(-1);
+                if (stepsRequired.get() <= 0) {
+                    System.out.println("Destination reached.");
+                    context.setWalking(false);
+                    cancel();
+                }
+            }
+        }, 0, timeout);
     }
 }

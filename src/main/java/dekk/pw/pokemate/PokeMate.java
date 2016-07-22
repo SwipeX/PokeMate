@@ -45,7 +45,9 @@ public class PokeMate {
         context = new Context(go, go.getPlayerProfile(),
                 Double.parseDouble(properties.getProperty("speed")), false, auth, http);
         context.setPreferredBall(ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber());
-        go.setLocation(Double.parseDouble(properties.getProperty("latitude")), Double.parseDouble(properties.getProperty("longitude")), 0);
+        context.getLat().set(Double.parseDouble(properties.getProperty("latitude")));
+        context.getLng().set(Double.parseDouble(properties.getProperty("longitude")));
+        go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         taskControllor = new TaskController(context);
         taskControllor.start();
     }

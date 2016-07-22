@@ -20,13 +20,17 @@ public class TaskController extends Thread {
         tasks.add(new TagPokestop());
     }
 
+    /**
+     * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
+     */
     public void run() {
         try {
             while (true) {
+                long loopStart = System.currentTimeMillis();
                 for (Task task : tasks) {
                     task.run(context);
-                    Thread.sleep(500);
                 }
+                Thread.sleep(5000 - Math.max(0, System.currentTimeMillis() - loopStart));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

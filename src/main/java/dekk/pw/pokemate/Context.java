@@ -1,6 +1,7 @@
 package dekk.pw.pokemate;
 
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
+import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.player.PlayerProfile;
@@ -12,7 +13,8 @@ import okhttp3.OkHttpClient;
 public class Context {
     private OkHttpClient http;
     private PokemonGo api;
-
+    private AtomicDouble lat = new AtomicDouble();
+    private AtomicDouble lng = new AtomicDouble();
     private PlayerProfile profile;
     private double speed;
     private boolean walking;
@@ -28,6 +30,14 @@ public class Context {
         this.walking = walking;
         this.authInfo = authInfo;
         this.http = http;
+    }
+
+    public AtomicDouble getLat() {
+        return lat;
+    }
+
+    public AtomicDouble getLng() {
+        return lng;
     }
 
     public int getPreferredBall() {

@@ -10,6 +10,7 @@ import com.pokegoapi.api.map.Pokemon.EncounterResult;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.Walking;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class CatchPokemon implements Task {
                 }
                 CatchablePokemon target = pokemon.get(0);
                 if (target != null) {
+                    Walking.setLocation(context);
                     EncounterResult encounterResult = target.encounterPokemon();
                     if (encounterResult.wasSuccessful()) {
                         CatchResult catchResult = target.catchPokemon(pokeball);
@@ -41,6 +43,8 @@ public class CatchPokemon implements Task {
                         }
                     }
                 }
+            } else{
+                System.out.println("No nearby pokemon");
             }
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();

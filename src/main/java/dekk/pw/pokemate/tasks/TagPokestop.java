@@ -28,17 +28,11 @@ public class TagPokestop implements Task {
                     Double distanceB = self.getEarthDistance(locationB);
                     return distanceA.compareTo(distanceB);
                 });
-                Pokestop nearest = pokestops.get(0);
-                for (Pokestop pokestop : pokestops) {
-                    if (pokestop.canLoot()) {
-                        nearest = pokestop;
-                        break;
-                    }
-                }
-                if (nearest != null) {
-                    System.out.println("Attempting to walk to pokestop");
-                    Walking.walk(S2LatLng.fromDegrees(nearest.getLatitude(), nearest.getLongitude()), context);
-                    PokestopLootResult result = nearest.loot();
+                Optional<Pokestop> optional = pokestops.stream().filter(Pokestop::canLoot).findFirst();
+                if (optional != null && optional.isPresent()) {
+                    Pokestop near = optional.get();
+                    Walking.setLocation(context);
+                    PokestopLootResult result = near.loot();
                     if (result.wasSuccessful()) {
                         System.out.println("Tagged pokestop [+" + result.getExperience() + "xp]");
                     } else {

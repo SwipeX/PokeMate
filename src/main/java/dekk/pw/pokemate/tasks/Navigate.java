@@ -36,8 +36,8 @@ public class Navigate implements Task {
             return;
         } else if (routesIndex > routes.size()) {
             routesIndex = 0;
-            Walking.walk(context, routes.get(routesIndex++));
         }
+        Walking.walk(context, routes.get(routesIndex++));
     }
 
 
@@ -78,7 +78,7 @@ public class Navigate implements Task {
         LatLng start = new LatLng(context.getLat().get(), context.getLng().get());
         LatLng current = start;
         LatLng next = getNextLocation();
-        while (i < 10) {
+        while (i < 20) {
             DirectionsStep[] steps = queryDirections(context, current, next);
             if (steps != null) {
                 routes.add(steps);

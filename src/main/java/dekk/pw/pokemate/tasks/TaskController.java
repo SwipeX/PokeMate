@@ -14,13 +14,12 @@ public class TaskController extends Thread {
 
     public TaskController(Context context) {
         this.context = context;
-        tasks.add(new Navigate(context, new LatLng(context.getLat().addAndGet(-.004), context.getLng().addAndGet(-.004)),
-                new LatLng(context.getLat().addAndGet(.004), context.getLng().addAndGet(.004))));
+        tasks.add(new Navigate(context, new LatLng(context.getLat().get() + -.004, context.getLng().get() + -.004),
+                new LatLng(context.getLat().get() + .004, context.getLng().get() + .004)));
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
         tasks.add(new ReleasePokemon());
         tasks.add(new TagPokestop());
-        tasks.add(new MoveRegion());
     }
 
     /**

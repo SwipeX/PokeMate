@@ -89,11 +89,13 @@ public class Walking {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        //   Log.i("WALKER", "Set location: [" + context.getLat().get() + ", " + context.getLng().get() + "]");
+                         //  Log.i("WALKER", "Set location: [" + context.getLat().get() + ", " + context.getLng().get() + "]");
                         remainingSteps--;
                     }
                     Log.i("WALKER", "Arrived at: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
                 }
+            }else{
+                System.out.println("FUK");
             }
             context.getWalking().set(false);
         }).start();

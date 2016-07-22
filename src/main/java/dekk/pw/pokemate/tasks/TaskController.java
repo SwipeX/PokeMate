@@ -1,5 +1,6 @@
 package dekk.pw.pokemate.tasks;
 
+import com.google.maps.model.LatLng;
 import dekk.pw.pokemate.Context;
 
 import java.util.ArrayList;
@@ -13,10 +14,11 @@ public class TaskController extends Thread {
 
     public TaskController(Context context) {
         this.context = context;
+        tasks.add(new Navigate(context, new LatLng(context.getLat().addAndGet(-.004), context.getLng().addAndGet(-.004)),
+                new LatLng(context.getLat().addAndGet(.004), context.getLng().addAndGet(.004))));
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
         tasks.add(new ReleasePokemon());
-        tasks.add(new NavigatePokestop());
         tasks.add(new TagPokestop());
         tasks.add(new MoveRegion());
     }

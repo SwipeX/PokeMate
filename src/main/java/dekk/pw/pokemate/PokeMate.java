@@ -47,6 +47,7 @@ public class PokeMate {
         context.setPreferredBall(ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber());
         context.getLat().set(Double.parseDouble(properties.getProperty("latitude")));
         context.getLng().set(Double.parseDouble(properties.getProperty("longitude")));
+        context.setGoogleApiKey(properties.getProperty("api-key"));
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         //new Map(context);
         taskControllor = new TaskController(context);

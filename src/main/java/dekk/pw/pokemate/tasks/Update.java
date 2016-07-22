@@ -22,7 +22,7 @@ public class Update implements Task {
         long curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
         System.out.println("Profile update : " + player.getStats().getExperience() + " XP on LVL " + player.getStats().getLevel() +
-                " " + curLevelXP + "/" + nextXP + " " + ratio + "% to LVL " + (player.getStats().getLevel() + 1));
+                " " + curLevelXP/nextXP + " % to LVL " + (player.getStats().getLevel() + 1));
 
     }
 }

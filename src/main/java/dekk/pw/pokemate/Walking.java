@@ -2,8 +2,10 @@ package dekk.pw.pokemate;
 
 import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.maps.model.DirectionsStep;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,8 +55,47 @@ public class Walking {
                     context.getWalking().set(false);
                     cancel();
                 }
-             //   System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
+                //   System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
             }
         }, 0, timeout);
+    }
+
+    public static void walk(Context context, DirectionsStep[] steps) {
+        new Thread(() -> {
+            context.getWalking().set(true);
+            if (steps != null) {
+                for (DirectionsStep step : steps) {
+                    Log.i("WALKER", "Heading to: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
+                    context.getApi().setLocation(step.startLocation.lat, step.startLocation.lng, 0);
+                    context.getLat().set(step.startLocation.lat);
+                    context.getLng().set(step.startLocation.lng);
+                    S2LatLng start = S2LatLng.fromDegrees(step.startLocation.lat, step.startLocation.lng);
+                    S2LatLng end = S2LatLng.fromDegrees(step.endLocation.lat, step.endLocation.lng);
+                    S2LatLng diff = end.sub(start);
+                    double distance = step.distance.inMeters;
+                    distance = start.getEarthDistance(end);
+                    long timeout = 200L;
+                    double timeRequired = distance / context.getSpeed();
+                    int stepsRequired = (int) (timeRequired / (new Long(timeout).doubleValue() / 1000));
+                    double deltaLat = diff.latDegrees() / stepsRequired;
+                    double deltaLng = diff.lngDegrees() / stepsRequired;
+                    int remainingSteps = stepsRequired;
+                    while (remainingSteps >= 0) {
+                        context.getLat().addAndGet(deltaLat);
+                        context.getLng().addAndGet(deltaLng);
+                        setLocation(context);
+                        try {
+                            Thread.sleep(timeout);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //   Log.i("WALKER", "Set location: [" + context.getLat().get() + ", " + context.getLng().get() + "]");
+                        remainingSteps--;
+                    }
+                    Log.i("WALKER", "Arrived at: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
+                }
+            }
+            context.getWalking().set(false);
+        }).start();
     }
 }

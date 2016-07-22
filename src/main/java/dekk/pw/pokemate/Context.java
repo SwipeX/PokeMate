@@ -22,15 +22,23 @@ public class Context {
     private AtomicBoolean walking = new AtomicBoolean(false);
     private RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo;
     private int preferredBall;
+    private String googleApiKey;
 
     public Context(PokemonGo go, PlayerProfile profile, double speed, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
         this.api = go;
-
         this.profile = profile;
         this.speed = speed;
         this.walking.set(walking);
         this.authInfo = authInfo;
         this.http = http;
+    }
+
+    public void setGoogleApiKey(String googleApiKey) {
+        this.googleApiKey = googleApiKey;
+    }
+
+    public String getGoogleApiKey() {
+        return googleApiKey;
     }
 
     public AtomicDouble getLat() {

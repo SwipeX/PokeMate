@@ -1,4 +1,4 @@
-# Pokemon Go Bot
+# PokeMate
 
 ##Features
 + Catches visible pokemon

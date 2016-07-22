@@ -18,7 +18,7 @@ public class EvolvePokemon implements Task {
                     int count = pokemon.getCandy();
                     EvolutionResult result = pokemon.evolve();
                     if (result.isSuccessful()) {
-                        System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + (count - pokemon.getCandy()) + " candies");
+                        System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + (count - result.getEvolvedPokemon().getCandy()) + " candies");
                     }
                 }
             }

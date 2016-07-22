@@ -20,7 +20,9 @@ public class TaskController extends Thread {
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
         tasks.add(new ReleasePokemon());
+        tasks.add(new EvolvePokemon());
         tasks.add(new TagPokestop());
+        tasks.add(new DropItems());
     }
 
     /**

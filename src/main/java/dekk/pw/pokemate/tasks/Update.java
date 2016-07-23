@@ -1,6 +1,8 @@
 package dekk.pw.pokemate.tasks;
 
 import com.pokegoapi.api.player.PlayerProfile;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 
 import java.text.DecimalFormat;
@@ -16,13 +18,17 @@ public class Update implements Task {
 
     @Override
     public void run(Context context) {
-        PlayerProfile player;
-        context.setProfile(player = context.getApi().getPlayerProfile(true));
-        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
-        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
-        String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-        System.out.println("Profile update : " + player.getStats().getExperience() + " XP on LVL " + player.getStats().getLevel() +
-                " " + ratio + " % to LVL " + (player.getStats().getLevel() + 1));
-
+        try {
+            PlayerProfile player;
+            context.setProfile(player = context.getApi().getPlayerProfile());
+            player.updateProfile();
+            double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
+            double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
+            String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
+            System.out.println("Profile update : " + player.getStats().getExperience() + " XP on LVL " + player.getStats().getLevel() +
+                    " " + ratio + " % to LVL " + (player.getStats().getLevel() + 1));
+        } catch (LoginFailedException | RemoteServerException e) {
+            e.printStackTrace();
+        }
     }
 }

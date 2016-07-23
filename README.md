@@ -6,9 +6,11 @@
 + Transfers lowest levels of pokemon
 + Tags pokestops when in range
 + Traverses a set of nodes returned from Google's Directions API
++ Auto evolving when able.
++ Hatches eggs
 
 ###Release
-You can download the release from the Releases tab, only requirement is Java 8.
+You can download the release from the Releases tab, only requirement is Java 8. Instructions can be found on that page.
 
 ## Usage
 
@@ -19,7 +21,6 @@ You can download the release from the Releases tab, only requirement is Java 8.
 5. Compile and Run `PokeMate.java`.
 
 ## Planned Features
-* Evolving at x candies (partially done)
 * User Interface
 * Automatic deployment
 

@@ -22,6 +22,7 @@ public class TaskController extends Thread {
         tasks.add(new ReleasePokemon());
         tasks.add(new EvolvePokemon());
         tasks.add(new TagPokestop());
+        tasks.add(new HatchEgg());
         tasks.add(new DropItems());
     }
 
@@ -31,9 +32,7 @@ public class TaskController extends Thread {
     public void run() {
         try {
             while (true) {
-                for (Task task : tasks) {
-                    task.run(context);
-                }
+                tasks.forEach(t -> t.run(context));
                 Thread.sleep(5000);
             }
         } catch (InterruptedException e) {

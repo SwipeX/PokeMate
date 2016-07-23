@@ -23,6 +23,8 @@ You can download the release from the Releases tab, only requirement is Java 8.
 * User Interface
 * Automatic deployment
 
+![Image of map](http://puu.sh/qbQGO/0887fd8a98.jpg)
+
 ### Credits
 
 * https://github.com/jabbink/PokemonGoBot

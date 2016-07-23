@@ -7,6 +7,9 @@
 + Tags pokestops when in range
 + Traverses a set of nodes returned from Google's Directions API
 
+###Release
+You can download the release from the Releases tab, only requirement is Java 8.
+
 ## Usage
 
 1. Clone this repo
@@ -16,8 +19,8 @@
 5. Compile and Run `PokeMate.java`.
 
 ## Planned Features
-* Egg Incubation
-* Evolving at x candies
+* ~~* Egg Incubation~~
+* Evolving at x candies (partially done)
 * User Interface
 * Automatic deployment
 

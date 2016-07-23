@@ -7,6 +7,8 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -16,12 +18,12 @@ public class HatchEgg implements Task {
     @Override
     public void run(Context context) {
         try {
-            Stream<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> !i.isInUse());
-            Stream<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty());
-            if (incubators.count() > 0 && eggs.count() > 0) {
-                UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.findFirst().get().hatchEgg(eggs.findFirst().get());
+            List<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> !i.isInUse()).collect(Collectors.toList());
+            List<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
+            if (incubators.size() > 0 && eggs.size() > 0) {
+                UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
-                    System.out.println("Now hatching egg # " + eggs.findFirst().get().getEggIncubatorId());
+                    System.out.println("Now hatching egg # " + eggs.get(0).getId());
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {

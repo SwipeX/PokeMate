@@ -36,7 +36,7 @@ public class PokeMate {
         if (username.contains("@")) {
             auth = new GoogleLogin(http).login(username, properties.getProperty("password"));
             if (auth.hasToken()) {
-                new PrintWriter("token.txt").println(auth.getToken().getUnknown2());
+                new PrintWriter("token.txt").println(auth.getToken().getContents());
             }
         } else {
             auth = new PtcLogin(http).login(username, properties.getProperty("password"));

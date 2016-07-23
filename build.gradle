@@ -22,6 +22,8 @@ repositories {
 
 dependencies {
 
+    compile 'com.lynden:GMapsFX:2.0.7'
+
     compile 'com.google.maps:google-maps-services:0.1.15'
 
     compile 'com.github.Grover-c13:PokeGOAPI-Java:master-SNAPSHOT'

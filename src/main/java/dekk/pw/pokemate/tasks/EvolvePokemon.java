@@ -13,7 +13,7 @@ public class EvolvePokemon implements Task {
     @Override
     public void run(Context context) {
         try {
-            for (Pokemon pokemon : context.getApi().getPokebank().getPokemons()) {
+            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
                 if (pokemon.getCandy() >= 100) {
                     int count = pokemon.getCandy();
                     EvolutionResult result = pokemon.evolve();

@@ -1,11 +1,12 @@
 package dekk.pw.pokemate;
 
-import POGOProtos.Inventory.ItemIdOuterClass;
+import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.GoogleLogin;
 import com.pokegoapi.auth.PtcLogin;
 import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.TaskController;
 import okhttp3.OkHttpClient;
 
@@ -23,7 +24,7 @@ public class PokeMate {
     private static Context context;
     private static TaskController taskControllor;
 
-    public static void main(String[] args) throws IOException, LoginFailedException {
+    public static void main(String[] args) throws IOException, LoginFailedException, RemoteServerException {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -49,7 +50,6 @@ public class PokeMate {
         context.getLng().set(Double.parseDouble(properties.getProperty("longitude")));
         context.setGoogleApiKey(properties.getProperty("api-key"));
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
-        //new Map(context);
         taskControllor = new TaskController(context);
         taskControllor.start();
     }

@@ -1,6 +1,6 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Inventory.ItemIdOuterClass;
+import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass;
 import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.inventory.Pokeball;
@@ -24,7 +24,7 @@ public class CatchPokemon implements Task {
             Pokeball pokeball;
             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
             if (pokemon.size() > 0) {
-                Item ball = context.getApi().getBag().getItem(ItemIdOuterClass.ItemId.forNumber(context.getPreferredBall()));
+                Item ball = context.getApi().getInventories().getItemBag().getItem(ItemIdOuterClass.ItemId.forNumber(context.getPreferredBall()));
                 if (ball != null && ball.getCount() > 0) {
                     pokeball = getBall(context.getPreferredBall());
                 } else {

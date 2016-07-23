@@ -14,7 +14,7 @@ public class ReleasePokemon implements Task {
     public void run(Context context) {
         try {
             HashMap<Integer, List<Pokemon>> groups = new HashMap<>();
-            for (Pokemon pokemon : context.getApi().getPokebank().getPokemons()) {
+            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
                 if (!groups.containsKey(pokemon.getPokemonId().getNumber())) {
                     groups.put(pokemon.getPokemonId().getNumber(), new ArrayList<>());
                 }

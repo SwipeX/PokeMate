@@ -19,7 +19,8 @@ public class EvolvePokemon implements Task {
     static {
         try {
             //We will read in from the compacted file...
-            DataInputStream dis = new DataInputStream(new FileInputStream("evolve.dat"));
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            DataInputStream dis = new DataInputStream(classloader.getResourceAsStream("evolve.dat"));
             int count = dis.readInt();
             for (int i = 0; i < count; i++) {
                 CANDY_AMOUNTS.put(dis.readInt(), dis.readInt());

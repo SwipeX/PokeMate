@@ -33,12 +33,15 @@ public class EvolvePokemon implements Task {
     public void run(Context context) {
         try {
             for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                int required = CANDY_AMOUNTS.get(pokemon.getPokemonId().getNumber());
-                if (required < 1) continue;
-                if (pokemon.getCandy() >= required) {
-                    EvolutionResult result = pokemon.evolve();
-                    if (result.isSuccessful()) {
-                        System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
+                int number = pokemon.getPokemonId().getNumber();
+                if (CANDY_AMOUNTS.containsKey(number)) {
+                    int required = CANDY_AMOUNTS.get(number);
+                    if (required < 1) continue;
+                    if (pokemon.getCandy() >= required) {
+                        EvolutionResult result = pokemon.evolve();
+                        if (result.isSuccessful()) {
+                            System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@ username=
 password=
 latitude=
 longitude=
+api-key=
 preferred_ball=ITEM_POKE_BALL
 # should the bot EVER drop items (true/false)
 drop_items=true

@@ -19,13 +19,12 @@ You can download the release from the Releases tab, only requirement is Java 8.
 5. Compile and Run `PokeMate.java`.
 
 ## Planned Features
-* ~~* Egg Incubation~~
 * Evolving at x candies (partially done)
 * User Interface
 * Automatic deployment
 
 ### Credits
 
-https://github.com/jabbink/PokemonGoBot
-https://github.com/Grover-c13/PokeGOAPI-Java
-https://github.com/mjmfighter/pokemon-go-bot/blob/master/src/main/java/com/mjmfighter/pogobot/LocationWalker.java
+* https://github.com/jabbink/PokemonGoBot
+* https://github.com/Grover-c13/PokeGOAPI-Java
+* https://github.com/mjmfighter/pokemon-go-bot/blob/master/src/main/java/com/mjmfighter/pogobot/LocationWalker.java

@@ -2,6 +2,7 @@ package dekk.pw.pokemate.tasks;
 
 import com.google.maps.model.LatLng;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.Config;
 
 import java.util.ArrayList;
 

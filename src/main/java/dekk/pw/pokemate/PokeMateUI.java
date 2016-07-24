@@ -106,7 +106,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
         //Marker of current player, thread to update a 'hack refresh'
-        marker = new Marker(new MarkerOptions().position(center).title("Player").icon("/icons/trainer.gif"));
+        marker = new Marker(new MarkerOptions().position(center).title("Player"));//.icon("/icons/trainer.gif"));
         map.addMarker(marker);
         final InfoWindowOptions infoOptions = new InfoWindowOptions();
         infoOptions.content("<h3>Loading...</h3>")

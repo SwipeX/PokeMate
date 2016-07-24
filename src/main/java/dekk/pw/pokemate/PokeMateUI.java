@@ -1,29 +1,19 @@
 package dekk.pw.pokemate;
 
-import com.google.maps.model.LatLng;
 import com.lynden.gmapsfx.GoogleMapView;
-import com.lynden.gmapsfx.MainApp;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
 import com.lynden.gmapsfx.shapes.Polygon;
 import com.lynden.gmapsfx.shapes.PolygonOptions;
-import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.player.PlayerProfile;
-import com.pokegoapi.exceptions.LoginFailedException;
-import com.pokegoapi.exceptions.RemoteServerException;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-import java.io.DataInputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by $ Tim Dekker on 7/23/2016.
@@ -56,7 +46,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             System.exit(0);
         });
         //This needs to be set to the resources directory, however, it is not play along nicely.
-        mapComponent = new GoogleMapView();
+        mapComponent = new GoogleMapView("/map.html");
         mapComponent.addMapInializedListener(this);
         mapComponent.getWebview().getEngine().setOnAlert((WebEvent<String> event) -> {
         });
@@ -106,7 +96,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
         //Marker of current player, thread to update a 'hack refresh'
-        marker = new Marker(new MarkerOptions().position(center).title("Player"));//.icon("/icons/trainer.gif"));
+        marker = new Marker(new MarkerOptions().position(center).title("Player").icon("icons/trainer.gif"));
         map.addMarker(marker);
         final InfoWindowOptions infoOptions = new InfoWindowOptions();
         infoOptions.content("<h3>Loading...</h3>")

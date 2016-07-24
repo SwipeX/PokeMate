@@ -3,6 +3,7 @@ package dekk.pw.pokemate.tasks;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
 import java.text.DecimalFormat;
@@ -29,6 +30,8 @@ public class Update implements Task {
                     " " + ratio + " % to LVL " + (player.getStats().getLevel() + 1));
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
+            System.out.println("Attempting to Login");
+            Context.Login(context.getHttp());
         }
     }
 }

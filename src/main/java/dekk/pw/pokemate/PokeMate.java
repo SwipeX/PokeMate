@@ -32,15 +32,8 @@ public class PokeMate {
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
-        RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth;
-        if (Config.getUsername().contains("@")) {
-            auth = new GoogleLogin(http).login(Config.getUsername(), Config.getPassword());
-            if (auth.hasToken()) {
-                new PrintWriter("token.txt").println(auth.getToken().getContents());
-            }
-        } else {
-            auth = new PtcLogin(http).login(Config.getUsername(), Config.getPassword());
-        }
+        RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth = null;
+        auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
         PokemonGo go = new PokemonGo(auth, http);
         context = new Context(go, go.getPlayerProfile(), false, auth, http);

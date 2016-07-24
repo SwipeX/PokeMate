@@ -5,8 +5,13 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.player.PlayerProfile;
+import com.pokegoapi.auth.GoogleLogin;
+import com.pokegoapi.auth.PtcLogin;
 import okhttp3.OkHttpClient;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -27,6 +32,45 @@ public class Context {
         this.walking.set(walking);
         this.authInfo = authInfo;
         this.http = http;
+    }
+
+    public static RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo Login(OkHttpClient httpClient) {
+        return Login(null, httpClient);
+    }
+
+    public static RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo Login(Context context, OkHttpClient httpClient) {
+        RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth = context == null ? null : context.authInfo;
+        String token = null;
+        try {
+            if (Config.getUsername().contains("@")) {
+                if (auth == null) {
+                    File file = new File("token.txt");
+                    if (file.exists()) {
+                        Scanner scanner = new Scanner(file);
+                        token = scanner.nextLine();
+                    }
+                    if (token != null) {
+                        auth = new GoogleLogin(httpClient).login(token);
+                    } else {
+                        auth = new GoogleLogin(httpClient).login(Config.getUsername(), Config.getPassword());
+                    }
+                    try (PrintWriter p = new PrintWriter("token.txt")) {
+                        p.println(auth.getToken().getContents());
+                    }
+                } else {
+                    token = auth.getToken().getContents();
+                    auth = new GoogleLogin(httpClient).login(token);
+                    try (PrintWriter p = new PrintWriter("token.txt")) {
+                        p.println(token);
+                    }
+                }
+            } else {
+                auth = new PtcLogin(httpClient).login(Config.getUsername(), Config.getPassword());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return auth;
     }
 
     public AtomicDouble getLat() {

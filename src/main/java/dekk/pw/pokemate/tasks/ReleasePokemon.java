@@ -23,7 +23,7 @@ public class ReleasePokemon implements Task {
         Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
         for (List<Pokemon> list : groups.values()) {
             Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
-            list.stream().filter(p -> !p.getFavorite() || getIvRatio(p) < PERFECT_IV).forEach(p -> {
+            list.stream().filter(p -> list.indexOf(p) < list.size() - 1 && !p.getFavorite() && getIvRatio(p) < PERFECT_IV).forEach(p -> {
                 //Passing this filter means they are not a 'perfect pokemon'
                 try {
                     System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualStamina() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");

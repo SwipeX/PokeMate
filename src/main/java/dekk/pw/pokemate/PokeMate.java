@@ -8,6 +8,7 @@ import com.pokegoapi.auth.PtcLogin;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.TaskController;
+import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
 import java.io.FileInputStream;
@@ -24,7 +25,9 @@ public class PokeMate {
     private static Context context;
     private static TaskController taskControllor;
 
-    public static void main(String[] args) throws IOException, LoginFailedException, RemoteServerException {
+    public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
+        PokeMateUI.setPoke(this);
+        new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -47,6 +50,10 @@ public class PokeMate {
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         taskControllor = new TaskController(context);
         taskControllor.start();
+    }
+
+    public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
+        new PokeMate();
     }
 
     public static Context getContext() {

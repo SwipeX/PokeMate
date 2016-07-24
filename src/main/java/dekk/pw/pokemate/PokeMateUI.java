@@ -31,7 +31,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     protected GoogleMapView mapComponent;
     protected GoogleMap map;
     protected DirectionsPane directions;
-    protected PokeMate poke;
+    protected static PokeMate poke;
     public static final double XVARIANCE = .006;
     public static final double VARIANCE = .004;
     public static Marker marker;
@@ -40,15 +40,18 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
 
-    public static void main(String[] args) {
-        launch(args);
+    //public static void main(String[] args) {
+    //    launch(args);
+    //}
+    public static void setPoke(PokeMate p) {
+        poke = p;
     }
 
     @Override
     public void start(final Stage stage) throws Exception {
         stage.setTitle("Pokemate UI");
-        poke = new PokeMate();
-        poke.main(null);
+        // poke = new PokeMate();
+        //  poke.main(null);
         mapComponent = new GoogleMapView();
         mapComponent.addMapInializedListener(this);
         mapComponent.getWebview().getEngine().setOnAlert((WebEvent<String> event) -> {

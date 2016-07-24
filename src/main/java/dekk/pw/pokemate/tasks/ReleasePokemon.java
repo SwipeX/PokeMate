@@ -22,8 +22,12 @@ public class ReleasePokemon implements Task {
             for (List<Pokemon> list : groups.values()) {
                 Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
                 for (int i = 0; i < list.size() - 1; i++) {
-                    System.out.println("Transferring " + (i + 1) + "/" + list.size() + " " + list.get(i).getPokemonId() + " lvl " + list.get(i).getCp());
+                  if((list.get(i).getIndividualAttack()+list.get(i).getIndividualDefense()+list.get(i).getIndividualStamina())<41){
+                    System.out.println("Transferring " + (i + 1) + "/" + list.size() + " " + list.get(i).getPokemonId() + " CP " + list.get(i).getCp() +" "+ list.get(i).getIndividualStamina() +"/"+ list.get(i).getIndividualDefense() +"/"+ list.get(i).getIndividualStamina());
                     list.get(i).transferPokemon();
+                  }else{
+                    System.out.println("[Perfect Pokemon] " + list.get(i).getPokemonId() + " IV's: " + list.get(i).getIndividualStamina() +"/"+ list.get(i).getIndividualDefense() +"/"+ list.get(i).getIndividualStamina());
+                  }
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {

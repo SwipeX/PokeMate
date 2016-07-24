@@ -20,6 +20,7 @@ public class Config {
     private static int minCP;
     private static boolean showUI;
     private static boolean dropItems;
+    private static boolean evolving;
 
     private static Properties properties = new Properties();
 
@@ -34,6 +35,7 @@ public class Config {
             minCP = Integer.parseInt(properties.getProperty("min-cp"));
             showUI = Boolean.parseBoolean(properties.getProperty("show"));
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items"));
+            evolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,6 +73,10 @@ public class Config {
 
     public static boolean isShowUI() {
         return showUI;
+    }
+    
+    public static boolean isEvolvingActive() {
+    	return evolving;
     }
 
     public static boolean isDropItems() {

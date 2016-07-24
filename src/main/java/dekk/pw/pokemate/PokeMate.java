@@ -27,7 +27,6 @@ public class PokeMate {
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
         PokeMateUI.setPoke(this);
-        new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -48,6 +47,9 @@ public class PokeMate {
         context.getLat().set(Double.parseDouble(Config.getProperties().getProperty("latitude")));
         context.getLng().set(Double.parseDouble(Config.getProperties().getProperty("longitude")));
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
+        if (Config.isShowUI()) {
+            new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
+        }
         taskControllor = new TaskController(context);
         taskControllor.start();
     }

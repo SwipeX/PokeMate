@@ -43,27 +43,29 @@ public class Context {
         String token = null;
         try {
             if (Config.getUsername().contains("@")) {
-                if (auth == null) {
-                    File file = new File("token.txt");
-                    if (file.exists()) {
-                        Scanner scanner = new Scanner(file);
-                        token = scanner.nextLine();
-                    }
-                    if (token != null) {
-                        auth = new GoogleLogin(httpClient).login(token);
-                    } else {
-                        auth = new GoogleLogin(httpClient).login(Config.getUsername(), Config.getPassword());
-                    }
-                    try (PrintWriter p = new PrintWriter("token.txt")) {
-                        p.println(auth.getToken().getContents());
-                    }
-                } else {
-                    token = auth.getToken().getContents();
-                    auth = new GoogleLogin(httpClient).login(token);
-                    try (PrintWriter p = new PrintWriter("token.txt")) {
-                        p.println(token);
-                    }
-                }
+                auth = new GoogleLogin(httpClient).login(Config.getUsername(), Config.getPassword());
+                //The below code is not functional, token needs verification.
+//                if (auth == null) {
+//                    File file = new File("token.txt");
+//                    if (file.exists()) {
+//                        Scanner scanner = new Scanner(file);
+//                        token = scanner.nextLine();
+//                    }
+//                    if (token != null) {
+//                        auth = new GoogleLogin(httpClient).login(token);
+//                    } else {
+//                        auth = new GoogleLogin(httpClient).login(Config.getUsername(), Config.getPassword());
+//                    }
+//                    try (PrintWriter p = new PrintWriter("token.txt")) {
+//                        p.println(auth.getToken().getContents());
+//                    }
+//                } else {
+//                    token = auth.getToken().getContents();
+//                    auth = new GoogleLogin(httpClient).login(token);
+//                    try (PrintWriter p = new PrintWriter("token.txt")) {
+//                        p.println(token);
+//                    }
+//                }
             } else {
                 auth = new PtcLogin(httpClient).login(Config.getUsername(), Config.getPassword());
             }

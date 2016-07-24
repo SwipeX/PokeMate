@@ -21,8 +21,9 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 5. Compile and Run `PokeMate.java`.
 
 ## Planned Features
-* User Interface
-* Automatic deployment
+* Egg 'cracking'
+* Notifications
+* User Interface improvments
 
 ![Image of map](http://puu.sh/qbQGO/0887fd8a98.jpg)
 

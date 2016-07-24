@@ -13,11 +13,14 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
+import java.io.DataInputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +33,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     public static final int UPDATE_TIME = 5000;
     protected GoogleMapView mapComponent;
     protected GoogleMap map;
-    protected DirectionsPane directions;
     protected static PokeMate poke;
     public static final double XVARIANCE = .006;
     public static final double VARIANCE = .004;
     public static Marker marker;
-    public static List<Pokestop> pokestops = new ArrayList<>();
     int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
@@ -50,8 +51,11 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     @Override
     public void start(final Stage stage) throws Exception {
         stage.setTitle("Pokemate UI");
-        // poke = new PokeMate();
-        //  poke.main(null);
+        stage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        //This needs to be set to the resources directory, however, it is not play along nicely.
         mapComponent = new GoogleMapView();
         mapComponent.addMapInializedListener(this);
         mapComponent.getWebview().getEngine().setOnAlert((WebEvent<String> event) -> {
@@ -102,7 +106,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
         //Marker of current player, thread to update a 'hack refresh'
-        marker = new Marker(new MarkerOptions().position(center).title("Player"));
+        marker = new Marker(new MarkerOptions().position(center).title("Player").icon("/icons/trainer.gif"));
         map.addMarker(marker);
         final InfoWindowOptions infoOptions = new InfoWindowOptions();
         infoOptions.content("<h3>Loading...</h3>")
@@ -119,24 +123,14 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                     map.setZoom(currentZoom);
                 });
                 try {
-                    try {
-                        Platform.runLater(() -> {
-                            PlayerProfile player = context.getApi().getPlayerProfile();
-                            double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
-                            double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
-                            String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-                            window.setContent("<h3>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
-                                    ratio + "% " + player.getStats().getExperience() + " total exp </h3>");
-                        });
-                        for (Pokestop ps : context.getApi().getMap().getMapObjects().getPokestops()) {
-                            if (!pokestops.contains(ps)) {
-                                Platform.runLater(() -> map.addMarker(new Marker(new MarkerOptions().position(center).title("Pokestop: " + ps.getId()))));
-                                pokestops.add(ps);
-                            }
-                        }
-                    } catch (LoginFailedException | RemoteServerException e) {
-                        e.printStackTrace();
-                    }
+                    Platform.runLater(() -> {
+                        PlayerProfile player = context.getApi().getPlayerProfile();
+                        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
+                        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
+                        String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
+                        window.setContent("<h3>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
+                                ratio + "% " + player.getStats().getExperience() + " total exp </h3>");
+                    });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

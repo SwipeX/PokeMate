@@ -18,3 +18,5 @@ show=false
 drop_items=true
 # Meters per second
 speed=1.00
+# Automatic evolving 
+automatic-evolving=true

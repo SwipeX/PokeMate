@@ -121,8 +121,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             List<LatLong> locs = new ArrayList<>();
                             for (DirectionsStep[] steps : Navigate.getDirections()) {
                                 for (DirectionsStep step : steps) {
-                                    locs.add(new LatLong(step.startLocation.lat, step.startLocation.lng));
-                                    locs.add(new LatLong(step.endLocation.lat, step.endLocation.lng));
+                                    step.polyline.decodePath().forEach(a->locs.add(new LatLong(a.lat,a.lng)));
                                 }
                             }
                             LatLong[] array = locs.toArray(new LatLong[0]);

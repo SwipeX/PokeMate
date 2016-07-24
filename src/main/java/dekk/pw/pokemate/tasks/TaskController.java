@@ -2,6 +2,7 @@ package dekk.pw.pokemate.tasks;
 
 import com.google.maps.model.LatLng;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.Config;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,9 @@ public class TaskController extends Thread {
         tasks.add(new EvolvePokemon());
         tasks.add(new TagPokestop());
         tasks.add(new HatchEgg());
-        tasks.add(new DropItems());
+        if(Config.isDropItems()) {
+            tasks.add(new DropItems());
+        }
     }
 
     /**

@@ -26,7 +26,7 @@ public class ReleasePokemon implements Task {
             list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.getFavorite() && getIvRatio(p) < Config.getIvRatio()).forEach(p -> {
                 //Passing this filter means they are not a 'perfect pokemon'
                 try {
-                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualStamina() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                     p.transferPokemon();
                 } catch (LoginFailedException | RemoteServerException e) {
                     e.printStackTrace();

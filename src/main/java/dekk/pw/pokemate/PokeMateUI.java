@@ -1,11 +1,15 @@
 package dekk.pw.pokemate;
 
+import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
+import com.lynden.gmapsfx.MainApp;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.shapes.Polygon;
-import com.lynden.gmapsfx.shapes.PolygonOptions;
+import com.lynden.gmapsfx.javascript.object.Polyline;
+import com.lynden.gmapsfx.javascript.object.PolylineOptions;
+import com.lynden.gmapsfx.shapes.*;
 import com.pokegoapi.api.player.PlayerProfile;
+import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -14,6 +18,8 @@ import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by $ Tim Dekker on 7/23/2016.
@@ -21,6 +27,7 @@ import java.text.DecimalFormat;
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
     public static final int UPDATE_TIME = 5000;
+    boolean directions;
     protected GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
@@ -75,6 +82,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .mapType(MapTypeIdEnum.ROADMAP);
         map = mapComponent.createMap(options);
 
+
         //Highlight area we can walk in
         LatLong min = new LatLong(context.getLat().get() - VARIANCE, context.getLng().get() - XVARIANCE);
         LatLong miny = new LatLong(context.getLat().get() - VARIANCE, context.getLng().get() + XVARIANCE);
@@ -107,6 +115,28 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         new Thread(() -> {
             while (true) {
                 Platform.runLater(() -> {
+                    if (Navigate.getDirections() != null && !directions) {
+                        synchronized (poke) {
+                            List<LatLong> locs = new ArrayList<LatLong>();
+                            for (DirectionsStep[] steps : Navigate.getDirections()) {
+                                for (DirectionsStep step : steps) {
+                                    locs.add(new LatLong(step.startLocation.lat, step.startLocation.lng));
+                                    locs.add(new LatLong(step.endLocation.lat, step.endLocation.lng));
+                                }
+                            }
+                            LatLong[] array = locs.toArray(new LatLong[0]);
+                            MVCArray mvc = new MVCArray(array);
+
+                            com.lynden.gmapsfx.shapes.PolylineOptions polyOpts = new com.lynden.gmapsfx.shapes.PolylineOptions()
+                                    .path(mvc)
+                                    .strokeColor("red")
+                                    .strokeWeight(2);
+
+                            com.lynden.gmapsfx.shapes.Polyline poly = new com.lynden.gmapsfx.shapes.Polyline(polyOpts);
+                            map.addMapShape(poly);
+                            directions = true;
+                        }
+                    }
                     marker.setPosition(new LatLong(context.getLat().get(), context.getLng().get()));
                     int currentZoom = map.getZoom();
                     map.setZoom(currentZoom - 1);

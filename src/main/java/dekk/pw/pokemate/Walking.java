@@ -74,7 +74,7 @@ public class Walking {
                     S2LatLng diff = end.sub(start);
                     double distance = step.distance.inMeters;
                     distance = start.getEarthDistance(end);
-                    long timeout = 200L;
+                    long timeout = 350L;
                     double timeRequired = distance / Config.getSpeed();
                     int stepsRequired = (int) (timeRequired / (new Long(timeout).doubleValue() / 1000));
                     double deltaLat = diff.latDegrees() / stepsRequired;
@@ -95,7 +95,7 @@ public class Walking {
                     Log.i("WALKER", "Arrived at: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
                 }
             }else{
-                System.out.println("FUK");
+                System.out.println("WALKING ERROR");
             }
             context.getWalking().set(false);
         }).start();

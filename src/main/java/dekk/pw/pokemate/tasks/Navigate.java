@@ -22,7 +22,7 @@ import java.util.*;
 public class Navigate implements Task {
 
     private final LatLng min, max;
-    private List<DirectionsStep[]> routes = new ArrayList<>();
+    private static List<DirectionsStep[]> routes = new ArrayList<>();
     private int routesIndex = 0;
 
     public Navigate(Context context, LatLng min, LatLng max) {
@@ -90,11 +90,13 @@ public class Navigate implements Task {
                 next = getNextLocation();
             }
         }
-        current = next;
-        next = start;
-        DirectionsStep[] steps = queryDirections(context, current, next);
+        DirectionsStep[] steps = queryDirections(context, next, start);
         if (steps != null) {
             routes.add(steps);
         }
+    }
+
+    public static List<DirectionsStep[]> getDirections() {
+        return routes;
     }
 }

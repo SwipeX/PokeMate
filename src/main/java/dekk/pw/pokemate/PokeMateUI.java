@@ -40,6 +40,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(final Stage stage) throws Exception {
         stage.setTitle("Pokemate UI");

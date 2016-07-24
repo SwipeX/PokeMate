@@ -9,6 +9,7 @@ import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
 
@@ -50,7 +51,7 @@ public class Navigate implements Task {
 
     private DirectionsStep[] queryDirections(Context context, LatLng start, LatLng end) {
         DirectionsStep[] stepsToTake = null;
-        GeoApiContext ctx = new GeoApiContext().setApiKey(context.getGoogleApiKey());
+        GeoApiContext ctx = new GeoApiContext().setApiKey(Config.getGoogleApiKey());
         DirectionsApiRequest request = DirectionsApi.newRequest(ctx)
                 .origin(start)
                 .destination(end)

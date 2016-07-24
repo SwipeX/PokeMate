@@ -9,6 +9,7 @@ import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.EncounterResult;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
 
@@ -24,9 +25,9 @@ public class CatchPokemon implements Task {
             Pokeball pokeball;
             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
             if (pokemon.size() > 0) {
-                Item ball = context.getApi().getInventories().getItemBag().getItem(ItemIdOuterClass.ItemId.forNumber(context.getPreferredBall()));
+                Item ball = context.getApi().getInventories().getItemBag().getItem(ItemIdOuterClass.ItemId.forNumber(Config.getPreferredBall()));
                 if (ball != null && ball.getCount() > 0) {
-                    pokeball = getBall(context.getPreferredBall());
+                    pokeball = getBall(Config.getPreferredBall());
                 } else {
                     pokeball = Pokeball.POKEBALL;
                 }

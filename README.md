@@ -1,4 +1,4 @@
-# PokeMate
+# PokeMate ![travis](https://travis-ci.org/SwipeX/PokeMate.svg?branch=master)
 
 ##Features
 + Catches visible pokemon

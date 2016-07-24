@@ -39,7 +39,7 @@ public class Walking {
         S2LatLng diff = end.sub(start);
         double distance = start.getEarthDistance(end);
         long timeout = 200L;
-        double timeRequired = distance / context.getSpeed();
+        double timeRequired = distance / Config.getSpeed();
         final AtomicDouble stepsRequired = new AtomicDouble(timeRequired / (timeout / 1000D));
         double deltaLat = diff.latDegrees() / stepsRequired.get();
         double deltaLng = diff.lngDegrees() / stepsRequired.get();
@@ -75,7 +75,7 @@ public class Walking {
                     double distance = step.distance.inMeters;
                     distance = start.getEarthDistance(end);
                     long timeout = 200L;
-                    double timeRequired = distance / context.getSpeed();
+                    double timeRequired = distance / Config.getSpeed();
                     int stepsRequired = (int) (timeRequired / (new Long(timeout).doubleValue() / 1000));
                     double deltaLat = diff.latDegrees() / stepsRequired;
                     double deltaLng = diff.lngDegrees() / stepsRequired;

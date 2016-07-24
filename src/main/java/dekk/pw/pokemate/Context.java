@@ -18,27 +18,15 @@ public class Context {
     private AtomicDouble lat = new AtomicDouble();
     private AtomicDouble lng = new AtomicDouble();
     private PlayerProfile profile;
-    private double speed;
     private AtomicBoolean walking = new AtomicBoolean(false);
     private RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo;
-    private int preferredBall;
-    private String googleApiKey;
 
-    public Context(PokemonGo go, PlayerProfile profile, double speed, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
+    public Context(PokemonGo go, PlayerProfile profile, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
         this.api = go;
         this.profile = profile;
-        this.speed = speed;
         this.walking.set(walking);
         this.authInfo = authInfo;
         this.http = http;
-    }
-
-    public void setGoogleApiKey(String googleApiKey) {
-        this.googleApiKey = googleApiKey;
-    }
-
-    public String getGoogleApiKey() {
-        return googleApiKey;
     }
 
     public AtomicDouble getLat() {
@@ -47,14 +35,6 @@ public class Context {
 
     public AtomicDouble getLng() {
         return lng;
-    }
-
-    public int getPreferredBall() {
-        return preferredBall;
-    }
-
-    public void setPreferredBall(int preferredBall) {
-        this.preferredBall = preferredBall;
     }
 
     public OkHttpClient getHttp() {
@@ -79,14 +59,6 @@ public class Context {
 
     public void setProfile(PlayerProfile profile) {
         this.profile = profile;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
     }
 
     public boolean isWalking() {

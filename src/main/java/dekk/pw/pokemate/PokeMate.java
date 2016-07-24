@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * Created by TimD on 7/21/2016.
  */
 public class PokeMate {
-    private static Properties properties = new Properties();
+
     private static Context context;
     private static TaskController taskControllor;
 
@@ -30,25 +30,20 @@ public class PokeMate {
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
-        properties.load(new FileInputStream("config.properties"));
-        String username = properties.getProperty("username");
         RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth;
-        if (username.contains("@")) {
-            auth = new GoogleLogin(http).login(username, properties.getProperty("password"));
+        if (Config.getUsername().contains("@")) {
+            auth = new GoogleLogin(http).login(Config.getUsername(), Config.getPassword());
             if (auth.hasToken()) {
                 new PrintWriter("token.txt").println(auth.getToken().getContents());
             }
         } else {
-            auth = new PtcLogin(http).login(username, properties.getProperty("password"));
+            auth = new PtcLogin(http).login(Config.getUsername(), Config.getPassword());
         }
-        System.out.println("Logged in as " + properties.getProperty("username"));
+        System.out.println("Logged in as " + Config.getUsername());
         PokemonGo go = new PokemonGo(auth, http);
-        context = new Context(go, go.getPlayerProfile(),
-                Double.parseDouble(properties.getProperty("speed")), false, auth, http);
-        context.setPreferredBall(ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber());
-        context.getLat().set(Double.parseDouble(properties.getProperty("latitude")));
-        context.getLng().set(Double.parseDouble(properties.getProperty("longitude")));
-        context.setGoogleApiKey(properties.getProperty("api-key"));
+        context = new Context(go, go.getPlayerProfile(), false, auth, http);
+        context.getLat().set(Double.parseDouble(Config.getProperties().getProperty("latitude")));
+        context.getLng().set(Double.parseDouble(Config.getProperties().getProperty("longitude")));
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         taskControllor = new TaskController(context);
         taskControllor.start();

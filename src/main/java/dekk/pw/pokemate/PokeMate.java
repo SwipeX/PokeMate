@@ -20,6 +20,8 @@ public class PokeMate {
     private static Context context;
     private static TaskController taskControllor;
 
+    public static long startTime;
+
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
         for(File file : new File(".").listFiles()){
             if(file.getName().contains("-001")) {
@@ -46,6 +48,7 @@ public class PokeMate {
         }
         taskControllor = new TaskController(context);
         taskControllor.start();
+        startTime = System.currentTimeMillis();
     }
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {

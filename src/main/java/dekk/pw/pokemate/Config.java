@@ -20,8 +20,6 @@ public class Config {
     private static int minCP;
     private static boolean showUI;
     private static boolean dropItems;
-    private static double range_x;
-    private static double range_y;
     private static boolean evolving;
 
     private static Properties properties = new Properties();
@@ -37,12 +35,8 @@ public class Config {
             minCP = Integer.parseInt(properties.getProperty("min-cp"));
             showUI = Boolean.parseBoolean(properties.getProperty("show"));
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items"));
-            range_x = Double.parseDouble(properties.getProperty("range_x","0.04"));
-            range_y = Double.parseDouble(properties.getProperty("range_y","0.04"));
             evolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving"));
-            if (properties.getProperty("preferred_ball").equals(""))
-            	preferredBall=-1;
-            else preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball")).getNumber();
+            preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -80,6 +74,10 @@ public class Config {
     public static boolean isShowUI() {
         return showUI;
     }
+    
+    public static boolean isEvolvingActive() {
+    	return evolving;
+    }
 
     public static boolean isDropItems() {
         return dropItems;
@@ -87,15 +85,5 @@ public class Config {
 
     public static Properties getProperties() {
         return properties;
-    }
-    
-    public static double getrange_x(){
-    	return range_x;
-    }
-    public static double getrange_y(){
-    	return range_y;
-    }
-    public static boolean isEvolvingActive() {
-    	return evolving;
     }
 }

@@ -5,7 +5,6 @@ import com.pokegoapi.api.map.*;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
-
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
@@ -19,17 +18,15 @@ import java.util.stream.Collectors;
  */
 public class ReleasePokemon implements Task {
 
-    private static final int PERFECT_IV = Config.getIvRatio();
-    private static final int MIN_CP=Config.getMinCP();
 
     public void run(Context context) {
         Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
         for (List<Pokemon> list : groups.values()) {
             Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
-            list.stream().filter(p -> list.indexOf(p) < list.size() - 1 && !p.getFavorite() && (getIvRatio(p) < PERFECT_IV && getCPValue(p)< MIN_CP)).forEach(p -> {
+            list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.getFavorite() && getIvRatio(p) < Config.getIvRatio()).forEach(p -> {
                 //Passing this filter means they are not a 'perfect pokemon'
                 try {
-                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualStamina() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                     p.transferPokemon();
                 } catch (LoginFailedException | RemoteServerException e) {
                     e.printStackTrace();
@@ -44,8 +41,5 @@ public class ReleasePokemon implements Task {
      */
     public int getIvRatio(Pokemon pokemon) {
         return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
-    }
-    public int getCPValue(Pokemon pokemon){
-    	return pokemon.getCp();
     }
 }

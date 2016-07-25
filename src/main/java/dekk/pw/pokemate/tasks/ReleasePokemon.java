@@ -17,29 +17,37 @@ import java.util.stream.Collectors;
  */
 public class ReleasePokemon implements Task {
 
+	public void run(Context context) {
+		Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank()
+				.getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
+		for (List<Pokemon> list : groups.values()) {
+			// Sorts Pokemon by cp why? we filter below???
+			Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
+			// Finds the weak pokemon
+			list.stream().filter(
+					p -> p.getCp() < Config.getMinCP() && !p.getFavorite() && getIvRatio(p) < Config.getIvRatio())
+					.forEach(p -> {
+						// Passing this filter means they are not a 'perfect pokemon'
+						// Even if the pokemon is weak check to see if its the only one we have
+						if (list.indexOf(p) < list.size() - 1) {
+							System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " "
+									+ p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/"
+									+ p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+							try {
+								p.transferPokemon();
+							} catch (LoginFailedException | RemoteServerException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+		}
+	}
 
-    public void run(Context context) {
-        Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
-        for (List<Pokemon> list : groups.values()) {
-            Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
-            list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.getFavorite() && getIvRatio(p) < Config.getIvRatio()).forEach(p -> {
-                //Passing this filter means they are not a 'perfect pokemon'
-                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
-                try {
-                    p.transferPokemon();
-                } catch (LoginFailedException | RemoteServerException e) {
-                    e.printStackTrace();
-                }
-
-            });
-        }
-    }
-
-    /**
-     * @param pokemon the pokemon for which an IV ratio is desired.
-     * @return an integer 0-100 on the individual value of the pokemon.
-     */
-    public int getIvRatio(Pokemon pokemon) {
-        return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
-    }
+	/**
+	 * @param pokemon the pokemon for which an IV ratio is desired.
+	 * @return an integer 0-100 on the individual value of the pokemon.
+	 */
+	public int getIvRatio(Pokemon pokemon) {
+		return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
+	}
 }

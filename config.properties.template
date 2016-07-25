@@ -1,11 +1,13 @@
 # PTC/Google login credentials
 username=
 password=
-#Lat/Long
+#Lat/Long/Searching Area Range
 latitude=40.774578
 longitude=-73.972774
-#Preferred throw item
-preferred_ball=ITEM_POKE_BALL
+range_x=0.02
+range_y=0.002
+#Preferred throw item Leaving empty means DEFAULT: POKEBALL>GREATBALL>ULTRABALL>MASTERBALL
+preferred_ball=
 #Google maps API key for walking
 api-key=
 #What IV% to keep pokemon at

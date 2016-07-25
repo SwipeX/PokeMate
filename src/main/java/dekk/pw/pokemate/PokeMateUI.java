@@ -1,22 +1,26 @@
 package dekk.pw.pokemate;
 
-import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.LatLng;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MainApp;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.javascript.object.Polyline;
-import com.lynden.gmapsfx.javascript.object.PolylineOptions;
-import com.lynden.gmapsfx.shapes.*;
+import com.lynden.gmapsfx.shapes.Polygon;
+import com.lynden.gmapsfx.shapes.PolygonOptions;
+import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.player.PlayerProfile;
-import dekk.pw.pokemate.tasks.Navigate;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
+import java.io.DataInputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +31,11 @@ import java.util.List;
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
     public static final int UPDATE_TIME = 5000;
-    boolean directions;
     protected GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
-    public static final double XVARIANCE = .006;
-    public static final double VARIANCE = .004;
+    public static final double XVARIANCE = Config.getrange_x();
+    public static final double VARIANCE = Config.getrange_y();
     public static Marker marker;
     int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
@@ -53,7 +56,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             System.exit(0);
         });
         //This needs to be set to the resources directory, however, it is not play along nicely.
-        mapComponent = new GoogleMapView("/map.html");
+        mapComponent = new GoogleMapView();
         mapComponent.addMapInializedListener(this);
         mapComponent.getWebview().getEngine().setOnAlert((WebEvent<String> event) -> {
         });
@@ -82,7 +85,6 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .mapType(MapTypeIdEnum.ROADMAP);
         map = mapComponent.createMap(options);
 
-
         //Highlight area we can walk in
         LatLong min = new LatLong(context.getLat().get() - VARIANCE, context.getLng().get() - XVARIANCE);
         LatLong miny = new LatLong(context.getLat().get() - VARIANCE, context.getLng().get() + XVARIANCE);
@@ -104,7 +106,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
         //Marker of current player, thread to update a 'hack refresh'
-        marker = new Marker(new MarkerOptions().position(center).title("Player").icon("icons/trainer.gif"));
+        marker = new Marker(new MarkerOptions().position(center).title("Player"));//.icon("/icons/trainer.gif"));
         map.addMarker(marker);
         final InfoWindowOptions infoOptions = new InfoWindowOptions();
         infoOptions.content("<h3>Loading...</h3>")
@@ -115,28 +117,6 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         new Thread(() -> {
             while (true) {
                 Platform.runLater(() -> {
-                    List<DirectionsStep[]> directionsSteps = Navigate.getDirections();
-                    if (directionsSteps != null && directionsSteps.size() > 49 && !directions) {
-                        synchronized (poke) {
-                            List<LatLong> locs = new ArrayList<>();
-                            for (DirectionsStep[] steps : Navigate.getDirections()) {
-                                for (DirectionsStep step : steps) {
-                                    step.polyline.decodePath().forEach(a->locs.add(new LatLong(a.lat,a.lng)));
-                                }
-                            }
-                            LatLong[] array = locs.toArray(new LatLong[0]);
-                            MVCArray mvc = new MVCArray(array);
-
-                            com.lynden.gmapsfx.shapes.PolylineOptions polyOpts = new com.lynden.gmapsfx.shapes.PolylineOptions()
-                                    .path(mvc)
-                                    .strokeColor("red")
-                                    .strokeWeight(2);
-
-                            com.lynden.gmapsfx.shapes.Polyline poly = new com.lynden.gmapsfx.shapes.Polyline(polyOpts);
-                            map.addMapShape(poly);
-                            directions = true;
-                        }
-                    }
                     marker.setPosition(new LatLong(context.getLat().get(), context.getLng().get()));
                     int currentZoom = map.getZoom();
                     map.setZoom(currentZoom - 1);

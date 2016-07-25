@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.player.PlayerProfile;
+import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.GoogleLogin;
 import com.pokegoapi.auth.PtcLogin;
 import okhttp3.OkHttpClient;
@@ -121,5 +122,13 @@ public class Context {
 
     public void setAuthInfo(RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo) {
         this.authInfo = authInfo;
+    }
+
+    /**
+     * @param pokemon the pokemon for which an IV ratio is desired.
+     * @return an integer 0-100 on the individual value of the pokemon.
+     */
+    public int getIvRatio(Pokemon pokemon) {
+        return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
     }
 }

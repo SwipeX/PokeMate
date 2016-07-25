@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by TimD on 7/21/2016.
  */
 public class TaskController extends Thread {
-    public static final double VARIANCE = .004;
+    public static final double VARIANCE = Config.getRange();
     private Context context;
     private static ArrayList<Task> tasks = new ArrayList<Task>();
 
@@ -21,7 +21,7 @@ public class TaskController extends Thread {
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
         tasks.add(new ReleasePokemon());
-        if (Config.isEvolvingActive()) {
+        if (Config.isAutoEvolving()) {
             tasks.add(new EvolvePokemon());
         }
         tasks.add(new TagPokestop());

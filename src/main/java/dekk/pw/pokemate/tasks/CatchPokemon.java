@@ -22,17 +22,23 @@ public class CatchPokemon implements Task {
 
     public void run(Context context) {
         try {
-            Pokeball pokeball;
+            Pokeball pokeball = null;
             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
             if (pokemon.size() > 0) {
                 Item ball = context.getApi().getInventories().getItemBag().getItem(ItemIdOuterClass.ItemId.forNumber(Config.getPreferredBall()));
                 if (ball != null && ball.getCount() > 0) {
                     pokeball = getBall(Config.getPreferredBall());
                 } else {
-                    pokeball = Pokeball.POKEBALL;
+                    //find any pokeball we can.
+                    for (Pokeball pb : Pokeball.values()) {
+                        Item item = context.getApi().getInventories().getItemBag().getItem(pb.getBallType());
+                        if (item != null && item.getCount() > 0)
+                            pokeball = pb;
+                        break;
+                    }
                 }
                 CatchablePokemon target = pokemon.get(0);
-                if (target != null) {
+                if (target != null && pokeball != null) {
                     Walking.setLocation(context);
                     EncounterResult encounterResult = target.encounterPokemon();
                     if (encounterResult.wasSuccessful()) {

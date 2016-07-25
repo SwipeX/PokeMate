@@ -31,8 +31,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     protected GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
-    public static final double XVARIANCE = .006;
-    public static final double VARIANCE = .004;
+    public static final double XVARIANCE = Config.getRange() * 1.5;
+    public static final double VARIANCE = Config.getRange();
     public static Marker marker;
     int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
@@ -121,7 +121,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             List<LatLong> locs = new ArrayList<>();
                             for (DirectionsStep[] steps : Navigate.getDirections()) {
                                 for (DirectionsStep step : steps) {
-                                    step.polyline.decodePath().forEach(a->locs.add(new LatLong(a.lat,a.lng)));
+                                    step.polyline.decodePath().forEach(a -> locs.add(new LatLong(a.lat, a.lng)));
                                 }
                             }
                             LatLong[] array = locs.toArray(new LatLong[0]);

@@ -20,3 +20,5 @@ drop_items=true
 speed=1.00
 # Automatic evolving 
 automatic-evolving=true
+#Range to walk in, VERY sensitive
+range=.004

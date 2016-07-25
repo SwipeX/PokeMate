@@ -25,6 +25,7 @@ public class TaskController extends Thread {
             tasks.add(new EvolvePokemon());
         }
         tasks.add(new TagPokestop());
+        tasks.add(new IncubateEgg());
         tasks.add(new HatchEgg());
         if (Config.isDropItems()) {
             tasks.add(new DropItems());

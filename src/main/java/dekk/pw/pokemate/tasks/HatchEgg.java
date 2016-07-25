@@ -1,32 +1,31 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass;
-import com.pokegoapi.api.inventory.EggIncubator;
-import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.api.pokemon.HatchedEgg;
+import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
- * Created by $ Tim Dekker on 7/23/2016.
+ * Created by TimD on 7/25/2016.
  */
 public class HatchEgg implements Task {
     @Override
     public void run(Context context) {
         try {
-            List<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> !i.isInUse()).collect(Collectors.toList());
-            List<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
-            if (incubators.size() > 0 && eggs.size() > 0) {
-                UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
-                if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
-                    System.out.println("Now hatching egg # " + eggs.get(0).getId());
+            List<HatchedEgg> eggs = context.getApi().getInventories().getHatchery().queryHatchedEggs();
+            eggs.forEach(egg -> {
+                Pokemon hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
+                String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
+                if (hatchedPokemon == null) {
+                    System.out.println("Hatched egg " + egg.getId() + " " + details);
+                } else {
+                    System.out.println("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
                 }
-            }
-        } catch (LoginFailedException | RemoteServerException e) {
+            });
+        } catch (RemoteServerException | LoginFailedException e) {
             e.printStackTrace();
         }
     }

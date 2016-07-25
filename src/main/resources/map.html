@@ -13,9 +13,23 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            padding-top: 70px;
+        }
+
         /* all map containers must be full height */
         html, body, .container-fluid, .row, .map {
             height: 100%
+        }
+
+        tbody {
+            height: 550px;
+            overflow: auto;
+            width: 100%;
+        }
+
+        thead > tr, tbody {
+            display: block;
         }
 
         #map-canvas {

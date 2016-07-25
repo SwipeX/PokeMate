@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         bp.setCenter(mapComponent);
         Scene scene = new Scene(bp);
         stage.setScene(scene);
-        stage.setWidth(800);
+        stage.setWidth(900);
         stage.setHeight(660);
         stage.show();
     }
@@ -140,12 +141,14 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             map.addMapShape(poly);
                             directions = true;
                         }
-                        String rows = "";
+                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        String rows = "\"";
                         for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                            rows+="<tr><td><img src=\""+pokemon.getPokemonId().getNumber()+".png\"></td><td>"+pokemon.getCp()+"</td><td>"+pokemon.getCandy()+"</td></tr>";
+                            rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> </tr>";
                         }
-                        mapComponent.getWebview().getEngine().executeScript("var rows = "+rows+";" +
-                                "$( rows ).appendTo( \"#info tbody\" );");
+                        rows += "\"";
+                        System.out.println(rows);
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
                     }
                     marker.setPosition(new LatLong(context.getLat().get(), context.getLng().get()));
                     int currentZoom = map.getZoom();

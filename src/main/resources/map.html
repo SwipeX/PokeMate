@@ -1,19 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>My Map</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>PokeMate</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
-        html, body, #map-canvas {
+        /* all map containers must be full height */
+        html, body, .container-fluid, .row, .map { height: 100% }
+
+        #map-canvas {
+            width:100%;
             height: 100%;
-            margin: 0px;
-            padding: 0px
+            height:calc(100% - 0px);
         }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
+
 <body>
-<div id="map-canvas"></div>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">PokeMate</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Pokemon</a></li>
+                <li><a href="#about">Bag</a></li>
+                <li><a href="#contact">Info</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9 map">
+            <div class="google-map-canvas" id="map-canvas">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Product
+                    </th>
+                    <th>
+                        Payment Taken
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        01/04/2012
+                    </td>
+                    <td>
+                        Default
+                    </td>
+                </tr>
+                <tr class="active">
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        01/04/2012
+                    </td>
+                    <td>
+                        Approved
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        02/04/2012
+                    </td>
+                    <td>
+                        Declined
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        03/04/2012
+                    </td>
+                    <td>
+                        Pending
+                    </td>
+                </tr>
+                <tr class="danger">
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        04/04/2012
+                    </td>
+                    <td>
+                        Call in to confirm
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="js/bootstrap.min.js"></script>
 </body>
 </html>

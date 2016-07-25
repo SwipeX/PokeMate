@@ -43,7 +43,7 @@ public class Context {
         String token = null;
         try {
             if (Config.getUsername().contains("@")) {
-                auth = new GoogleLogin(httpClient).login(Config.getUsername(), Config.getPassword());
+                auth = new GoogleLogin(httpClient).login();
                 //The below code is not functional, token needs verification.
 //                if (auth == null) {
 //                    File file = new File("token.txt");

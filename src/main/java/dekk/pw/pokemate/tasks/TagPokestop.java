@@ -37,6 +37,10 @@ public class TagPokestop implements Task {
                         System.out.println("Tagged pokestop [+" + result.getExperience() + "xp]");
                     } else if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.INVENTORY_FULL)) {
                         System.out.println("Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]");
+                    } else if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.OUT_OF_RANGE)) {
+                        System.out.println("[CRITICAL]: COULD NOT TAG POKESTOP BECAUSE IT WAS OUT OF RANGE");
+                    } else if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.IN_COOLDOWN_PERIOD)) {
+                        System.out.println("[CRITICAL]: COULD NOT TAG POKESTOP BECAUSE IT WAS IN COOLDOWN");
                     } else {
                         System.out.println("Failed pokestop");
                     }

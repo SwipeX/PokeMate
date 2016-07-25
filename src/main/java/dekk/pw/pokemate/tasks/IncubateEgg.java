@@ -23,7 +23,7 @@ public class IncubateEgg implements Task {
             if (incubators.size() > 0 && eggs.size() > 0) {
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
-                    System.out.println("Now hatching egg # " + eggs.get(0).getId());
+                    System.out.println("Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget()+"km)");
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {

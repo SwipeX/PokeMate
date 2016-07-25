@@ -61,6 +61,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         bp.setCenter(mapComponent);
         Scene scene = new Scene(bp);
         stage.setScene(scene);
+        stage.setWidth(800);
+        stage.setHeight(660);
         stage.show();
     }
 

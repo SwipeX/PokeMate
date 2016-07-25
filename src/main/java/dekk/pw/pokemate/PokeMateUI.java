@@ -141,14 +141,6 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             map.addMapShape(poly);
                             directions = true;
                         }
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                        String rows = "\"";
-                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                            rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> </tr>";
-                        }
-                        rows += "\"";
-                        System.out.println(rows);
-                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
                     }
                     marker.setPosition(new LatLong(context.getLat().get(), context.getLng().get()));
                     int currentZoom = map.getZoom();
@@ -161,8 +153,16 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
                         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
                         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-                        window.setContent("<h3>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
-                                ratio + "% " + player.getStats().getExperience() + " total exp </h3>");
+                        window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
+                                ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
+                        //Update Pokemon table
+                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        String rows = "\"";
+                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                            rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> </tr>";
+                        }
+                        rows += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {

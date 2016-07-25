@@ -32,10 +32,10 @@ public class CatchPokemon implements Task {
                     //find any pokeball we can.
                     for (Pokeball pb : Pokeball.values()) {
                         ball = context.getApi().getInventories().getItemBag().getItem(pb.getBallType());
-                        if (ball != null && ball.getCount() > 0){
+                        if (ball != null && ball.getCount() > 0) {
                             pokeball = pb;
-							break;
-						}
+                            break;
+                        }
                     }
                 }
                 CatchablePokemon target = pokemon.get(0);

@@ -1,20 +1,15 @@
 package dekk.pw.pokemate;
 
-import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.pokegoapi.api.PokemonGo;
-import com.pokegoapi.auth.GoogleLogin;
-import com.pokegoapi.auth.PtcLogin;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.TaskController;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,6 +21,12 @@ public class PokeMate {
     private static TaskController taskControllor;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
+        for(File file : new File(".").listFiles()){
+            if(file.getName().contains("-001")) {
+                File dest = new File(file.getName().replace("-001",""));
+                file.renameTo(dest);
+            }
+        }
         PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);

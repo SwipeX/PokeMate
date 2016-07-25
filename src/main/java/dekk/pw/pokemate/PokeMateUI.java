@@ -9,6 +9,7 @@ import com.lynden.gmapsfx.javascript.object.Polyline;
 import com.lynden.gmapsfx.javascript.object.PolylineOptions;
 import com.lynden.gmapsfx.shapes.*;
 import com.pokegoapi.api.player.PlayerProfile;
+import com.pokegoapi.api.pokemon.Pokemon;
 import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -139,6 +140,12 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             map.addMapShape(poly);
                             directions = true;
                         }
+                        String rows = "";
+                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                            rows+="<tr><td><img src=\""+pokemon.getPokemonId().getNumber()+".png\"></td><td>"+pokemon.getCp()+"</td><td>"+pokemon.getCandy()+"</td></tr>";
+                        }
+                        mapComponent.getWebview().getEngine().executeScript("var rows = "+rows+";" +
+                                "$( rows ).appendTo( \"#info tbody\" );");
                     }
                     marker.setPosition(new LatLong(context.getLat().get(), context.getLng().get()));
                     int currentZoom = map.getZoom();

@@ -14,12 +14,14 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* all map containers must be full height */
-        html, body, .container-fluid, .row, .map { height: 100% }
+        html, body, .container-fluid, .row, .map {
+            height: 100%
+        }
 
         #map-canvas {
-            width:100%;
+            width: 100%;
             height: 100%;
-            height:calc(100% - 0px);
+            height: calc(100% - 0px);
         }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
@@ -55,93 +57,25 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <table class="table">
+            <table class="table table-striped table-bordered table-list" id="info">
                 <thead>
                 <tr>
                     <th>
-                        #
+                        Pokemon
                     </th>
                     <th>
-                        Product
+                        CP
                     </th>
                     <th>
-                        Payment Taken
-                    </th>
-                    <th>
-                        Status
+                        IV
                     </th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="info-body">
                 <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        01/04/2012
-                    </td>
-                    <td>
-                        Default
-                    </td>
-                </tr>
-                <tr class="active">
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        01/04/2012
-                    </td>
-                    <td>
-                        Approved
-                    </td>
-                </tr>
-                <tr class="success">
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        02/04/2012
-                    </td>
-                    <td>
-                        Declined
-                    </td>
-                </tr>
-                <tr class="warning">
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        03/04/2012
-                    </td>
-                    <td>
-                        Pending
-                    </td>
-                </tr>
-                <tr class="danger">
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        04/04/2012
-                    </td>
-                    <td>
-                        Call in to confirm
-                    </td>
+                    <td><img src="icons/1.png"></td>
+                    <td>1203</td>
+                    <td>88</td>
                 </tr>
                 </tbody>
             </table>

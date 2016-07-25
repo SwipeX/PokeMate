@@ -159,7 +159,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         String rows = "\"";
                         for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                            rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> </tr>";
+                            if(pokemon.getPokemonFamily() != null) {
+                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> </tr>";
+                            }
                         }
                         rows += "\"";
                         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);

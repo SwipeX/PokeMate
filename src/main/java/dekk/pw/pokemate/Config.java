@@ -38,7 +38,7 @@ public class Config {
             mapPoints = Integer.parseInt(properties.getProperty("map-points", "50"));
             showUI = Boolean.parseBoolean(properties.getProperty("show", "true"));
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
-            autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-autoEvolving", "true"));
+            autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
         } catch (IOException e) {

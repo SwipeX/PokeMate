@@ -25,7 +25,7 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 * Notifications
 * User Interface improvments
 
-![Image of map](http://puu.sh/qdbwZ/d6a05e330b.jpg)
+![Image of map](http://i.imgur.com/W4hG8i6.png)
 
 ### Credits
 

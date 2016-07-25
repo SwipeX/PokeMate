@@ -79,7 +79,7 @@ public class Navigate implements Task {
         LatLng start = new LatLng(context.getLat().get(), context.getLng().get());
         LatLng current = start;
         LatLng next = getNextLocation();
-        while (i < 50) {
+        while (i < Config.getMapPoints()) {
             DirectionsStep[] steps = queryDirections(context, current, next);
             if (steps != null) {
                 routes.add(steps);

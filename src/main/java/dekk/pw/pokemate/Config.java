@@ -22,6 +22,7 @@ public class Config {
     private static boolean dropItems;
     private static boolean autoEvolving;
     private static double range;
+    private static int mapPoints;
 
     private static Properties properties = new Properties();
 
@@ -34,6 +35,7 @@ public class Config {
             speed = Double.parseDouble(properties.getProperty("speed", "1.0"));
             ivRatio = Integer.parseInt(properties.getProperty("iv-ratio", "85"));
             minCP = Integer.parseInt(properties.getProperty("min-cp", "1"));
+            mapPoints = Integer.parseInt(properties.getProperty("map-points", "50"));
             showUI = Boolean.parseBoolean(properties.getProperty("show", "true"));
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-autoEvolving", "true"));
@@ -91,5 +93,9 @@ public class Config {
 
     public static double getRange() {
         return range;
+    }
+
+    public static int getMapPoints() {
+        return mapPoints;
     }
 }

@@ -116,7 +116,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             while (true) {
                 Platform.runLater(() -> {
                     List<DirectionsStep[]> directionsSteps = Navigate.getDirections();
-                    if (directionsSteps != null && directionsSteps.size() > 49 && !directions) {
+                    if (directionsSteps != null && directionsSteps.size() > Config.getMapPoints() - 1 && !directions) {
                         synchronized (poke) {
                             List<LatLong> locs = new ArrayList<>();
                             for (DirectionsStep[] steps : Navigate.getDirections()) {
@@ -130,7 +130,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             com.lynden.gmapsfx.shapes.PolylineOptions polyOpts = new com.lynden.gmapsfx.shapes.PolylineOptions()
                                     .path(mvc)
                                     .strokeColor("red")
-                                    .strokeWeight(2);
+                                    .strokeWeight(2)
+                                    .strokeOpacity(0.8);
 
                             com.lynden.gmapsfx.shapes.Polyline poly = new com.lynden.gmapsfx.shapes.Polyline(polyOpts);
                             map.addMapShape(poly);
@@ -153,7 +154,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
             }
         }).start();

@@ -1,16 +1,15 @@
 package dekk.pw.pokemate.tasks;
 
 import POGOProtos.Enums.PokemonIdOuterClass;
-import com.pokegoapi.api.map.*;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -25,12 +24,13 @@ public class ReleasePokemon implements Task {
             Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
             list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.getFavorite() && getIvRatio(p) < Config.getIvRatio()).forEach(p -> {
                 //Passing this filter means they are not a 'perfect pokemon'
-                try {
                     System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+                try {
                     p.transferPokemon();
                 } catch (LoginFailedException | RemoteServerException e) {
                     e.printStackTrace();
                 }
+
             });
         }
     }

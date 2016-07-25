@@ -18,14 +18,14 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 2. Rename `config.properties.template` to `config.properties`
 3. Add your PTC/Google username, password, speed, preferred-ball and starting location.
 4. Obtain a Google Map's API key from https://developers.google.com/maps/documentation/javascript/get-api-key (For direction use).
-5. Compile and Run `PokeMate.java`.
+5. Compile and Run `PokeMate.java`. Or `java -jar Pokemate.jar` from the jar.
 
 ## Planned Features
 * Egg 'cracking'
 * Notifications
 * User Interface improvments
 
-![Image of map](http://puu.sh/qdbwZ/d6a05e330b.jpg)
+![Image of map](http://i.imgur.com/W4hG8i6.png)
 
 ### Credits
 

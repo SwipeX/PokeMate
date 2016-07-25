@@ -96,7 +96,7 @@ public class Navigate implements Task {
         }
     }
 
-    public static List<DirectionsStep[]> getDirections() {
+    public synchronized static List<DirectionsStep[]> getDirections() {
         return routes;
     }
 }

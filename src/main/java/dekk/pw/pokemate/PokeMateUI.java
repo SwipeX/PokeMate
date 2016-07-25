@@ -9,6 +9,7 @@ import com.lynden.gmapsfx.javascript.object.Polyline;
 import com.lynden.gmapsfx.javascript.object.PolylineOptions;
 import com.lynden.gmapsfx.shapes.*;
 import com.pokegoapi.api.player.PlayerProfile;
+import com.pokegoapi.api.pokemon.Pokemon;
 import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,6 +63,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         bp.setCenter(mapComponent);
         Scene scene = new Scene(bp);
         stage.setScene(scene);
+        stage.setWidth(900);
+        stage.setHeight(660);
         stage.show();
     }
 
@@ -149,8 +153,18 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
                         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
                         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-                        window.setContent("<h3>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
-                                ratio + "% " + player.getStats().getExperience() + " total exp </h3>");
+                        window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
+                                ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
+                        //Update Pokemon table
+                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        String rows = "\"";
+                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                            if(pokemon.getPokemonFamily() != null) {
+                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> </tr>";
+                            }
+                        }
+                        rows += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {

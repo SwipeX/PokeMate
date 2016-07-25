@@ -1,5 +1,6 @@
 package dekk.pw.pokemate.tasks;
 
+import POGOProtos.Networking.Responses.FortSearchResponseOuterClass;
 import com.google.common.geometry.S2LatLng;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
@@ -27,13 +28,19 @@ public class TagPokestop implements Task {
                     Double distanceA = self.getEarthDistance(locationA);
                     Double distanceB = self.getEarthDistance(locationB);
                     return distanceA.compareTo(distanceB);
-                }).findFirst();
+                }).filter(p -> p.canLoot()).findFirst();
                 if (optional.isPresent()) {
                     Pokestop near = optional.get();
                     Walking.setLocation(context);
                     PokestopLootResult result = near.loot();
-                    if (result.wasSuccessful()) {
+                    if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.SUCCESS)) {
                         System.out.println("Tagged pokestop [+" + result.getExperience() + "xp]");
+                    } else if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.INVENTORY_FULL)) {
+                        System.out.println("Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]");
+                    } else if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.OUT_OF_RANGE)) {
+                        System.out.println("[CRITICAL]: COULD NOT TAG POKESTOP BECAUSE IT WAS OUT OF RANGE");
+                    } else if (result.getResult().equals(FortSearchResponseOuterClass.FortSearchResponse.Result.IN_COOLDOWN_PERIOD)) {
+                        System.out.println("[CRITICAL]: COULD NOT TAG POKESTOP BECAUSE IT WAS IN COOLDOWN");
                     } else {
                         System.out.println("Failed pokestop");
                     }

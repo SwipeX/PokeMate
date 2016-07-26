@@ -16,10 +16,14 @@ import java.util.stream.Collectors;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class ReleasePokemon implements Task {
+public class ReleasePokemon extends Task {
 
+    ReleasePokemon(final Context context) {
+        super(context);
+    }
 
-    public void run(Context context) {
+    @Override
+    public void run() {
         Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
         for (List<Pokemon> list : groups.values()) {
             Collections.sort(list, (a, b) -> a.getCp() - b.getCp());

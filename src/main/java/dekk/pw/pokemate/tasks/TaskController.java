@@ -5,30 +5,34 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Config;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by TimD on 7/21/2016.
  */
 public class TaskController extends Thread {
     public static final double VARIANCE = Config.getRange();
-    private Context context;
-    private static ArrayList<Task> tasks = new ArrayList<Task>();
+    private final Context context;
+    private static ArrayList<Task> tasks = new ArrayList<>();
 
-    public TaskController(Context context) {
+    public TaskController(final Context context) {
         this.context = context;
         tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
                 new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
-        tasks.add(new Update());
-        tasks.add(new CatchPokemon());
+
+        tasks.add(new Update(context));
+        tasks.add(new CatchPokemon(context));
+
         if (Config.isAutoEvolving()) {
-            tasks.add(new EvolvePokemon());
+            tasks.add(new EvolvePokemon(context));
         }
-        tasks.add(new ReleasePokemon());
-        tasks.add(new TagPokestop());
-        tasks.add(new IncubateEgg());
-        tasks.add(new HatchEgg());
+
+        tasks.add(new ReleasePokemon(context));
+        tasks.add(new TagPokestop(context));
+        tasks.add(new IncubateEgg(context));
+
         if (Config.isDropItems()) {
-            tasks.add(new DropItems());
+            tasks.add(new DropItems(context));
         }
     }
 
@@ -38,8 +42,8 @@ public class TaskController extends Thread {
     public void run() {
         try {
             while (true) {
-                tasks.forEach(t -> t.run(context));
-                Thread.sleep(5000);
+                tasks.forEach(Task::run);
+                TimeUnit.SECONDS.sleep(5);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

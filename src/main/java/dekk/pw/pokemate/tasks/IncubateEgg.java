@@ -14,9 +14,14 @@ import java.util.stream.Collectors;
 /**
  * Created by $ Tim Dekker on 7/23/2016.
  */
-public class IncubateEgg implements Task {
+public class IncubateEgg extends Task {
+
+    IncubateEgg(final Context context) {
+        super(context);
+    }
+
     @Override
-    public void run(Context context) {
+    public void run() {
         try {
             List<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> !i.isInUse()).collect(Collectors.toList());
             List<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());

@@ -5,8 +5,14 @@ import dekk.pw.pokemate.Context;
 /**
  * Created by TimD on 7/21/2016.
  */
-public interface Task {
+public abstract class Task {
 
-    void run(Context context);
+    protected final Context context;
+
+    Task(final Context context) {
+        this.context = context;
+    }
+
+    abstract void run();
 
 }

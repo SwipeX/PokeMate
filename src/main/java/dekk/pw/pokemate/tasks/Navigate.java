@@ -14,21 +14,22 @@ import java.util.*;
  * Created by TimD on 7/21/2016.
  * Credit: https://github.com/mjmfighter/pokemon-go-bot/blob/master/src/main/java/com/mjmfighter/pogobot/LocationWalker.java
  */
-public class Navigate implements Task {
+public class Navigate extends Task {
 
     private final LatLng min, max;
     private static List<DirectionsStep[]> routes = new ArrayList<>();
     private int routesIndex = 0;
     private static final Object lock = new Object();
 
-    public Navigate(Context context, LatLng min, LatLng max) {
+    public Navigate(final Context context, LatLng min, LatLng max) {
+        super(context);
         this.min = new LatLng(min.lat < max.lat ? min.lat : max.lat, min.lng < max.lng ? min.lng : max.lng);
         this.max = new LatLng(min.lat > max.lat ? min.lat : max.lat, min.lng > max.lng ? min.lng : max.lng);
         populateDirections(context);
     }
 
     @Override
-    public void run(Context context) {
+    public void run() {
         if (context.isWalking()) {
             return;
         } else if (routesIndex >= getDirections().size()) {

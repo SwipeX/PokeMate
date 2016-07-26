@@ -27,6 +27,7 @@ public class Config {
     private static int mapPoints;
     private static boolean releasing;
     private static List<Integer> whiteListedPokemon;
+    private static List<Integer> neverTransferPokemons;
 
     private static Properties properties = new Properties();
 
@@ -44,32 +45,40 @@ public class Config {
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
-            releasing = Boolean.parseBoolean(properties.getProperty("release", "true"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
-
+            releasing = Boolean.parseBoolean(properties.getProperty("release", "true"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
-            if (whiteList != null) {
-                String[] strings = whiteList.split(",");
-                if (strings != null) {
-                    whiteListedPokemon = new ArrayList<>();
-                    for (String string : strings) {
-                        whiteListedPokemon.add(Integer.parseInt(string));
-                    }
-                }
-            }
+            whiteListedPokemon = new ArrayList<>();
+            fillList(whiteList, whiteListedPokemon);
+
+            String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
+            neverTransferPokemons = new ArrayList<>();
+            fillList(neverTransferPokemonNames, neverTransferPokemons);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
-    static double getSpeed() {
-        return speed;
+    private static void fillList(String propertiesString, List<Integer> target) {
+        if (propertiesString != null) {
+            String[] strings = propertiesString.split(",");
+            if (strings != null) {
+                for (String string : strings) {
+                    target.add(Integer.parseInt(string));
+                }
+            }
+        }
     }
+
 
     public static boolean isReleasing(){
         return releasing;
+    }
+
+    public static double getSpeed() {
+        return speed;
     }
 
     public static int getPreferredBall() {
@@ -80,11 +89,11 @@ public class Config {
         return googleApiKey;
     }
 
-    static String getUsername() {
+    public static String getUsername() {
         return username;
     }
 
-    static String getPassword() {
+    public static String getPassword() {
         return password;
     }
 
@@ -96,7 +105,7 @@ public class Config {
         return minCP;
     }
 
-    static boolean isShowUI() {
+    public static boolean isShowUI() {
         return showUI;
     }
 
@@ -104,7 +113,7 @@ public class Config {
         return dropItems;
     }
 
-    static Properties getProperties() {
+    public static Properties getProperties() {
         return properties;
     }
 
@@ -127,6 +136,10 @@ public class Config {
 
     public static List<Integer> getWhitelistedPokemon() {
         return whiteListedPokemon;
+    }
+
+    public static List<Integer> getNeverTransferPokemons() {
+        return neverTransferPokemons;
     }
 
 }

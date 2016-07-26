@@ -11,20 +11,23 @@ import okhttp3.OkHttpClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by TimD on 7/21/2016.
  */
 public class PokeMate {
-    public static final String CONFIG_PROPERTIES = "config.properties";
+    public static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
     private static Context context;
     public static long startTime;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
-        if (!new File(CONFIG_PROPERTIES).exists()) {
+        if (!Files.exists(CONFIG_PROPERTIES)) {
             System.out.println("You are required to use a config.properties file to run the application.");
-            System.exit(-1);
+            System.exit(1);
         }
         PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();

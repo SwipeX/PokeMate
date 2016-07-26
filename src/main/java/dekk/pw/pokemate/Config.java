@@ -23,7 +23,6 @@ public class Config {
     private static boolean autoEvolving;
     private static double range;
     private static int mapPoints;
-    private static boolean releasing;
 
     private static Properties properties = new Properties();
 
@@ -42,7 +41,6 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
-            releasing = Boolean.parseBoolean(properties.getProperty("release","true"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -83,10 +81,6 @@ public class Config {
 
     public static boolean isDropItems() {
         return dropItems;
-    }
-
-    public static boolean isReleasing(){
-        return releasing;
     }
 
     public static Properties getProperties() {

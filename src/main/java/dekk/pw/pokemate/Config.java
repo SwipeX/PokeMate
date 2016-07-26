@@ -5,6 +5,8 @@ import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -21,6 +23,8 @@ public class Config {
     private static boolean showUI;
     private static boolean dropItems;
     private static boolean autoEvolving;
+    private static boolean whitelistEnabled;
+    private static String whitelistedPokemons;
     private static double range;
     private static int mapPoints;
 
@@ -41,6 +45,8 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
+            whitelistEnabled = Boolean.parseBoolean(properties.getProperty("whitelist-enabled", "false"));
+            whitelistedPokemons = properties.getProperty("whitelisted-pokemons", "10;13;16");
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -89,6 +95,19 @@ public class Config {
 
     public static boolean isAutoEvolving() {
         return autoEvolving;
+    }
+    
+    public static boolean isWhitelistEnabled() {
+        return whitelistEnabled;
+    }
+    
+    public static List<Long> getWhitelistedPokemons() {
+        String[] strings = whitelistedPokemons.split(";");
+        final List<Long> longs = new ArrayList<Long>();;
+        for (int i=0; i < strings.length; i++) {
+            longs.add(Long.parseLong(strings[i]));
+        }
+        return longs;
     }
 
     public static double getRange() {

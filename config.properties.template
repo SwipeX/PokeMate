@@ -20,6 +20,9 @@ drop_items=true
 speed=1.00
 # Automatic evolving 
 automatic-evolving=true
+# Only whitelist certain pokemons?
+whitelist-enabled=false
+whitelisted-pokemons=10;13;16
 #Range to walk in, VERY sensitive
 range=.004
 #points in the map path

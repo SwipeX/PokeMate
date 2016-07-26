@@ -61,6 +61,11 @@ gradle-app.setting
 # IntelliJ
 /out/
 
+# Eclipse
+.settings/
+.classpath
+.project
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
@@ -75,3 +80,4 @@ fabric.properties
 
 # PTC Login credentials
 config.properties
+/bin/

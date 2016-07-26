@@ -7,6 +7,7 @@ import com.lynden.gmapsfx.javascript.object.*;
 import com.lynden.gmapsfx.shapes.*;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
+import com.pokegoapi.api.inventory.Item;
 import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -163,6 +164,18 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             }
                         }
                         rows += "\"";
+                        String itemsList = "\"";
+                        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                            if(item.getCount() > 0) {
+                                String defaultImg = "icons/items/0.png";
+                                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                                itemsList += "<td><img style=\'width: 50px; height: 50px; \' " +
+                                        "src=\'" + imgSrc + "\'" + "onerror=this.src=\'" + defaultImg + "\'"
+                                        + "> X " +  item.getCount()+ "</td>";
+                            }
+                        }
+                        itemsList += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
                         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
                     });
                     Thread.sleep(UPDATE_TIME);

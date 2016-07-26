@@ -38,18 +38,21 @@ public class CatchPokemon implements Task {
                         }
                     }
                 }
-                CatchablePokemon target = pokemon.get(0);
-                if (target != null && pokeball != null) {
-                    Walking.setLocation(context);
-                    EncounterResult encounterResult = target.encounterPokemon();
-                    if (encounterResult.wasSuccessful()) {
-                        CatchResult catchResult = target.catchPokemon(pokeball);
-                        if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
-                            System.out.println("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
-                        } else {
-                            System.out.println(target.getPokemonId() + " fled.");
-                        }
-                    }
+                for (int i=0;i<pokemon.size();i++)
+                {
+	                CatchablePokemon target = pokemon.get(i);
+	                if (target != null && pokeball != null) {
+	                    Walking.setLocation(context);
+	                    EncounterResult encounterResult = target.encounterPokemon();
+	                    if (encounterResult.wasSuccessful()) {
+	                        CatchResult catchResult = target.catchPokemon(pokeball);
+	                        if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
+	                            System.out.println("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
+	                        } else {
+	                            System.out.println(target.getPokemonId() + " fled.");
+	                        }
+	                    }
+	                }
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {

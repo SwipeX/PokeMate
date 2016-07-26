@@ -23,7 +23,6 @@ public class IncubateEgg implements Task {
             if (incubators.size() > 0 && eggs.size() > 0) {
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
-                    System.out.println("Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget()+"km)");
                     PokeMateUI.toast("Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget()+"km)");
                 }
             }

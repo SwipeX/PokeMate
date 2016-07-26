@@ -25,7 +25,6 @@ public class ReleasePokemon implements Task {
             Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
             list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.getFavorite() && context.getIvRatio(p) < Config.getIvRatio() && !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
                 //Passing this filter means they are not a 'perfect pokemon'
-                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                 PokeMateUI.toast("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                 try {
                     p.transferPokemon();

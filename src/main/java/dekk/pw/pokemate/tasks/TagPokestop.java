@@ -37,7 +37,6 @@ public class TagPokestop implements Task {
                         Walking.setLocation(context);
                         try {
                             String result = resultMessage(near.loot());
-                            System.out.println(result);
                             PokeMateUI.toast(result);
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();

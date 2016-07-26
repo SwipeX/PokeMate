@@ -52,8 +52,7 @@ public class CatchPokemon implements Task {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
-                                PokeMateUI.toast("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" +                                         p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
-                                System.out.println("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" +                                         p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
+                                PokeMateUI.toast("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }
@@ -85,10 +84,5 @@ public class CatchPokemon implements Task {
         }
     }
 
-    private static String millisToTimeString(long millis) {
-        long seconds = (millis / 1000) % 60;
-        long minutes = (millis / (1000 * 60)) % 60;
-        long hours = (millis / (1000 * 60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    }
+
 }

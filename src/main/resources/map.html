@@ -12,6 +12,10 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <style>
+        .hidden {
+            display: none;
+        }
+
         body {
             padding-top: 50px;
         }
@@ -53,14 +57,14 @@
 
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top" id="navbarOptions">
     <div class="navbar-header">
         <a class="navbar-brand" style="" href="#">PokeMate</a>
     </div>
-    <div id="navbar" class="collapse navbar-collapse ">
+    <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-            <li class="active" id="pokemon"><a href="#">Pokemon</a></li>
-            <li><a href="#" id="items">Items</a></li>
+            <li class="active" id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
+            <li id="items"><a href="#" onclick="showItem()">Items</a></li>
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
@@ -71,35 +75,62 @@
             <div class="google-map-canvas" id="map-canvas">
             </div>
         </div>
-        <div class="col-sm-3">
-            <div style="height: 580px; overflow: auto;">
-                <table class="table table-striped table-bordered table-list" id="info">
-                    <thead id="head">
-                    <tr>
-                        <th width="97px">
-                            Pokemon
-                        </th>
-                        <th>
-                            CP
-                        </th>
-                        <th>
-                            Candy
-                        </th>
-                        <th>
-                            %IV
-                        </th>
-                    </tr>
-                    </thead>
+        <div id="userPokemon">
+            <div class="col-sm-3">
+                <div style="height: 580px; overflow: auto;">
+                    <table class="table table-striped table-bordered table-list" id="info">
+                        <thead>
+                        <tr>
+                            <th width="97px">
+                                Pokemon
+                            </th>
+                            <th>
+                                CP
+                            </th>
+                            <th>
+                                Candy
+                            </th>
+                            <th>
+                                %IV
+                            </th>
+                        </tr>
+                        </thead>
 
-                    <tbody id="info-body">
-                    <tr>
-                        <td>Loading</td>
-                        <td>Loading</td>
-                        <td>Loading</td>
-                        <td>Loading</td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <tbody id="info-body">
+                        <tr>
+                            <td>Loading</td>
+                            <td>Loading</td>
+                            <td>Loading</td>
+                            <td>Loading</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="userItem">
+            <div class="col-sm-3">
+                <div style="height: 580px; overflow: auto;">
+                    <table class="table table-striped table-bordered table-list" id="itemsIfo">
+                        <thead>
+                        <tr>
+                            <th width="35%">
+                                Item
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="info-items">
+                        <tr>
+                            <td>Loading</td>
+                            <td>Loading</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -113,10 +144,18 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="js/bootstrap.min.js"></script>
 <script>
-    $(".nav a").on("click", function () {
-        $(".nav").find(".active").removeClass("active");
-        $(this).parent().addClass("active");
-    });
+    function showPokemon() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#userItem').hide();
+        $('#userPokemon').show();
+        $('#pokemons').addClass('active');
+    }
+    function showItem() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#userPokemon').hide();
+        $('#userItem').show();
+        $('#items').addClass('active');
+    }
 </script>
 </body>
 </html>

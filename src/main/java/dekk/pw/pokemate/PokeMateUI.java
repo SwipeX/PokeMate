@@ -152,7 +152,6 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 });
                 try {
                     Platform.runLater(() -> {
-                        boolean activeNav = mapComponent.getWebview().getEngine().getDocument().getElementById("pokemon").getAttribute("class").equals("active");
                         PlayerProfile player = context.getApi().getPlayerProfile();
                         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
                         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
@@ -160,7 +159,6 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
                                 ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
                         //Update Pokemon table
-                        if (activeNav) {
                             context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                             String rows = "\"";
                             for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
@@ -170,18 +168,16 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             }
                             rows += "\"";
                             mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
-                        } else {
                             String itemsList = "\"";
                             for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
                                 if (item.getCount() > 0) {
                                     String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                    itemsList += "<tr><td><img style=\'width: 50px; height: 50px; \' " +
+                                    itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
                                             "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                                 }
                             }
                             itemsList += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + itemsList);
-                        }
+                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {

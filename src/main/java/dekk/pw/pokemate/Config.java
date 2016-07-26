@@ -48,11 +48,15 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
 
             //whitelist
-            String whiteList = properties.getProperty("whitelisted-pokemons", "");
-            String[] strings = whiteList.split(",");
-            whiteListedPokemon = new ArrayList<>();
-            for (String string : strings) {
-                whiteListedPokemon.add(Integer.parseInt(string));
+            String whiteList = properties.getProperty("whitelisted-pokemon", null);
+            if (whiteList != null) {
+                String[] strings = whiteList.split(",");
+                if (strings != null) {
+                    whiteListedPokemon = new ArrayList<>();
+                    for (String string : strings) {
+                        whiteListedPokemon.add(Integer.parseInt(string));
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

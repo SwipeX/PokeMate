@@ -37,6 +37,7 @@ gradle-app.setting
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
+.idea/
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
@@ -61,6 +62,12 @@ gradle-app.setting
 # IntelliJ
 /out/
 
+# Eclipse
+.settings/
+.classpath
+.project
+/bin/
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
@@ -75,3 +82,4 @@ fabric.properties
 
 # PTC Login credentials
 config.properties
+token.txt

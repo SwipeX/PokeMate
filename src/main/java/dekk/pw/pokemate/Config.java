@@ -1,10 +1,13 @@
 package dekk.pw.pokemate;
 
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
+import com.pokegoapi.api.pokemon.Pokemon;
 
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -23,6 +26,7 @@ public class Config {
     private static boolean autoEvolving;
     private static double range;
     private static int mapPoints;
+    private static List<Integer> whiteListedPokemon;
 
     private static Properties properties = new Properties();
 
@@ -41,6 +45,17 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
+            //whitelist
+            String whiteList = properties.getProperty("whitelisted-pokemon", null);
+            if (whiteList != null) {
+                String[] strings = whiteList.split(",");
+                if (strings != null) {
+                    whiteListedPokemon = new ArrayList<>();
+                    for (String string : strings) {
+                        whiteListedPokemon.add(Integer.parseInt(string));
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -98,4 +113,14 @@ public class Config {
     public static int getMapPoints() {
         return mapPoints;
     }
+
+    public static boolean isWhitelistEnabled() {
+        List<Integer> poke = getWhitelistedPokemon();
+        return poke != null && poke.size() > 0;
+    }
+
+    public static List<Integer> getWhitelistedPokemon() {
+        return whiteListedPokemon;
+    }
+
 }

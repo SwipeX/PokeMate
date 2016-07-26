@@ -1,5 +1,5 @@
 group 'pw.tdekk'
-version '0.1.8'
+version '0.1.9'
 
 buildscript {
 
@@ -10,6 +10,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'eclipse'
 
 mainClassName = 'dekk.pw.pokemate.PokeMate'
 
@@ -28,7 +29,7 @@ dependencies {
 
     compile 'com.google.maps:google-maps-services:0.1.15'
 
-    compile 'com.github.Grover-c13:PokeGOAPI-Java:master-SNAPSHOT'
+    compile 'com.github.Grover-c13:PokeGOAPI-Java:8bf31f5f3d'
 
     compile 'com.squareup.okhttp3:okhttp:3.4.0-RC1'
 

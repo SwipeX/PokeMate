@@ -9,7 +9,6 @@ import dekk.pw.pokemate.Context;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by $ Tim Dekker on 7/23/2016.

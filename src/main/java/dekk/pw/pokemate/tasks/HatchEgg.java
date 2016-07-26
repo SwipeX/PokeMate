@@ -6,8 +6,6 @@ package dekk.pw.pokemate.tasks;
 //import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 
-import java.util.List;
-
 /**
  * Created by TimD on 7/25/2016.
  */

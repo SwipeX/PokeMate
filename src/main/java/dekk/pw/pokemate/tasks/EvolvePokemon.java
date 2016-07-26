@@ -4,11 +4,12 @@ import com.pokegoapi.api.map.pokemon.EvolutionResult;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.ListIterator;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -33,15 +34,19 @@ public class EvolvePokemon implements Task {
     @Override
     public void run(Context context) {
         try {
-            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                int number = pokemon.getPokemonId().getNumber();
-                if (CANDY_AMOUNTS.containsKey(number)) {
-                    int required = CANDY_AMOUNTS.get(number);
-                    if (required < 1) continue;
-                    if (pokemon.getCandy() >= required) {
-                        EvolutionResult result = pokemon.evolve();
-                        if (result.isSuccessful()) {
-                            System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
+            ListIterator<Pokemon> iterator = context.getApi().getInventories().getPokebank().getPokemons().listIterator();
+            while (iterator.hasNext()) {
+                Pokemon pokemon = iterator.next();
+                if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
+                    int number = pokemon.getPokemonId().getNumber();
+                    if (CANDY_AMOUNTS.containsKey(number)) {
+                        int required = CANDY_AMOUNTS.get(number);
+                        if (required < 1) continue;
+                        if (pokemon.getCandy() >= required) {
+                            EvolutionResult result = pokemon.evolve();
+                            if (result.isSuccessful()) {
+                                System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
+                            }
                         }
                     }
                 }

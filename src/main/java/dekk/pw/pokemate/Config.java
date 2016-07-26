@@ -1,6 +1,5 @@
 package dekk.pw.pokemate;
 
-import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
 
 import javax.swing.*;

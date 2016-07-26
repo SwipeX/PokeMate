@@ -26,3 +26,9 @@ range=.004
 map-points=15
 # Only whitelist certain pokemons
 whitelisted-pokemon=10,13,16
+# List of Pokémons to NEVER transfer, separated by commas.
+# Example: never-transfer=EEVEE,DRATINI
+never-transfer=
+# List of Pokémons to ALWAYS transfer, separated by commas.
+# Example: always-transfer=SPEAROW,RATTATA
+always-transfer=

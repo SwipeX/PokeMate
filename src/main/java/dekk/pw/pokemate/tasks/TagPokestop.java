@@ -81,6 +81,7 @@ public class TagPokestop implements Task {
 							break;
 						case "ITEM_RAZZ_BERRY":
 							razzBerry++;
+							break;
 					}
 				}
 				if (pokeBall > 0)

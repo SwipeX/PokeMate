@@ -75,3 +75,7 @@ fabric.properties
 
 # PTC Login credentials
 config.properties
+*.iml
+.idea/modules.xml
+.idea/compiler.xml
+*.name

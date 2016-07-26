@@ -12,6 +12,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 
 import java.util.Collections;
@@ -48,6 +49,7 @@ public class CatchPokemon implements Task {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
                             System.out.println("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
+                            PokeMateUI.toast("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
                             try {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));

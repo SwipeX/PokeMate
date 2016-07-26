@@ -7,6 +7,8 @@ import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.PokeMate;
+import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.LatLngComparator;
 
@@ -34,7 +36,9 @@ public class TagPokestop implements Task {
                     .ifPresent(near -> {
                         Walking.setLocation(context);
                         try {
-                            System.out.println(resultMessage(near.loot()));
+                            String result = resultMessage(near.loot());
+                            System.out.println(result);
+                            PokeMateUI.toast(result);
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
                         }

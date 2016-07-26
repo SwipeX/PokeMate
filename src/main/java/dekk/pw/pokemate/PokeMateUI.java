@@ -29,22 +29,22 @@ import java.util.List;
  */
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
-    private static final int UPDATE_TIME = 5000;
-    private boolean directions;
-    private GoogleMapView mapComponent;
+    public static final int UPDATE_TIME = 5000;
+    boolean directions;
+    protected static GoogleMapView mapComponent;
     protected GoogleMap map;
-    private static PokeMate poke;
-    private static final double XVARIANCE = Config.getRange() * 1.5;
-    private static final double VARIANCE = Config.getRange();
-    private static Marker marker;
-    private int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
+    protected static PokeMate poke;
+    public static final double XVARIANCE = Config.getRange() * 1.5;
+    public static final double VARIANCE = Config.getRange();
+    public static Marker marker;
+    int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
 
     //public static void main(String[] args) {
     //    launch(args);
     //}
-    static void setPoke(PokeMate p) {
+    public static void setPoke(PokeMate p) {
         poke = p;
     }
 
@@ -159,25 +159,25 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
                                 ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
                         //Update Pokemon table
-                            context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                            String rows = "\"";
-                            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                                if (pokemon.getPokemonFamily() != null) {
-                                    rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
-                                }
+                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        String rows = "\"";
+                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                            if (pokemon.getPokemonFamily() != null) {
+                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
                             }
-                            rows += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
-                            String itemsList = "\"";
-                            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
-                                if (item.getCount() > 0) {
-                                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                    itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
-                                            "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
-                                }
+                        }
+                        rows += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
+                        String itemsList = "\"";
+                        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                            if (item.getCount() > 0) {
+                                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
+                                        "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                             }
-                            itemsList += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
+                        }
+                        itemsList += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -185,6 +185,12 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 }
             }
         }).start();
-
     }
+
+    public static void toast(String message) {
+        Platform.runLater(() ->
+                mapComponent.getWebview().getEngine().executeScript(
+                        "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+    }
+
 }

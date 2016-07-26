@@ -24,3 +24,5 @@ automatic-evolving=true
 range=.004
 #points in the map path
 map-points=15
+# Only whitelist certain pokemons?
+whitelisted-pokemons=10,13,16

@@ -62,6 +62,12 @@ gradle-app.setting
 # IntelliJ
 /out/
 
+# Eclipse
+.settings/
+.classpath
+.project
+/bin/
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 

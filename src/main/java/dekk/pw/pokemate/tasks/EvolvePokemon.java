@@ -37,7 +37,7 @@ public class EvolvePokemon implements Task {
             ListIterator<Pokemon> iterator = context.getApi().getInventories().getPokebank().getPokemons().listIterator();
             while (iterator.hasNext()) {
                 Pokemon pokemon = iterator.next();
-                if (!Config.isWhitelistEnabled() || !Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
+                if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
                     int number = pokemon.getPokemonId().getNumber();
                     if (CANDY_AMOUNTS.containsKey(number)) {
                         int required = CANDY_AMOUNTS.get(number);

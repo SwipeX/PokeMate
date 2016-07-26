@@ -31,7 +31,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     public static final int UPDATE_TIME = 5000;
     boolean directions;
-    protected GoogleMapView mapComponent;
+    protected static GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
     public static final double XVARIANCE = Config.getRange() * 1.5;
@@ -159,25 +159,25 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
                                 ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
                         //Update Pokemon table
-                            context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                            String rows = "\"";
-                            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                                if (pokemon.getPokemonFamily() != null) {
-                                    rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
-                                }
+                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        String rows = "\"";
+                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                            if (pokemon.getPokemonFamily() != null) {
+                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
                             }
-                            rows += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
-                            String itemsList = "\"";
-                            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
-                                if (item.getCount() > 0) {
-                                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                    itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
-                                            "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
-                                }
+                        }
+                        rows += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
+                        String itemsList = "\"";
+                        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                            if (item.getCount() > 0) {
+                                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
+                                        "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                             }
-                            itemsList += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
+                        }
+                        itemsList += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -185,6 +185,12 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 }
             }
         }).start();
-
     }
+
+    public static void toast(String message) {
+        Platform.runLater(() ->
+                mapComponent.getWebview().getEngine().executeScript(
+                        "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+    }
+
 }

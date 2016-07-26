@@ -6,6 +6,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.PokeMateUI;
 
 import java.io.DataInputStream;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class EvolvePokemon implements Task {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
                                 System.out.println(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
+                                PokeMateUI.toast(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
                             }
                         }
                     }

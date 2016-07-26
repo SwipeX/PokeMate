@@ -1,11 +1,14 @@
 package dekk.pw.pokemate.tasks;
 
+import POGOProtos.Networking.Responses.FortSearchResponseOuterClass;
+import POGOProtos.Inventory.Item.ItemAwardOuterClass;
 import com.google.common.geometry.S2LatLng;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.api.inventory.Item;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
@@ -50,7 +53,11 @@ public class TagPokestop implements Task {
     private String resultMessage(final PokestopLootResult result) {
         switch (result.getResult()) {
             case SUCCESS:
-                return "Tagged pokestop [+" + result.getExperience() + "xp]";
+                String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]" + "\n\tItems Awarded: ";
+				for (ItemAwardOuterClass.ItemAward item : result.getItemsAwarded()) {
+					retstr += ("\n\t\t" + item.getItemId().name());
+				}
+				return retstr;
             case INVENTORY_FULL:
                 return "Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]";
             case OUT_OF_RANGE:

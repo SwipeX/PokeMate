@@ -3,16 +3,12 @@ package dekk.pw.pokemate;
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
-import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.GoogleLogin;
 import com.pokegoapi.auth.PtcLogin;
 import okhttp3.OkHttpClient;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**

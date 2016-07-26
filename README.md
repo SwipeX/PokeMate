@@ -1,4 +1,5 @@
-# PokeMate ![travis](https://travis-ci.org/SwipeX/PokeMate.svg?branch=master)
+# PokeMate ![travis](https://travis-ci.org/SwipeX/PokeMate.svg?branch=master) [![codecov](https://codecov.io/gh/SwipeX/PokeMate/branch/master/graph/badge.svg)](https://codecov.io/gh/SwipeX/PokeMate)
+
 
 ##Features
 + Catches visible pokemon
@@ -26,6 +27,9 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 * User Interface improvments
 
 ![Image of map](http://i.imgur.com/W4hG8i6.png)
+
+##Slack
+Come join us on slack! https://shielded-earth-81203.herokuapp.com/ #pokemate
 
 ### Credits
 

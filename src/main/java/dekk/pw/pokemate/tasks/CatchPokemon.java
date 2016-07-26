@@ -1,6 +1,5 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass;
 import com.pokegoapi.api.inventory.Item;
@@ -49,15 +48,13 @@ public class CatchPokemon implements Task {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
                             System.out.println("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
-                            try{
+                            try {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
-                                System.out.println("Cp:" + p.getCp() + " IV:" + p.getIndividualAttack() +"/"+
-                                        p.getIndividualDefense() +"/"+ p.getIndividualStamina() + " " + getIvRatio(p) + "% Candy:" + p.getCandy());
-                            }
-                            catch (NullPointerException | IndexOutOfBoundsException ex)
-                            {
+                                System.out.println("Cp:" + p.getCp() + " IV:" + p.getIndividualAttack() + "/" +
+                                        p.getIndividualDefense() + "/" + p.getIndividualStamina() + " " + getIvRatio(p) + "% Candy:" + p.getCandy());
+                            } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }
                         } else {

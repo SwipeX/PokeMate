@@ -159,25 +159,63 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
                                 ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
                         //Update Pokemon table
-                            context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                            String rows = "\"";
-                            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                                if (pokemon.getPokemonFamily() != null) {
-                                    rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
-                                }
+                        String pokeFilter = mapComponent.getWebview().getEngine().executeScript("$( \"#pokeFilter\" ).val();").toString();
+                        String pokeSortType = mapComponent.getWebview().getEngine().executeScript("$( \"#pokeSortType\" ).val();").toString();
+                        String pokeSort = pokeFilter + "-" + pokeSortType;
+                        switch (pokeSort) {
+                            case "pokedex-des":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
+                                break;
+                            case "pokedex-asc":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
+                                break;
+                            case "cp-des":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                                break;
+                            case "cp-asc":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
+                                break;
+                            case "recent-des":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
+                                break;
+                            case "recent-asc":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
+                                break;
+                            case "candy-des":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCandy() - a.getCandy());
+                                break;
+                            case "candy-asc":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCandy() - b.getCandy());
+                                break;
+                            case "iv-des":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
+                                break;
+                            case "iv-asc":
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                                break;
+                            default:
+                                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                                break;
+                        }
+                        String rows = "\"";
+                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                            if (pokemon.getPokemonFamily() != null) {
+                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
                             }
-                            rows += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
-                            String itemsList = "\"";
-                            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
-                                if (item.getCount() > 0) {
-                                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                    itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
-                                            "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
-                                }
+                        }
+                        rows += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
+
+                        String itemsList = "\"";
+                        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                            if (item.getCount() > 0) {
+                                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
+                                        "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                             }
-                            itemsList += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
+                        }
+                        itemsList += "\"";
+                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {

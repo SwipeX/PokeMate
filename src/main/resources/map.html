@@ -55,7 +55,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
 
-<body>
+<body onload="showPokemon()">
 
 <nav class="navbar navbar-inverse navbar-fixed-top" id="navbarOptions">
     <div class="navbar-header">
@@ -75,8 +75,27 @@
             <div class="google-map-canvas" id="map-canvas">
             </div>
         </div>
-        <div id="userPokemon">
+        <div id="userPokemon" style="margin-top: 15px;">
             <div class="col-sm-3">
+                <div class="row">
+                    <div class="form-group">
+                        <label for="pokeFilter">Sort type:</label>
+                        <select id="pokeFilter">
+                            <option value="pokedex">Pokedex ID</option>
+                            <option value="cp">CP</option>
+                            <option value="candy">Candy</option>
+                            <option value="iv">IV</option>
+                            <option value="recent" selected>Recent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pokeSortType">Result order:</label>
+                        <select id="pokeSortType">
+                            <option value="asc">Ascending</option>
+                            <option value="des" selected>Descending</option>
+                        </select>
+                    </div>
+                </div>
                 <div style="height: 580px; overflow: auto;">
                     <table class="table table-striped table-bordered table-list" id="info">
                         <thead>
@@ -108,7 +127,7 @@
                 </div>
             </div>
         </div>
-        <div id="userItem">
+        <div id="userItem" style="margin-top: 15px;">
             <div class="col-sm-3">
                 <div style="height: 580px; overflow: auto;">
                     <table class="table table-striped table-bordered table-list" id="itemsIfo">
@@ -156,6 +175,14 @@
         $('#userItem').show();
         $('#items').addClass('active');
     }
+    $('#pokeFilter').change(function(){
+        var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";
+        $('#info-body').html(wait);
+    });
+    $('#pokeSortType').change(function(){
+        var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";
+        $('#info-body').html(wait);
+    });
 </script>
 </body>
 </html>

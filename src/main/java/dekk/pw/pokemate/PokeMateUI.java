@@ -192,7 +192,44 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     private void updatePokemon(Context context) {
         //Update Pokemon table
-        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+        String pokeFilter = mapComponent.getWebview().getEngine().executeScript("$( \"#pokeFilter\" ).val();").toString();
+        String pokeSortType = mapComponent.getWebview().getEngine().executeScript("$( \"#pokeSortType\" ).val();").toString();
+        String pokeSort = pokeFilter + "-" + pokeSortType;
+        switch (pokeSort) {
+            case "pokedex-des":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
+                break;
+            case "pokedex-asc":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
+                break;
+            case "cp-des":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                break;
+            case "cp-asc":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
+                break;
+            case "recent-des":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
+                break;
+            case "recent-asc":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
+                break;
+            case "candy-des":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCandy() - a.getCandy());
+                break;
+            case "candy-asc":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCandy() - b.getCandy());
+                break;
+            case "iv-des":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
+                break;
+            case "iv-asc":
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                break;
+            default:
+                context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                break;
+        }
         String rows = "\"";
         for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
             if (pokemon.getPokemonFamily() != null) {

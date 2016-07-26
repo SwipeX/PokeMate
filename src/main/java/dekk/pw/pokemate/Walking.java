@@ -63,7 +63,7 @@ public class Walking {
             context.getWalking().set(true);
             if (steps != null) {
                 for (DirectionsStep step : steps) {
-                    Log.i("WALKER", "Heading to: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
+                    //Log.i("WALKER", "Heading to: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
                     context.getApi().setLocation(step.startLocation.lat, step.startLocation.lng, 0);
                     context.getLat().set(step.startLocation.lat);
                     context.getLng().set(step.startLocation.lng);
@@ -90,7 +90,7 @@ public class Walking {
                          //  Log.i("WALKER", "Set location: [" + context.getLat().get() + ", " + context.getLng().get() + "]");
                         remainingSteps--;
                     }
-                    Log.i("WALKER", "Arrived at: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
+                    //Log.i("WALKER", "Arrived at: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");
                 }
             }else{
                 System.out.println("WALKING ERROR");

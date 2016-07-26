@@ -65,7 +65,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         Scene scene = new Scene(bp);
         stage.setScene(scene);
         stage.setWidth(1100);
-        stage.setHeight(660);
+        stage.setHeight(674);
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         stage.getIcons().add(new Image(classloader.getResourceAsStream("icon.png")));
         stage.show();

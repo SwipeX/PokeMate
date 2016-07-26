@@ -42,7 +42,7 @@ public class Update implements Task {
 
             long runTime = System.currentTimeMillis() - PokeMate.startTime;
 
-            System.out.printf("Profile update : %d XP on LVL %d %s %% to LVL %d - Gained %d XP - XP/H: %.0f - Runtime: %s%n",
+           /* System.out.printf("Profile update : %d XP on LVL %d %s %% to LVL %d - Gained %d XP - XP/H: %.0f - Runtime: %s%n",
                     player.getStats().getExperience(),
                     player.getStats().getLevel(),
                     ratio,
@@ -50,7 +50,7 @@ public class Update implements Task {
                     experienceGained,
                     experienceGained / (runTime / 3.6E6),
                     millisToTimeString(runTime)
-            );
+            );*/
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
             System.out.println("Attempting to Login");

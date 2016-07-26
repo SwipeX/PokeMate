@@ -48,14 +48,11 @@ public class CatchPokemon implements Task {
                     if (encounterResult.wasSuccessful()) {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
-                            System.out.println("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
-                            PokeMateUI.toast("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
                             try {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
-                                System.out.println("Cp:" + p.getCp() + " IV:" + p.getIndividualAttack() + "/" +
-                                        p.getIndividualDefense() + "/" + p.getIndividualStamina() + " " + getIvRatio(p) + "% Candy:" + p.getCandy());
+                                PokeMateUI.toast("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }
@@ -86,4 +83,6 @@ public class CatchPokemon implements Task {
                 return Pokeball.POKEBALL;
         }
     }
+
+
 }

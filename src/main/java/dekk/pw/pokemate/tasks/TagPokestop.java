@@ -1,16 +1,13 @@
 package dekk.pw.pokemate.tasks;
 
-import com.google.common.geometry.S2LatLng;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
-import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
-import dekk.pw.pokemate.util.LatLngComparator;
 
 import java.util.ArrayList;
 
@@ -26,18 +23,12 @@ public class TagPokestop implements Task {
                 return;
             }
 
-            final S2LatLng self = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
-            final LatLngComparator comparator = new LatLngComparator(self);
-
             pokestops.stream()
                     .filter(Pokestop::canLoot)
-                    .sorted((stopA, stopB) -> comparator.compare(locate(stopA), locate(stopB)))
-                    .findFirst()
-                    .ifPresent(near -> {
+                    .forEach(near -> {
                         Walking.setLocation(context);
                         try {
                             String result = resultMessage(near.loot());
-                            System.out.println(result);
                             PokeMateUI.toast(result);
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
@@ -63,7 +54,4 @@ public class TagPokestop implements Task {
         }
     }
 
-    private S2LatLng locate(final Pokestop pokestop) {
-        return S2LatLng.fromDegrees(pokestop.getLatitude(), pokestop.getLongitude());
-    }
 }

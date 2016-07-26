@@ -2,7 +2,6 @@ package dekk.pw.pokemate;
 
 import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
-import com.pokegoapi.api.pokemon.Pokemon;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -29,7 +28,6 @@ public class Config {
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
     private static List<Integer> neverTransferPokemons;
-    private static List<Integer> alwaysTransferPokemons;
 
     private static Properties properties = new Properties();
 
@@ -50,37 +48,24 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
-            if (whiteList != null) {
-                String[] strings = whiteList.split(",");
-                if (strings != null) {
-                    whiteListedPokemon = new ArrayList<>();
-                    for (String string : strings) {
-                        whiteListedPokemon.add(Integer.parseInt(string));
-                    }
-                }
-            }
+            whiteListedPokemon = new ArrayList<>();
+            fillList(whiteList, whiteListedPokemon);
 
-            String neverTransferPokemonNames = properties.getProperty("never-transfer", "");
+            String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
             neverTransferPokemons = new ArrayList<>();
-            fillTransferList(neverTransferPokemonNames, neverTransferPokemons);
-
-            String alwaysTransferPokemonNames = properties.getProperty("always-transfer", "");
-            alwaysTransferPokemons = new ArrayList<>();
-            fillTransferList(alwaysTransferPokemonNames, alwaysTransferPokemons);
+            fillList(neverTransferPokemonNames, neverTransferPokemons);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
-    private static void fillTransferList(String pokemonNames, List<Integer> target) {
-        if (pokemonNames.length() > 0) { // To make sure that the config option is not empty.
-            for (String pokemonName : pokemonNames.split(",")) {
-                try {
-                    target.add(PokemonIdOuterClass.PokemonId.valueOf(pokemonName).getNumber());
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace(); // User attempted to ignore a non-existent pokemon.
-                    JOptionPane.showMessageDialog(null, "Invalid pokemon in config:\n" + e.getMessage());
+    private static void fillList(String propertiesString, List<Integer> target) {
+        if (propertiesString != null) {
+            String[] strings = propertiesString.split(",");
+            if (strings != null) {
+                for (String string : strings) {
+                    target.add(Integer.parseInt(string));
                 }
             }
         }
@@ -150,10 +135,6 @@ public class Config {
 
     public static List<Integer> getNeverTransferPokemons() {
         return neverTransferPokemons;
-    }
-
-    public static List<Integer> getAlwaysTransferPokemons() {
-        return alwaysTransferPokemons;
     }
 
 }

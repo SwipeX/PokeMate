@@ -47,59 +47,43 @@
             width: 100%;
             height: calc(100% - 0px);
         }
+		
+		.hidden { 
+			display: none;
+		}
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
 
-<body>
+<body onload="showMap()">
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top" id="navbarOptions">
     <div class="navbar-header">
-        <a class="navbar-brand" style="" href="#">PokeMate</a>
+        <a class="navbar-brand" style="" href="#" onclick="showMap()">PokeMate</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse ">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Pokemon</a></li>
-            <li><a href="#">Items</a></li>
-            <!--<li><a href="#">Info</a></li>-->
+            <li id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
+            <li id="items"><a href="#" onclick="showItem()">Items</a></li>
         </ul>
     </div>
 </nav>
-<div class="container-fluid">
-    <div class="row" style="height: 150px; margin-bottom: 15px; margin-top: 15px;">
-        <div class="col-sm-12">
-            <div style="">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>
-                            Items
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <thead>
-                    <tr id="info-items">
-                        <td>Loading</td>
-                    </tr>
-                    </thead>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="container-fluid">   
 
-    <div class="row">
-        <div class="col-sm-9 map">
+    <div id="userMap" class="row" style="margin-top: 15px;">
+        <div class="col-sm-12 map">
             <div class="google-map-canvas" id="map-canvas">
             </div>
         </div>
-        <div class="col-sm-3">
-            <div style="height: 580px; overflow: auto;">
+    </div>
+	
+	<div id="userPokemon" class="row" style="margin-top: 15px;">       
+        <div class="col-sm-12">
+            <div>
                 <table class="table table-striped table-bordered table-list" id="info">
                     <thead>
                     <tr>
-                        <th width="97px">
+                        <th width="120px">
                             Pokemon
                         </th>
                         <th>
@@ -126,6 +110,32 @@
             </div>
         </div>
     </div>
+	
+	<div id="userItem" class="row" style="height: 150px; margin-top: 15px;">
+        <div class="col-sm-12">
+            <div style="">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>
+                            Item
+                        </th>
+						<th>
+                            Quantity
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="info-items">
+                    <tr>
+                        <td>Loading</td>
+						<td>Loading</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+	
 </div>
 
 
@@ -135,5 +145,27 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="js/bootstrap.min.js"></script>
+<script>
+	function showMap(){
+		$('#navbarOptions').find('.active').removeClass('active');
+		$('#userPokemon').hide();
+		$('#userItem').hide();
+		$('#userMap').show();
+	}
+	function showPokemon(){
+		$('#navbarOptions').find('.active').removeClass('active');
+		$('#userMap').hide();
+		$('#userItem').hide();		
+		$('#userPokemon').show();
+		$('#pokemons').addClass('active');
+	}
+	function showItem(){	
+		$('#navbarOptions').find('.active').removeClass('active');
+		$('#userMap').hide();
+		$('#userPokemon').hide();
+		$('#userItem').show();
+		$('#items').addClass('active');
+	}
+</script>
 </body>
 </html>

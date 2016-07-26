@@ -172,7 +172,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                                 String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
                                 itemsList += "<tr><td><img style=\'width: 50px; height: 50px; \' " +
                                         "src=\'" + imgSrc + "\'" + "onerror=this.src=\'" + defaultImg + "\'"
-                                        + "> X " +  item.getCount()+ "</td></tr>";
+                                        + "></td><td>" +  +  item.getCount() +  "</td></tr>";
                             }
                         }
                         itemsList += "\"";

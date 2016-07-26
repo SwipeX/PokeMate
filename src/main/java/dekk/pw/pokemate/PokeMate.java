@@ -24,7 +24,7 @@ public class PokeMate {
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
         if (!new File(CONFIG_PROPERTIES).exists()) {
             System.out.println("You are required to use a config.properties file to run the application.");
-            System.exit(-1);
+            System.exit(1);
         }
         PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();

@@ -1,11 +1,7 @@
 package dekk.pw.pokemate.tasks;
 
-<<<<<<< HEAD
 import POGOProtos.Networking.Responses.FortSearchResponseOuterClass;
 import POGOProtos.Inventory.Item.ItemAwardOuterClass;
-import com.google.common.geometry.S2LatLng;
-=======
->>>>>>> refs/remotes/SwipeX/master
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;

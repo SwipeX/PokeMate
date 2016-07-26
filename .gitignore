@@ -76,3 +76,5 @@ fabric.properties
 
 # PTC Login credentials
 config.properties
+
+token.txt

@@ -27,6 +27,9 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 
 ![Image of map](http://i.imgur.com/W4hG8i6.png)
 
+##Slack
+Come join us on slack! pkre.slack.com #pokemate
+
 ### Credits
 
 * https://github.com/jabbink/PokemonGoBot

@@ -1,14 +1,9 @@
 package dekk.pw.pokemate.tasks;
 
-import com.google.common.geometry.S2LatLng;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.*;
-import com.pokegoapi.api.map.MapObjects;
-import com.pokegoapi.api.map.fort.Pokestop;
-import com.pokegoapi.exceptions.LoginFailedException;
-import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;

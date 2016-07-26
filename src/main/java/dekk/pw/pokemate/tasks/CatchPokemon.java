@@ -7,12 +7,14 @@ import com.pokegoapi.api.inventory.Pokeball;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.EncounterResult;
+import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,6 +48,15 @@ public class CatchPokemon implements Task {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
                             System.out.println("Caught a " + target.getPokemonId() + " using a " + ball.getItemId().name());
+                            try {
+                                List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
+                                Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
+                                Pokemon p = pokemonList.get(pokemonList.size() - 1);
+                                System.out.println("Cp:" + p.getCp() + " IV:" + p.getIndividualAttack() + "/" +
+                                        p.getIndividualDefense() + "/" + p.getIndividualStamina() + " " + getIvRatio(p) + "% Candy:" + p.getCandy());
+                            } catch (NullPointerException | IndexOutOfBoundsException ex) {
+                                ex.printStackTrace();
+                            }
                         } else {
                             System.out.println(target.getPokemonId() + " fled.");
                         }
@@ -55,6 +66,10 @@ public class CatchPokemon implements Task {
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getIvRatio(Pokemon pokemon) {
+        return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
     }
 
     private Pokeball getBall(int id) {

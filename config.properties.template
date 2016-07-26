@@ -26,4 +26,4 @@ whitelisted-pokemons=10;13;16
 #Range to walk in, VERY sensitive
 range=.004
 #points in the map path
-map-points=50
+map-points=15

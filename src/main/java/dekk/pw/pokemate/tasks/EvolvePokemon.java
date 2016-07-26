@@ -8,6 +8,7 @@ import dekk.pw.pokemate.Context;
 
 import java.io.DataInputStream;
 import java.util.HashMap;
+import java.util.ListIterator;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -32,7 +33,9 @@ public class EvolvePokemon implements Task {
     @Override
     public void run(Context context) {
         try {
-            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+            ListIterator<Pokemon> iterator = context.getApi().getInventories().getPokebank().getPokemons().listIterator();
+            while (iterator.hasNext()) {
+                Pokemon pokemon = iterator.next();
                 int number = pokemon.getPokemonId().getNumber();
                 if (CANDY_AMOUNTS.containsKey(number)) {
                     int required = CANDY_AMOUNTS.get(number);

@@ -4,6 +4,7 @@ import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
+import com.lynden.gmapsfx.service.directions.DirectionsRenderer;
 import com.lynden.gmapsfx.shapes.*;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
@@ -169,9 +170,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             if(item.getCount() > 0) {
                                 String defaultImg = "icons/items/0.png";
                                 String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                itemsList += "<td><img style=\'width: 50px; height: 50px; \' " +
+                                itemsList += "<tr><td><img style=\'width: 50px; height: 50px; \' " +
                                         "src=\'" + imgSrc + "\'" + "onerror=this.src=\'" + defaultImg + "\'"
-                                        + "> X " +  item.getCount()+ "</td>";
+                                        + "> X " +  item.getCount()+ "</td></tr>";
                             }
                         }
                         itemsList += "\"";

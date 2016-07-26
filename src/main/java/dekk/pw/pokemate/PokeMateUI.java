@@ -153,11 +153,13 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 try {
                     Platform.runLater(() -> {
                         PlayerProfile player = context.getApi().getPlayerProfile();
+						long runTime = System.currentTimeMillis() - PokeMate.startTime;
                         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
                         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
                         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-                        window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
-                                ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
+						window.setContent("<h4>" + player.getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() +" - Progress: " + ratio + 
+						"%</h5><h5>XP to next level: "  + new DecimalFormat("###,###,###").format( nextXP- curLevelXP) + 
+						"</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
                         //Update Pokemon table
                         context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         String rows = "\"";
@@ -193,4 +195,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }
 
+	private static String millisToTimeString(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = (millis / (1000 * 60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }

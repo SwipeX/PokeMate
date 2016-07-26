@@ -3,7 +3,6 @@ package dekk.pw.pokemate.tasks;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
-import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 

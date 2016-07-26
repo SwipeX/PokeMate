@@ -8,7 +8,6 @@ import dekk.pw.pokemate.tasks.TaskController;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -18,17 +17,10 @@ import java.util.concurrent.TimeUnit;
 public class PokeMate {
 
     private static Context context;
-    private static TaskController taskControllor;
 
     public static long startTime;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
-        for(File file : new File(".").listFiles()){
-            if(file.getName().contains("-001")) {
-                File dest = new File(file.getName().replace("-001",""));
-                file.renameTo(dest);
-            }
-        }
         PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
@@ -46,8 +38,8 @@ public class PokeMate {
         if (Config.isShowUI()) {
             new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
         }
-        taskControllor = new TaskController(context);
-        taskControllor.start();
+        TaskController controller = new TaskController(context);
+        controller.start();
         startTime = System.currentTimeMillis();
     }
 

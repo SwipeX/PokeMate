@@ -7,7 +7,6 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.util.HashMap;
 
 /**

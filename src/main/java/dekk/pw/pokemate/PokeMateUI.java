@@ -2,11 +2,8 @@ package dekk.pw.pokemate;
 
 import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
-import com.lynden.gmapsfx.MainApp;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.javascript.object.Polyline;
-import com.lynden.gmapsfx.javascript.object.PolylineOptions;
 import com.lynden.gmapsfx.shapes.*;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
@@ -21,7 +18,6 @@ import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -74,8 +70,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     @Override
     public void mapInitialized() {
-        Context context = poke.getContext();
-        LatLong center = new LatLong(poke.getContext().getLat().get(), poke.getContext().getLng().get());
+        Context context = PokeMate.getContext();
+        LatLong center = new LatLong(PokeMate.getContext().getLat().get(), PokeMate.getContext().getLng().get());
         MapOptions options = new MapOptions();
         options.center(center)
                 .mapMarker(true)

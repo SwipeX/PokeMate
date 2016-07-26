@@ -50,10 +50,66 @@ public class TagPokestop implements Task {
     private String resultMessage(final PokestopLootResult result) {
         switch (result.getResult()) {
             case SUCCESS:
-                String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]" + "\n\tItems Awarded: ";
+                String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]";
+				int pokeBall = 0, greatBall = 0, ultraBall = 0, masterBall = 0, potion = 0, superPotion = 0, hyperPotion = 0, maxPotion = 0, razzBerry = 0, revive = 0, maxRevive = 0;
 				for (ItemAwardOuterClass.ItemAward item : result.getItemsAwarded()) {
-					retstr += ("\n\t\t" + item.getItemId().name());
+					switch(item.getItemId().name()) {
+						case "ITEM_POKE_BALL":
+							pokeBall++;
+							break;
+						case "ITEM_GREAT_BALL":
+							greatBall++;
+							break;
+						case "ITEM_ULTRA_BALL":
+							ultraBall++;
+							break;
+						case "ITEM_MASTER_BALL":
+							masterBall++;
+							break;
+						case "ITEM_POTION":
+							potion++;
+							break;
+						case "ITEM_SUPER_POTION":
+							superPotion++;
+							break;
+						case "ITEM_HYPER_POTION":
+							hyperPotion++;
+							break;
+						case "ITEM_MAX_POTION":
+							maxPotion++;
+							break;
+						case "ITEM_REVIVE":
+							revive++;
+							break;
+						case "ITEM_MAX_REVIVE":
+							maxRevive++;
+							break;
+						case "ITEM_RAZZ_BERRY":
+							razzBerry++;
+					}
 				}
+				if (pokeBall > 0)
+					retstr += " - Poke Ball (x" + pokeBall + ")";
+				if (greatBall > 0)
+					retstr += " - Great Ball (x" + greatBall + ")";
+				if (masterBall > 0)
+					retstr += " - Master Ball (x" + masterBall + ")";
+				if (ultraBall > 0)
+					retstr += " - Ultra Ball (x" + ultraBall + ")";
+				if (potion > 0)
+					retstr += " - Potion (x" + potion + ")";
+				if (superPotion > 0)
+					retstr += " - Super Potion (x" + superPotion + ")";
+				if (hyperPotion > 0)
+					retstr += " - Hyper Potion (x" + hyperPotion + ")";
+				if (maxPotion > 0)
+					retstr += " - Max Potion (x" + maxPotion + ")";
+				if (revive > 0)
+					retstr += " - Revive (x" + revive + ")";
+				if (maxRevive > 0)
+					retstr += " - Max Revive Potion (x" + maxRevive + ")";
+				if (razzBerry > 0)
+					retstr += " - Razz Berry Potion (x" + razzBerry + ")";
 				return retstr;
             case INVENTORY_FULL:
                 return "Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]";

@@ -16,20 +16,16 @@ public class TaskController extends Thread {
 
     public TaskController(Context context) {
         this.context = context;
-        tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
-                new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
+        tasks.add(  new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+                    new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
-        tasks.add(new ReleasePokemon());
-        if (Config.isAutoEvolving()) {
-            tasks.add(new EvolvePokemon());
-        }
+        if(Config.isReleasing())        tasks.add(new ReleasePokemon());
+        if (Config.isAutoEvolving())    tasks.add(new EvolvePokemon());
         tasks.add(new TagPokestop());
         tasks.add(new IncubateEgg());
         tasks.add(new HatchEgg());
-        if (Config.isDropItems()) {
-            tasks.add(new DropItems());
-        }
+        if (Config.isDropItems())       tasks.add(new DropItems());
     }
 
     /**

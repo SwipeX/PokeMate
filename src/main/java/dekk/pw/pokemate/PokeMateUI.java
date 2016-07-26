@@ -153,6 +153,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 try {
                     Platform.runLater(() -> {
                         PlayerProfile player = context.getApi().getPlayerProfile();
+						long runTime = System.currentTimeMillis() - PokeMate.startTime;
                         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
                         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
                         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);

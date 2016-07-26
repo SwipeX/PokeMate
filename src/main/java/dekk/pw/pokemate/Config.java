@@ -46,7 +46,7 @@ public class Config {
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             //whitelist
-            String whiteList = properties.getProperty("whitelisted-pokemons", "");
+            String whiteList = properties.getProperty("whitelisted-pokemon", "");
             String[] strings = whiteList.split(",");
             whiteListedPokemon = new ArrayList<>();
             for (String string : strings) {

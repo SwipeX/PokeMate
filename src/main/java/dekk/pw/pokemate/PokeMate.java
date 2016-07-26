@@ -2,6 +2,7 @@ package dekk.pw.pokemate;
 
 import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.TaskController;
@@ -27,7 +28,7 @@ public class PokeMate {
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
-        RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth = null;
+        CredentialProvider auth = null;
         auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
         PokemonGo go = new PokemonGo(auth, http);

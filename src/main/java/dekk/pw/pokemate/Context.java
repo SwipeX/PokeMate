@@ -1,14 +1,16 @@
 package dekk.pw.pokemate;
 
-import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.auth.GoogleLogin;
-import com.pokegoapi.auth.PtcLogin;
+import com.pokegoapi.auth.*;
 import okhttp3.OkHttpClient;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -21,55 +23,56 @@ public class Context {
     private AtomicDouble lng = new AtomicDouble();
     private PlayerProfile profile;
     private AtomicBoolean walking = new AtomicBoolean(false);
-    private RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo;
+    private CredentialProvider credentialProvider;
 
-    public Context(PokemonGo go, PlayerProfile profile, boolean walking, RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo, OkHttpClient http) {
+    public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {
         this.api = go;
         this.profile = profile;
         this.walking.set(walking);
-        this.authInfo = authInfo;
+        this.credentialProvider = credentialProvider;
         this.http = http;
     }
 
-    public static RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo Login(OkHttpClient httpClient) {
+    public static CredentialProvider Login(OkHttpClient httpClient) {
         return Login(null, httpClient);
     }
 
-    public static RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo Login(Context context, OkHttpClient httpClient) {
-        RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo auth = context == null ? null : context.authInfo;
+    public static CredentialProvider Login(Context context, OkHttpClient httpClient) {
         String token = null;
         try {
             if (Config.getUsername().contains("@")) {
-                auth = new GoogleLogin(httpClient).login(Config.getUsername(),Config.getPassword());
-                //The below code is not functional, token needs verification.
-//                if (auth == null) {
-//                    File file = new File("token.txt");
-//                    if (file.exists()) {
-//                        Scanner scanner = new Scanner(file);
-//                        token = scanner.nextLine();
-//                    }
-//                    if (token != null) {
-//                        auth = new GoogleLogin(httpClient).login(token);
-//                    } else {
-//                        auth = new GoogleLogin(httpClient).login(Config.getUsername(), Config.getPassword());
-//                    }
-//                    try (PrintWriter p = new PrintWriter("token.txt")) {
-//                        p.println(auth.getToken().getContents());
-//                    }
-//                } else {
-//                    token = auth.getToken().getContents();
-//                    auth = new GoogleLogin(httpClient).login(token);
-//                    try (PrintWriter p = new PrintWriter("token.txt")) {
-//                        p.println(token);
-//                    }
-//                }
+                File tokenFile = new File("token.txt");
+                if (tokenFile.exists()) {
+                    Scanner scanner = new Scanner(tokenFile);
+                    token = scanner.nextLine();
+                    if (token != null) {
+                        return new GoogleCredentialProvider(httpClient, token);
+                    }
+                } else {
+                    return new GoogleCredentialProvider(httpClient, new GoogleCredentialProvider.OnGoogleLoginOAuthCompleteListener() {
+                        @Override
+                        public void onInitialOAuthComplete(GoogleAuthJson googleAuthJson) {
+
+                        }
+
+                        @Override
+                        public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
+                            System.out.println("Token received: " + googleAuthTokenJson);
+                            try (PrintWriter p = new PrintWriter("token.txt")) {
+                                p.write(googleAuthTokenJson.getRefreshToken());
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
             } else {
-                auth = new PtcLogin(httpClient).login(Config.getUsername(), Config.getPassword());
+                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return auth;
+        return null;
     }
 
     public AtomicDouble getLat() {
@@ -112,12 +115,12 @@ public class Context {
         return walking;
     }
 
-    public RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo getAuthInfo() {
-        return authInfo;
+    public CredentialProvider getCredentialProvider() {
+        return credentialProvider;
     }
 
-    public void setAuthInfo(RequestEnvelopeOuterClass.RequestEnvelope.AuthInfo authInfo) {
-        this.authInfo = authInfo;
+    public void setCredentialProvider(CredentialProvider credentialProvider) {
+        this.credentialProvider = credentialProvider;
     }
 
     /**

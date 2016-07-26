@@ -9,6 +9,7 @@ import dekk.pw.pokemate.tasks.TaskController;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -16,12 +17,15 @@ import java.util.concurrent.TimeUnit;
  * Created by TimD on 7/21/2016.
  */
 public class PokeMate {
-
+    public static final String CONFIG_PROPERTIES = "config.properties";
     private static Context context;
-
     public static long startTime;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
+        if (!new File(CONFIG_PROPERTIES).exists()) {
+            System.out.println("You are required to use a config.properties file to run the application.");
+            System.exit(-1);
+        }
         PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);

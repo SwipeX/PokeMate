@@ -23,4 +23,4 @@ automatic-evolving=true
 #Range to walk in, VERY sensitive
 range=.004
 #points in the map path
-map-points=50
+map-points=15

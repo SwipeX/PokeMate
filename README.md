@@ -1,4 +1,5 @@
-# PokeMate ![travis](https://travis-ci.org/SwipeX/PokeMate.svg?branch=master)
+# PokeMate ![travis](https://travis-ci.org/SwipeX/PokeMate.svg?branch=master) [![codecov](https://codecov.io/gh/SwipeX/PokeMate/branch/master/graph/badge.svg)](https://codecov.io/gh/SwipeX/PokeMate)
+
 
 ##Features
 + Catches visible pokemon

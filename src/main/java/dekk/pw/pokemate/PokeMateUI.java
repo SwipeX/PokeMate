@@ -14,6 +14,7 @@ import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
@@ -65,6 +66,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         stage.setScene(scene);
         stage.setWidth(1100);
         stage.setHeight(660);
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        stage.getIcons().add(new Image(classloader.getResourceAsStream("icon.png")));
         stage.show();
     }
 
@@ -159,8 +162,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         String rows = "\"";
                         for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                            if(pokemon.getPokemonFamily() != null) {
-                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>"  + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+                            if (pokemon.getPokemonFamily() != null) {
+                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
                             }
                         }
                         rows += "\"";

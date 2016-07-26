@@ -1,6 +1,5 @@
 package dekk.pw.pokemate;
 
-import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
@@ -9,7 +8,6 @@ import dekk.pw.pokemate.tasks.TaskController;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Created by TimD on 7/21/2016.
  */
 public class PokeMate {
-    public static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
+    private static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
     private static Context context;
     public static long startTime;
 
@@ -35,7 +33,7 @@ public class PokeMate {
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
-        CredentialProvider auth = null;
+        CredentialProvider auth;
         auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
         PokemonGo go = new PokemonGo(auth, http);

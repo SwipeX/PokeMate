@@ -37,8 +37,8 @@ public class Context {
         return Login(null, httpClient);
     }
 
-    public static CredentialProvider Login(Context context, OkHttpClient httpClient) {
-        String token = null;
+    private static CredentialProvider Login(Context context, OkHttpClient httpClient) {
+        String token;
         try {
             if (Config.getUsername().contains("@")) {
                 File tokenFile = new File("token.txt");
@@ -99,10 +99,6 @@ public class Context {
         this.api = api;
     }
 
-    public PlayerProfile getProfile() {
-        return profile;
-    }
-
     public void setProfile(PlayerProfile profile) {
         this.profile = profile;
     }
@@ -111,16 +107,8 @@ public class Context {
         return walking.get();
     }
 
-    public AtomicBoolean getWalking() {
+    AtomicBoolean getWalking() {
         return walking;
-    }
-
-    public CredentialProvider getCredentialProvider() {
-        return credentialProvider;
-    }
-
-    public void setCredentialProvider(CredentialProvider credentialProvider) {
-        this.credentialProvider = credentialProvider;
     }
 
     /**

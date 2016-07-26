@@ -1,5 +1,6 @@
 package dekk.pw.pokemate;
 
+import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import com.pokegoapi.api.pokemon.Pokemon;
 
@@ -27,6 +28,8 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
+    private static List<Integer> neverTransferPokemons;
+    private static List<Integer> alwaysTransferPokemons;
 
     private static Properties properties = new Properties();
 
@@ -56,11 +59,33 @@ public class Config {
                     }
                 }
             }
+
+            String neverTransferPokemonNames = properties.getProperty("never-transfer", "");
+            neverTransferPokemons = new ArrayList<>();
+            fillTransferList(neverTransferPokemonNames, neverTransferPokemons);
+
+            String alwaysTransferPokemonNames = properties.getProperty("always-transfer", "");
+            alwaysTransferPokemons = new ArrayList<>();
+            fillTransferList(alwaysTransferPokemonNames, alwaysTransferPokemons);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
+
+    private static void fillTransferList(String pokemonNames, List<Integer> target) {
+        if (pokemonNames.length() > 0) { // To make sure that the config option is not empty.
+            for (String pokemonName : pokemonNames.split(",")) {
+                try {
+                    target.add(PokemonIdOuterClass.PokemonId.valueOf(pokemonName).getNumber());
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace(); // User attempted to ignore a non-existent pokemon.
+                    JOptionPane.showMessageDialog(null, "Invalid pokemon in config:\n" + e.getMessage());
+                }
+            }
+        }
+    }
+
 
     public static double getSpeed() {
         return speed;
@@ -121,6 +146,14 @@ public class Config {
 
     public static List<Integer> getWhitelistedPokemon() {
         return whiteListedPokemon;
+    }
+
+    public static List<Integer> getNeverTransferPokemons() {
+        return neverTransferPokemons;
+    }
+
+    public static List<Integer> getAlwaysTransferPokemons() {
+        return alwaysTransferPokemons;
     }
 
 }

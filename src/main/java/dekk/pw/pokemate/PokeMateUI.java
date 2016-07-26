@@ -150,43 +150,57 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                     map.setZoom(currentZoom - 1);
                     map.setZoom(currentZoom);
                 });
+
+                //Update Thread
                 try {
                     Platform.runLater(() -> {
-                        PlayerProfile player = context.getApi().getPlayerProfile();
-						long runTime = System.currentTimeMillis() - PokeMate.startTime;
-                        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
-                        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
-                        String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-						window.setContent("<h4>" + player.getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() +" - Progress: " + ratio + 
-						"%</h5><h5>XP to next level: "  + new DecimalFormat("###,###,###").format( nextXP- curLevelXP) + 
-						"</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
-                        //Update Pokemon table
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                        String rows = "\"";
-                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                            if (pokemon.getPokemonFamily() != null) {
-                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
-                            }
-                        }
-                        rows += "\"";
-                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
-                        String itemsList = "\"";
-                        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
-                            if (item.getCount() > 0) {
-                                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
-                                        "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
-                            }
-                        }
-                        itemsList += "\"";
-                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
+                        updatePlayer(context, window);
+                        updatePokemon(context);
+                        updateItems(context);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
-                    // e.printStackTrace();
+                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    private void updatePlayer(Context context, InfoWindow window) {
+        PlayerProfile player = context.getApi().getPlayerProfile();
+        long runTime = System.currentTimeMillis() - PokeMate.startTime;
+        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
+        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
+        String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
+        window.setContent("<h4>" + player.getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() + " - Progress: " + ratio +
+                "%</h5><h5>XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +
+                "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
+    }
+
+    private void updateItems(Context context) {
+        String itemsList = "\"";
+        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+            if (item.getCount() > 0) {
+                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
+                        "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
+            }
+        }
+        itemsList += "\"";
+        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
+    }
+
+    private void updatePokemon(Context context) {
+        //Update Pokemon table
+        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+        String rows = "\"";
+        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+            if (pokemon.getPokemonFamily() != null) {
+                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+            }
+        }
+        rows += "\"";
+        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
     }
 
     public static void toast(String message) {
@@ -195,7 +209,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }
 
-	private static String millisToTimeString(long millis) {
+    private static String millisToTimeString(long millis) {
         long seconds = (millis / 1000) % 60;
         long minutes = (millis / (1000 * 60)) % 60;
         long hours = (millis / (1000 * 60 * 60)) % 24;

@@ -246,11 +246,11 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         Platform.runLater(() -> {
             mapComponent.getWebview().getEngine().executeScript("$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});");
             Notifications.create()
+                    .graphic(new ImageView(new Image("icons/items/4.png",64,64,false,false)))
                     .title("Pok\u00E9Mate Notification Center")
                     .text(message)
                     .darkStyle()
-                    .graphic(new ImageView(new Image("icons/items/4.png")))
-                    .showInformation();
+                    .show();
         });
     }
 

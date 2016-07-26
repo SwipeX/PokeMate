@@ -62,7 +62,7 @@ public class Config {
     }
 
     private static void fillList(String propertiesString, List<Integer> target) {
-        if (propertiesString != null) {
+        if (propertiesString != null && !propertiesString.equals("")) {
             String[] strings = propertiesString.split(",");
             if (strings != null) {
                 for (String string : strings) {

@@ -28,6 +28,9 @@ public class Config {
     private static List<Integer> whiteListedPokemon;
     private static List<Integer> neverTransferPokemon;
 
+    private static boolean useCustomNamedLocation;
+    private static String customNamedLocation;
+
     private static Properties properties = new Properties();
 
     static {
@@ -52,6 +55,9 @@ public class Config {
             String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
+            // named location
+            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "true"));
+            customNamedLocation = properties.getProperty("location-by-name");
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -136,4 +142,11 @@ public class Config {
         return neverTransferPokemon;
     }
 
+    public static boolean isUseCustomNamedLocation() {
+        return useCustomNamedLocation;
+    }
+
+    public static String getCustomNamedLocation() {
+        return customNamedLocation;
+    }
 }

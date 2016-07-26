@@ -1,6 +1,9 @@
 # PTC/Google login credentials
 username=
 password=
+# Location by name: e.g. "Sydney" or "W12 8LP" or "Trafalgar Square, London" - set to true to use
+use-location-name=false
+location-by-name="Trafalgar Square, London"
 #Lat/Long
 latitude=40.774578
 longitude=-73.972774

@@ -19,6 +19,7 @@ public class Navigate implements Task {
     private final LatLng min, max;
     private static List<DirectionsStep[]> routes = new ArrayList<>();
     private int routesIndex = 0;
+    private static final Object lock = new Object();
 
     public Navigate(Context context, LatLng min, LatLng max) {
         this.min = new LatLng(min.lat < max.lat ? min.lat : max.lat, min.lng < max.lng ? min.lng : max.lng);
@@ -30,10 +31,10 @@ public class Navigate implements Task {
     public void run(Context context) {
         if (context.isWalking()) {
             return;
-        } else if (routesIndex >= routes.size()) {
+        } else if (routesIndex >= getDirections().size()) {
             routesIndex = 0;
         }
-        Walking.walk(context, routes.get(routesIndex++));
+        Walking.walk(context, getDirections().get(routesIndex++));
     }
 
 
@@ -44,7 +45,7 @@ public class Navigate implements Task {
         return new LatLng(nextLat, nextLng);
     }
 
-    private DirectionsStep[] queryDirections(Context context, LatLng start, LatLng end) {
+    private DirectionsStep[] queryDirections(LatLng start, LatLng end) {
         DirectionsStep[] stepsToTake = null;
         GeoApiContext ctx = new GeoApiContext().setApiKey(Config.getGoogleApiKey());
         DirectionsApiRequest request = DirectionsApi.newRequest(ctx)
@@ -75,9 +76,9 @@ public class Navigate implements Task {
         LatLng current = start;
         LatLng next = getNextLocation();
         while (i < Config.getMapPoints()) {
-            DirectionsStep[] steps = queryDirections(context, current, next);
+            DirectionsStep[] steps = queryDirections(current, next);
             if (steps != null) {
-                routes.add(steps);
+                getDirections().add(steps);
                 current = next;
                 next = getNextLocation();
                 i++;
@@ -85,13 +86,15 @@ public class Navigate implements Task {
                 next = getNextLocation();
             }
         }
-        DirectionsStep[] steps = queryDirections(context, next, start);
+        DirectionsStep[] steps = queryDirections(next, start);
         if (steps != null) {
-            routes.add(steps);
+            getDirections().add(steps);
         }
     }
 
-    public synchronized static List<DirectionsStep[]> getDirections() {
-        return routes;
+    public static List<DirectionsStep[]> getDirections() {
+        synchronized (lock) {
+            return routes;
+        }
     }
 }

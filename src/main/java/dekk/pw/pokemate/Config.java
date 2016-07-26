@@ -48,9 +48,11 @@ public class Config {
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", "");
             String[] strings = whiteList.split(",");
-            whiteListedPokemon = new ArrayList<>();
-            for (String string : strings) {
-                whiteListedPokemon.add(Integer.parseInt(string));
+            if (strings != null) {
+                whiteListedPokemon = new ArrayList<>();
+                for (String string : strings) {
+                    whiteListedPokemon.add(Integer.parseInt(string));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

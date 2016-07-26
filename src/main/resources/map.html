@@ -59,36 +59,13 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse ">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Pokemon</a></li>
-            <li><a href="#">Items</a></li>
+            <li class="active" id="pokemon"><a href="#">Pokemon</a></li>
+            <li><a href="#" id="items">Items</a></li>
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
 </nav>
 <div class="container-fluid">
-    <div class="row" style="height: 150px; margin-bottom: 15px; margin-top: 15px;">
-        <div class="col-sm-12">
-            <div style="">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>
-                            Items
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <thead>
-                    <tr id="info-items">
-                        <td>Loading</td>
-                    </tr>
-                    </thead>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-sm-9 map">
             <div class="google-map-canvas" id="map-canvas">
@@ -97,7 +74,7 @@
         <div class="col-sm-3">
             <div style="height: 580px; overflow: auto;">
                 <table class="table table-striped table-bordered table-list" id="info">
-                    <thead>
+                    <thead id="head">
                     <tr>
                         <th width="97px">
                             Pokemon
@@ -135,5 +112,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="js/bootstrap.min.js"></script>
+<script>
+    $(".nav a").on("click", function () {
+        $(".nav").find(".active").removeClass("active");
+        $(this).parent().addClass("active");
+    });
+</script>
 </body>
 </html>

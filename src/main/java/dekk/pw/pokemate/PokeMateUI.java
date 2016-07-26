@@ -6,6 +6,8 @@ import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
 import com.lynden.gmapsfx.service.directions.DirectionsRenderer;
 import com.lynden.gmapsfx.shapes.*;
+import com.lynden.gmapsfx.shapes.Polyline;
+import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.inventory.Item;
@@ -132,13 +134,13 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             LatLong[] array = locs.toArray(new LatLong[0]);
                             MVCArray mvc = new MVCArray(array);
 
-                            com.lynden.gmapsfx.shapes.PolylineOptions polyOpts = new com.lynden.gmapsfx.shapes.PolylineOptions()
+                            PolylineOptions polyOpts = new PolylineOptions()
                                     .path(mvc)
                                     .strokeColor("red")
                                     .strokeWeight(2)
                                     .strokeOpacity(0.8);
 
-                            com.lynden.gmapsfx.shapes.Polyline poly = new com.lynden.gmapsfx.shapes.Polyline(polyOpts);
+                            Polyline poly = new Polyline(polyOpts);
                             map.addMapShape(poly);
                             directions = true;
                         }
@@ -150,6 +152,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 });
                 try {
                     Platform.runLater(() -> {
+                        boolean activeNav = mapComponent.getWebview().getEngine().getDocument().getElementById("pokemon").getAttribute("class").equals("active");
                         PlayerProfile player = context.getApi().getPlayerProfile();
                         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
                         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
@@ -157,27 +160,28 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
                                 ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
                         //Update Pokemon table
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                        String rows = "\"";
-                        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                            if (pokemon.getPokemonFamily() != null) {
-                                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+                        if (activeNav) {
+                            context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                            String rows = "\"";
+                            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                                if (pokemon.getPokemonFamily() != null) {
+                                    rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+                                }
                             }
-                        }
-                        rows += "\"";
-                        String itemsList = "\"";
-                        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
-                            if(item.getCount() > 0) {
-                                String defaultImg = "icons/items/0.png";
-                                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                itemsList += "<tr><td><img style=\'width: 50px; height: 50px; \' " +
-                                        "src=\'" + imgSrc + "\'" + "onerror=this.src=\'" + defaultImg + "\'"
-                                        + "> X " +  item.getCount()+ "</td></tr>";
+                            rows += "\"";
+                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
+                        } else {
+                            String itemsList = "\"";
+                            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                                if (item.getCount() > 0) {
+                                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                                    itemsList += "<tr><td><img style=\'width: 50px; height: 50px; \' " +
+                                            "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
+                                }
                             }
+                            itemsList += "\"";
+                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + itemsList);
                         }
-                        itemsList += "\"";
-                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
-                        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {

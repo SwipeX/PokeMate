@@ -1,0 +1,39 @@
+        .hidden {
+            display: none;
+        }
+
+        body {
+            padding-top: 50px;
+        }
+
+        .container-fluid, .col-sm-3, .col-sm-9 {
+            padding-right: 1px;
+            padding-left: 1px;
+        }
+
+        /* all map containers must be full height */
+        html, body, .container-fluid, .row, .map {
+            height: 100%;
+            margin: 0;
+        }
+
+        .table td:first-child, .table th:first-child {
+            min-width: 0;
+            width: 97px;
+        }
+
+        tbody td, thead th {
+            width: calc(100% / 3);
+        }
+
+        table, tbody {
+            height: 590px;
+            overflow: auto;
+            width: 100%;
+            border-bottom: 0;
+        }
+
+        #map-canvas {
+            width: 100%;
+            height: calc(100% - 0px);
+        }

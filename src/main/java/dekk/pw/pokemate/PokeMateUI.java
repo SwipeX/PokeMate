@@ -34,6 +34,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     protected GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
+    protected Stage stage;
+    protected Context context;
+    protected InfoWindow window;
     public static final double XVARIANCE = Config.getRange() * 1.5;
     public static final double VARIANCE = Config.getRange();
     public static Marker marker;
@@ -50,6 +53,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     @Override
     public void start(final Stage stage) throws Exception {
+        this.stage = stage;
         stage.setTitle("Pokemate UI");
         stage.setOnCloseRequest(t -> {
             Platform.exit();
@@ -74,7 +78,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     @Override
     public void mapInitialized() {
-        Context context = PokeMate.getContext();
+        context = PokeMate.getContext();
         LatLong center = new LatLong(PokeMate.getContext().getLat().get(), PokeMate.getContext().getLng().get());
         MapOptions options = new MapOptions();
         options.center(center)
@@ -117,7 +121,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         infoOptions.content("<h3>Loading...</h3>")
                 .position(center);
 
-        InfoWindow window = new InfoWindow(infoOptions);
+        window = new InfoWindow(infoOptions);
         window.open(map, marker);
         new Thread(() -> {
             while (true) {
@@ -152,32 +156,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 });
                 try {
                     Platform.runLater(() -> {
-                        PlayerProfile player = context.getApi().getPlayerProfile();
-                        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
-                        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
-                        String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
-                        window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
-                                ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
-                        //Update Pokemon table
-                            context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
-                            String rows = "\"";
-                            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
-                                if (pokemon.getPokemonFamily() != null) {
-                                    rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
-                                }
-                            }
-                            rows += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
-                            String itemsList = "\"";
-                            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
-                                if (item.getCount() > 0) {
-                                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                                    itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
-                                            "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
-                                }
-                            }
-                            itemsList += "\"";
-                            mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
+                        updatePlayerWindow();
+                        updatePokemonTable();
+                        updateItemList();
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -186,5 +167,42 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             }
         }).start();
 
+    }
+
+    private void updatePlayerWindow()
+    {
+        PlayerProfile player = context.getApi().getPlayerProfile();
+        double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
+        double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
+        String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
+        window.setContent("<h5>" + player.getUsername() + " (" + player.getStats().getLevel() + ") : " +
+                ratio + "% " + player.getStats().getExperience() + " total exp </h5>");
+    }
+
+    private void updatePokemonTable()
+    {
+        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+        String rows = "\"";
+        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+            if (pokemon.getPokemonFamily() != null) {
+                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+            }
+        }
+        rows += "\"";
+        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
+    }
+
+    private void updateItemList()
+    {
+        String itemsList = "\"";
+        for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+            if (item.getCount() > 0) {
+                String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
+                        "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
+            }
+        }
+        itemsList += "\"";
+        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
     }
 }

@@ -30,6 +30,7 @@ public class TagPokestop implements Task {
                         try {
                             String result = resultMessage(near.loot());
                             PokeMateUI.toast(result);
+                            //PokeMateUI.notification("Pokestop event!",result);
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
                         }

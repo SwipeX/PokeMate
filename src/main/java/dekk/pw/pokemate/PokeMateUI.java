@@ -16,9 +16,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -241,10 +243,17 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     public static void toast(String message) {
-        Platform.runLater(() ->
-                mapComponent.getWebview().getEngine().executeScript(
-                        "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+        Platform.runLater(() -> {
+            mapComponent.getWebview().getEngine().executeScript("$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});");
+            Notifications.create()
+                    .title("Pok\u00E9Mate Notification Center")
+                    .text(message)
+                    .darkStyle()
+                    .graphic(new ImageView(new Image("icons/items/4.png")))
+                    .showInformation();
+        });
     }
+
 
     private static String millisToTimeString(long millis) {
         long seconds = (millis / 1000) % 60;

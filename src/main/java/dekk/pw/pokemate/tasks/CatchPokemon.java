@@ -52,7 +52,9 @@ public class CatchPokemon implements Task {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
-                                PokeMateUI.toast("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
+                                String output = "Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")";
+                                PokeMateUI.toast(output);
+                                //PokeMateUI.notification("Pokemon caught!",output);
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }

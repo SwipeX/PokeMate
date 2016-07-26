@@ -26,7 +26,7 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
-    private static List<Integer> neverTransferPokemons;
+    private static List<Integer> neverTransferPokemon;
 
     private static Properties properties = new Properties();
 
@@ -49,10 +49,9 @@ public class Config {
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
             whiteListedPokemon = new ArrayList<>();
             fillList(whiteList, whiteListedPokemon);
-
             String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
-            neverTransferPokemons = new ArrayList<>();
-            fillList(neverTransferPokemonNames, neverTransferPokemons);
+            neverTransferPokemon = new ArrayList<>();
+            fillList(neverTransferPokemonNames, neverTransferPokemon);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -64,7 +63,8 @@ public class Config {
             String[] strings = propertiesString.split(",");
             if (strings != null) {
                 for (String string : strings) {
-                    target.add(Integer.parseInt(string));
+                    if (string.length() > 0)
+                        target.add(Integer.parseInt(string));
                 }
             }
         }
@@ -132,8 +132,8 @@ public class Config {
         return whiteListedPokemon;
     }
 
-    public static List<Integer> getNeverTransferPokemons() {
-        return neverTransferPokemons;
+    public static List<Integer> getNeverTransferPokemon() {
+        return neverTransferPokemon;
     }
 
 }

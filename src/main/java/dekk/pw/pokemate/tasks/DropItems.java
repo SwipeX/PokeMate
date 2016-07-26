@@ -18,6 +18,9 @@ public class DropItems implements Task {
             for (ItemId aUNWANTED : UNWANTED) {
                 int count = context.getApi().getInventories().getItemBag().getItem(aUNWANTED).getCount();
                 context.getApi().getInventories().getItemBag().removeItem(aUNWANTED, count);
+                if (count > 0 ) {
+                    System.out.println("Removed " + count + " " + aUNWANTED);
+                }
             }
         } catch (RemoteServerException | LoginFailedException e) {
             e.printStackTrace();

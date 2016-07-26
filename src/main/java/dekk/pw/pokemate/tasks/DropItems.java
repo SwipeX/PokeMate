@@ -4,6 +4,7 @@ import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.PokeMateUI;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -21,6 +22,8 @@ public class DropItems implements Task {
                 context.getApi().getInventories().getItemBag().removeItem(id, count);
                 if (count > 0) {
                     System.out.println("Removed " + count + " " + id);
+                    PokeMateUI.toast("Removed " + count + " " + id);
+
                 }
             }
         } catch (RemoteServerException | LoginFailedException e) {

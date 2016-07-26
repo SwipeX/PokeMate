@@ -5,6 +5,8 @@ import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -24,6 +26,7 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static boolean releasing;
+    private static List<Integer> whiteListedPokemon;
 
     private static Properties properties = new Properties();
 
@@ -41,15 +44,23 @@ public class Config {
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
+            releasing = Boolean.parseBoolean(properties.getProperty("release", "true"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
-            releasing = Boolean.parseBoolean(properties.getProperty("release","true"));
+
+            //whitelist
+            String whiteList = properties.getProperty("whitelisted-pokemons", "");
+            String[] strings = whiteList.split(",");
+            whiteListedPokemon = new ArrayList<>();
+            for (String string : strings) {
+                whiteListedPokemon.add(Integer.parseInt(string));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
-    public static double getSpeed() {
+    static double getSpeed() {
         return speed;
     }
 
@@ -65,11 +76,11 @@ public class Config {
         return googleApiKey;
     }
 
-    public static String getUsername() {
+    static String getUsername() {
         return username;
     }
 
-    public static String getPassword() {
+    static String getPassword() {
         return password;
     }
 
@@ -81,7 +92,7 @@ public class Config {
         return minCP;
     }
 
-    public static boolean isShowUI() {
+    static boolean isShowUI() {
         return showUI;
     }
 
@@ -89,7 +100,7 @@ public class Config {
         return dropItems;
     }
 
-    public static Properties getProperties() {
+    static Properties getProperties() {
         return properties;
     }
 
@@ -104,4 +115,14 @@ public class Config {
     public static int getMapPoints() {
         return mapPoints;
     }
+
+    public static boolean isWhitelistEnabled() {
+        List<Integer> poke = getWhitelistedPokemon();
+        return poke != null && poke.size() > 0;
+    }
+
+    public static List<Integer> getWhitelistedPokemon() {
+        return whiteListedPokemon;
+    }
+
 }

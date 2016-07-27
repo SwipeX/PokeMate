@@ -151,6 +151,7 @@ public class Config {
 
     public static String getCustomNamedLocation() {
         return customNamedLocation;
+    }
 
     public static boolean isConsoleNotification() {
         return consoleNotification;

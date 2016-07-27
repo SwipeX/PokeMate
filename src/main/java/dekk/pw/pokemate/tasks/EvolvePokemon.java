@@ -8,7 +8,6 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.StringConverter;
-import javafx.scene.image.Image;
 
 import java.io.DataInputStream;
 import java.util.HashMap;
@@ -52,8 +51,8 @@ public class EvolvePokemon extends Task {
                         if (pokemon.getCandy() >= required) {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
-                                String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId().name()) + "has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId().name()) + "costing " + required + " candies";
-                                PokeMateUI.toast(evolutionresult,"Pok\u00E9mon evolved!", new Image(("icons/" + pokemon.getPokemonId().getNumber() + ".png"),64,64,false,false));
+                                String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
+                                PokeMateUI.toast(evolutionresult, Config.POKE+"mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
                             }
                         }
                     }

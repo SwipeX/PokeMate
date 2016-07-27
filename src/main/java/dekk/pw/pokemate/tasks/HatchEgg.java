@@ -6,12 +6,11 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
-import javafx.scene.image.Image;
 
 import java.util.List;
 
 class HatchEgg extends Task {
-	HatchEgg(final Context context) {
+    HatchEgg(final Context context) {
         super(context);
     }
 
@@ -23,11 +22,11 @@ class HatchEgg extends Task {
                 Pokemon hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
                 String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
                 if (hatchedPokemon == null) {
-                    PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details,"Hatched egg!",new Image(("icons/items/egg.png"),64,64,false,false));
+                    PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details, "Hatched egg!","icons/items/egg.png");
                 } else {
                     PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
-                                    "Hatched egg!",
-                                    new Image(("icons/egg.png"),64,64,false,false));
+                            "Hatched egg!",
+                            "icons/egg.png");
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {

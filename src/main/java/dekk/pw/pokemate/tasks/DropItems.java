@@ -4,7 +4,6 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
-import javafx.scene.image.Image;
 
 import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 
@@ -28,7 +27,7 @@ public class DropItems extends Task {
                 context.getApi().getInventories().getItemBag().removeItem(id, count);
                 if (count > 0) {
                     String removedItem = "Removed " + count + " " + id.name();
-                    PokeMateUI.toast(removedItem,"Items removed!", new Image(("icons/items/backpack.png"),64,64,false,false));
+                    PokeMateUI.toast(removedItem,"Items removed!", "icons/items/backpack.png");
                 }
             }
         } catch (RemoteServerException | LoginFailedException e) {

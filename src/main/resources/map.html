@@ -63,8 +63,12 @@
         <ul class="nav navbar-nav">
             <li class="active" id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
             <li id="items"><a href="#" onclick="showItem()">Items</a></li>
+<<<<<<< HEAD
+			<li id="log"><a href="#" onclick="showLog()">Log</a></li>
+=======
             <li id="incubators"><a href="#" onclick="showIncubators();">Incubators</a></li>
             <li id="eggs"><a href="#" onclick="showEggs();">Eggs</a></li>
+>>>>>>> refs/remotes/origin/master
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
@@ -152,6 +156,15 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
+		<div id="logText">
+			<div class="col-sm-3">
+				<div style="height: 580px; overflow: auto;">
+					<textarea readonly id="logTextArea" style="height: 100%; overflow: auto; resize: none; width: 100%;"></textarea>
+				</div>
+			</div>
+		</div>
+=======
         <div id="userIncubators" style="margin-top: 15px;">
             <div class="col-sm-3">
                 <div style="height: 580px; overflow: auto;">
@@ -202,6 +215,7 @@
                 </div>
             </div>
         </div>
+>>>>>>> refs/remotes/origin/master
     </div>
 </div>
 
@@ -216,14 +230,30 @@
     function showPokemon() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userItem').hide();
+<<<<<<< HEAD
+		$('#logText').hide();
+=======
         $('#userIncubators').hide();
         $('#userEggs').hide();
+>>>>>>> refs/remotes/origin/master
         $('#userPokemon').show();
         $('#pokemons').addClass('active');
     }
     function showItem() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userPokemon').hide();
+<<<<<<< HEAD
+		$('#logText').hide();
+        $('#userItem').show();
+        $('#items').addClass('active');
+    }
+	function showLog() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#userPokemon').hide();
+        $('#userItem').hide();
+		$('#logText').show();
+        $('#log').addClass('active');
+=======
         $('#userIncubators').hide();
         $('#userEggs').hide();
         $('#userItem').show();
@@ -244,6 +274,7 @@
         $('#userIncubators').hide();
         $('#userEggs').show();
         $('#eggs').addClass('active');
+>>>>>>> refs/remotes/origin/master
     }
     $('#pokeFilter').change(function(){
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";

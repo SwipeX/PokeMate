@@ -5,11 +5,18 @@ import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.*;
+
+import dekk.pw.pokemate.util.AuthenticationListener;
 import okhttp3.OkHttpClient;
 
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.security.MessageDigest;
@@ -39,7 +46,7 @@ public class Context {
     }
 
     public static String getUsernameHash() {
-        try{
+        try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(Config.getUsername().getBytes());
             byte[] digest = md.digest();
@@ -49,7 +56,7 @@ public class Context {
             }
 
             return sb.toString();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -64,26 +71,12 @@ public class Context {
                 if (tokenFile.exists()) {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
+                    scanner.close();
                     if (token != null) {
                         return new GoogleCredentialProvider(httpClient, token);
                     }
                 } else {
-                    return new GoogleCredentialProvider(httpClient, new GoogleCredentialProvider.OnGoogleLoginOAuthCompleteListener() {
-                        @Override
-                        public void onInitialOAuthComplete(GoogleAuthJson googleAuthJson) {
-
-                        }
-
-                        @Override
-                        public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
-                            System.out.println("Token received: " + googleAuthTokenJson);
-                            try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
-                                p.write(googleAuthTokenJson.getRefreshToken());
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    return new GoogleCredentialProvider(httpClient, new AuthenticationListener());
                 }
             } else {
                 return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());

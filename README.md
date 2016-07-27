@@ -26,7 +26,7 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 ## Planned Features
 * User Interface improvments
 
-![Image of map](http://i.imgur.com/W4hG8i6.png)
+![Image of map](http://i.imgur.com/pCVLX6y.png)
 
 ##Slack
 Come join us on slack! https://shielded-earth-81203.herokuapp.com/ #pokemate-dev #pokemate-help

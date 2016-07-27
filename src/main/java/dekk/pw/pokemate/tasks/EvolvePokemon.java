@@ -13,12 +13,13 @@ import javafx.scene.image.Image;
 import java.io.DataInputStream;
 import java.util.HashMap;
 import java.util.ListIterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by TimD on 7/22/2016.
  */
 public class EvolvePokemon extends Task {
-    private static final HashMap<Integer, Integer> CANDY_AMOUNTS = new HashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> CANDY_AMOUNTS = new ConcurrentHashMap<>();
 
     static {
         try {

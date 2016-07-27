@@ -1,10 +1,12 @@
 package dekk.pw.pokemate;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.TaskController;
+import dekk.pw.pokemate.util.LatLongFromLocation;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
@@ -34,12 +36,38 @@ public class PokeMate {
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
         CredentialProvider auth;
+
+
+        // Co-ordinates by location name
+        boolean useNamedLocationConfig = Config.isUseCustomNamedLocation();
+        LatLongFromLocation fromLocation = new LatLongFromLocation(Config.getGoogleApiKey());
+        AtomicDouble lat;
+        AtomicDouble lng;
+
+        if (useNamedLocationConfig) {
+            String namedLocation = Config.getCustomNamedLocation();
+            fromLocation.parseLocation(namedLocation);
+
+            lat = fromLocation.getLatitude();
+            lng = fromLocation.getLongitude();
+
+            System.out.println("Using Custom Location");
+        } else { // Use given co-ordindates instead
+            AtomicDouble alat = new AtomicDouble();
+            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude")));
+            lat = alat;
+
+            AtomicDouble alng = new AtomicDouble();
+            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude")));
+            lng = alng;
+        }
+
         auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
         PokemonGo go = new PokemonGo(auth, http);
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
-        context.getLat().set(Double.parseDouble(Config.getProperties().getProperty("latitude")));
-        context.getLng().set(Double.parseDouble(Config.getProperties().getProperty("longitude")));
+        context.setLat(lat);
+        context.setLng(lng);
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             new Thread(() -> Application.launch(PokeMateUI.class, null)).start();

@@ -241,7 +241,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     public static void toast(String message) {
-        Platform.runLater(() ->
+        if(Config.isConsoleNotification())
+            System.out.println(message);
+
+        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
                 mapComponent.getWebview().getEngine().executeScript(
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }

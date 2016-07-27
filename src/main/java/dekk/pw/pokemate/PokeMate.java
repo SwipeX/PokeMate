@@ -75,17 +75,25 @@ public class PokeMate {
     }
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
+        if (checkArgs(args)){
+            Config.load(configProperties.getPath());
+            new PokeMate();
+        }else {
+            System.out.println("You are required to use a config.properties file to run the application.");
+            System.exit(1);
+        }
+    }
+
+    private static boolean checkArgs(String[] args){
         if (args[0].length() == 0){
-            System.out.println("USAGE: java -jar Pokemate.jar config.properties");
-            System.exit(1);
+            configProperties = new File("config.properties");
+        }else {
+            configProperties = new File(args[0]);
         }
-        configProperties = new File(args[0]);
         if (!Files.exists(configProperties.toPath())) {
-            System.out.println("You are specific path of config.properties file to run the application.");
-            System.exit(1);
+            return false;
         }
-        Config.load(configProperties.getPath());
-        new PokeMate();
+        return true;
     }
 
     public static Context getContext() {

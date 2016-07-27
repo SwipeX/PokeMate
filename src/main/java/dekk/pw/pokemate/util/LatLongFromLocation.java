@@ -11,11 +11,11 @@ import com.google.maps.model.LatLng;
  */
 public class LatLongFromLocation {
 
-    final String ERROR_MESSAGE = "Couldn't find specified custom location, falling back to co-ordinates";
-    String GoogleApiKey = "";
-    LatLng location;
-    double latitude;
-    double longitude;
+    private String GoogleApiKey = "";
+    private LatLng location;
+    private double latitude;
+    private double longitude;
+    private final String ERROR_MESSAGE = "Couldn't find specified custom location, falling back to co-ordinates";
 
     public LatLongFromLocation(String GoogleApiKey) {
         this.GoogleApiKey = GoogleApiKey;
@@ -23,7 +23,7 @@ public class LatLongFromLocation {
 
     public boolean parseLocation(String locationName){
 
-        if (locationName == null || locationName == "") {
+        if (locationName == null || locationName.equals("")) {
             System.out.println(ERROR_MESSAGE);
             return false;
         }

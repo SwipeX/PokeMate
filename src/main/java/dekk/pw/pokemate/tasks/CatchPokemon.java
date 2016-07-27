@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -56,7 +57,8 @@ public class CatchPokemon extends Task {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
                             try {
-                                List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
+                                List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons().stream().
+                                        filter(p -> p.getPokemonId().name().equals(target.getPokemonId().name())).collect(Collectors.toList());
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
                                 String output = "Caught a " + StringConverter.convertPokename(target.getPokemonId().name()) + " (" + p.getCp() + " CP)" + " (Candy: " + p.getCandy() + ")";

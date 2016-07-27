@@ -34,9 +34,9 @@
             width: 97px;
         }
 
-        tbody td, thead th {
+        /*#info, #itemsInfo tbody td, thead th {
             width: calc(100% / 3);
-        }
+        }*/
 
         table, tbody {
             height: 590px;
@@ -63,7 +63,12 @@
         <ul class="nav navbar-nav">
             <li class="active" id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
             <li id="items"><a href="#" onclick="showItem()">Items</a></li>
+<<<<<<< HEAD
 			<li id="log"><a href="#" onclick="showLog()">Log</a></li>
+=======
+            <li id="incubators"><a href="#" onclick="showIncubators();">Incubators</a></li>
+            <li id="eggs"><a href="#" onclick="showEggs();">Eggs</a></li>
+>>>>>>> refs/remotes/origin/master
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
@@ -129,7 +134,7 @@
         <div id="userItem" style="margin-top: 15px;">
             <div class="col-sm-3">
                 <div style="height: 580px; overflow: auto;">
-                    <table class="table table-striped table-bordered table-list" id="itemsIfo">
+                    <table class="table table-striped table-bordered table-list" id="itemsInfo">
                         <thead>
                         <tr>
                             <th width="35%">
@@ -151,6 +156,7 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
 		<div id="logText">
 			<div class="col-sm-3">
 				<div style="height: 580px; overflow: auto;">
@@ -158,6 +164,58 @@
 				</div>
 			</div>
 		</div>
+=======
+        <div id="userIncubators" style="margin-top: 15px;">
+            <div class="col-sm-3">
+                <div style="height: 580px; overflow: auto;">
+                    <table class="table table-striped table-bordered table-list" id="incubatorsInfo">
+                        <thead>
+                        <tr>
+                            <th width="20%">
+                                Incubator
+                            </th>
+                            <th width="80%">
+                                State
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="info-incubators">
+                        <tr>
+                            <td>Loading</td>
+                            <td>Loading</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="userEggs" style="margin-top: 15px;">
+            <div class="col-sm-3">
+                <div style="height: 580px; overflow: auto;">
+                    <table class="table table-striped table-bordered table-list" id="eggsInfo">
+                        <thead>
+                        <tr>
+                            <th width="20%">
+                                Egg
+                            </th>
+                            <th width="80%">
+                                State
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="info-eggs">
+                        <tr>
+                            <td>Loading</td>
+                            <td>Loading</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+>>>>>>> refs/remotes/origin/master
     </div>
 </div>
 
@@ -172,13 +230,19 @@
     function showPokemon() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userItem').hide();
+<<<<<<< HEAD
 		$('#logText').hide();
+=======
+        $('#userIncubators').hide();
+        $('#userEggs').hide();
+>>>>>>> refs/remotes/origin/master
         $('#userPokemon').show();
         $('#pokemons').addClass('active');
     }
     function showItem() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userPokemon').hide();
+<<<<<<< HEAD
 		$('#logText').hide();
         $('#userItem').show();
         $('#items').addClass('active');
@@ -189,6 +253,28 @@
         $('#userItem').hide();
 		$('#logText').show();
         $('#log').addClass('active');
+=======
+        $('#userIncubators').hide();
+        $('#userEggs').hide();
+        $('#userItem').show();
+        $('#items').addClass('active');
+    }
+    function showIncubators() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#userPokemon').hide();
+        $('#userItem').hide();
+        $('#userEggs').hide();
+        $('#userIncubators').show();
+        $('#incubators').addClass('active');
+    }
+    function showEggs() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#userPokemon').hide();
+        $('#userItem').hide();
+        $('#userIncubators').hide();
+        $('#userEggs').show();
+        $('#eggs').addClass('active');
+>>>>>>> refs/remotes/origin/master
     }
     $('#pokeFilter').change(function(){
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";

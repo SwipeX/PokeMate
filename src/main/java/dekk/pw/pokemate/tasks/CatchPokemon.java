@@ -21,9 +21,14 @@ import java.util.List;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon implements Task {
+public class CatchPokemon extends Task {
 
-    public void run(Context context) {
+    CatchPokemon(final Context context) {
+        super(context);
+    }
+
+    @Override
+    public void run() {
         try {
             Pokeball pokeball = null;
             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();

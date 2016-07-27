@@ -6,6 +6,7 @@ import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.*;
 
+import dekk.pw.pokemate.util.AuthenticationListener;
 import okhttp3.OkHttpClient;
 
 import java.awt.Desktop;
@@ -45,7 +46,7 @@ public class Context {
     }
 
     public static String getUsernameHash() {
-        try{
+        try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(Config.getUsername().getBytes());
             byte[] digest = md.digest();
@@ -55,7 +56,7 @@ public class Context {
             }
 
             return sb.toString();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -75,46 +76,7 @@ public class Context {
                         return new GoogleCredentialProvider(httpClient, token);
                     }
                 } else {
-                    return new GoogleCredentialProvider(httpClient, new GoogleCredentialProvider.OnGoogleLoginOAuthCompleteListener() {
-                        @Override
-                        public void onInitialOAuthComplete(GoogleAuthJson googleAuthJson) {
-                        	String copied;
-                        	
-                        	// Copy user code to clipboard
-                        	try {
-                        		StringSelection selection = new StringSelection(googleAuthJson.getUserCode());
-                                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                                clipboard.setContents(selection, selection);
-                                
-                        		copied = " (copied to clipboard)";
-                        	} catch(Exception ex) {
-                        		copied = "";
-                        	}
-                        	
-                        	System.out.println("-----------------------------------------");
-							System.out.println("  Please go to the following URL");
-							System.out.println("  URL: " + googleAuthJson.getVerificationUrl());
-							System.out.println("  Code: " + googleAuthJson.getUserCode() + copied);
-							System.out.println("-----------------------------------------");
-                            
-							// Open default browser to authentication url
-                        	try {
-								Desktop.getDesktop().browse(new URI(googleAuthJson.getVerificationUrl()));
-							} catch (Exception ex) {
-								System.err.println("Failed to automatically open browser.");
-							}
-                        }
-
-                        @Override
-                        public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
-                            System.out.println("Token received: " + googleAuthTokenJson);
-                            try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
-                                p.write(googleAuthTokenJson.getRefreshToken());
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    return new GoogleCredentialProvider(httpClient, new AuthenticationListener());
                 }
             } else {
                 return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());

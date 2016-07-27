@@ -130,7 +130,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                     if (directionsSteps != null && directionsSteps.size() > Config.getMapPoints() - 1 && !directions) {
                         synchronized (poke) {
                             List<LatLong> locs = new ArrayList<>();
-                            for (DirectionsStep[] steps : Navigate.getDirections()) {
+                            for (DirectionsStep[] steps : directionsSteps) {
                                 for (DirectionsStep step : steps) {
                                     step.polyline.decodePath().forEach(a -> locs.add(new LatLong(a.lat, a.lng)));
                                 }

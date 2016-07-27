@@ -14,10 +14,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.security.MessageDigest;
@@ -72,6 +70,7 @@ public class Context {
                 if (tokenFile.exists()) {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
+                    scanner.close();
                     if (token != null) {
                         return new GoogleCredentialProvider(httpClient, token);
                     }

@@ -107,6 +107,10 @@ public class Context {
         this.api = api;
     }
 
+    public PlayerProfile getProfile() {
+        return profile;
+    }
+
     public void setProfile(PlayerProfile profile) {
         this.profile = profile;
     }
@@ -115,8 +119,16 @@ public class Context {
         return walking.get();
     }
 
-    AtomicBoolean getWalking() {
+    public AtomicBoolean getWalking() {
         return walking;
+    }
+
+    public CredentialProvider getCredentialProvider() {
+        return credentialProvider;
+    }
+
+    public void setCredentialProvider(CredentialProvider credentialProvider) {
+        this.credentialProvider = credentialProvider;
     }
 
     /**

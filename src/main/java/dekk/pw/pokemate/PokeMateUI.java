@@ -27,7 +27,8 @@ import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import org.controlsfx.control.Notifications;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -309,8 +310,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     public static void toast(String message, String title, String image) {
         if (Config.isConsoleNotification())
-            System.out.println(message);
-        messagesForLog += message + "\\r\\n\\r\\n";
+            System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
+        messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
         if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
             mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message));
         });
@@ -321,6 +322,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .darkStyle()
                 .show());
     }
+	
+	public static void addMessageToLog(String message) {
+		messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
+	}
 
     private void updateLog() {
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').value = document.getElementById('logTextArea').value + \"" + messagesForLog + "\"");

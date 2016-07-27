@@ -5,11 +5,17 @@ import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.*;
+
 import okhttp3.OkHttpClient;
 
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.security.MessageDigest;
@@ -64,6 +70,7 @@ public class Context {
                 if (tokenFile.exists()) {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
+                    scanner.close();
                     if (token != null) {
                         return new GoogleCredentialProvider(httpClient, token);
                     }
@@ -71,7 +78,31 @@ public class Context {
                     return new GoogleCredentialProvider(httpClient, new GoogleCredentialProvider.OnGoogleLoginOAuthCompleteListener() {
                         @Override
                         public void onInitialOAuthComplete(GoogleAuthJson googleAuthJson) {
-
+                        	String copied;
+                        	
+                        	// Copy user code to clipboard
+                        	try {
+                        		StringSelection selection = new StringSelection(googleAuthJson.getUserCode());
+                                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                                clipboard.setContents(selection, selection);
+                                
+                        		copied = " (copied to clipboard)";
+                        	} catch(Exception ex) {
+                        		copied = "";
+                        	}
+                        	
+                        	System.out.println("-----------------------------------------");
+							System.out.println("  Please go to the following URL");
+							System.out.println("  URL: " + googleAuthJson.getVerificationUrl());
+							System.out.println("  Code: " + googleAuthJson.getUserCode() + copied);
+							System.out.println("-----------------------------------------");
+                            
+							// Open default browser to authentication url
+                        	try {
+								Desktop.getDesktop().browse(new URI(googleAuthJson.getVerificationUrl()));
+							} catch (Exception ex) {
+								System.err.println("Failed to automatically open browser.");
+							}
                         }
 
                         @Override

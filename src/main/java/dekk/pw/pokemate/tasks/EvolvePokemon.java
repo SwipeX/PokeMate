@@ -49,7 +49,7 @@ public class EvolvePokemon implements Task {
                         if (pokemon.getCandy() >= required) {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
-                                String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId()) + " costing " + required + " candies";
+                                String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
                                 PokeMateUI.toast(evolutionresult);
                                 PokeMateUI.showNotification("Pokemon evolved!", evolutionresult, new Image(("icons/" + pokemon.getPokemonId().getNumber() + ".png"),64,64,false,false));
                             }

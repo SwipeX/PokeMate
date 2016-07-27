@@ -15,16 +15,19 @@ import java.util.stream.Collectors;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class ReleasePokemon implements Task {
+public class ReleasePokemon extends Task {
 
+    ReleasePokemon(final Context context) {
+        super(context);
+    }
 
-    public void run(Context context) {
+    @Override
+    public void run() {
         Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
         for (List<Pokemon> list : groups.values()) {
             Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
-            list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.getFavorite() && context.getIvRatio(p) < Config.getIvRatio()).forEach(p -> {
+            list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.isFavorite() && context.getIvRatio(p) < Config.getIvRatio() && !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
                 //Passing this filter means they are not a 'perfect pokemon'
-                    System.out.println("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                 try {
                     p.transferPokemon();
                 } catch (LoginFailedException | RemoteServerException e) {

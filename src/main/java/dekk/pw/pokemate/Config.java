@@ -1,7 +1,6 @@
 package dekk.pw.pokemate;
 
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
-import com.pokegoapi.api.pokemon.Pokemon;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -27,6 +26,15 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
+    private static List<Integer> neverTransferPokemon;
+    private static boolean consoleNotification;
+    private static boolean userInterfaceNotification;
+    private static boolean uiSystemNotification;
+    private static boolean useCustomNamedLocation;
+    private static String customNamedLocation;
+    private static boolean eggsIncubating;
+    private static boolean eggsHatching;
+    public final static String POKE = "Pok\u00E9";
 
     private static Properties properties = new Properties();
 
@@ -45,22 +53,40 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
+            eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
+            eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
-            if (whiteList != null) {
-                String[] strings = whiteList.split(",");
-                if (strings != null) {
-                    whiteListedPokemon = new ArrayList<>();
-                    for (String string : strings) {
-                        whiteListedPokemon.add(Integer.parseInt(string));
-                    }
-                }
-            }
+            whiteListedPokemon = new ArrayList<>();
+            fillList(whiteList, whiteListedPokemon);
+            String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
+            neverTransferPokemon = new ArrayList<>();
+            fillList(neverTransferPokemonNames, neverTransferPokemon);
+            // named location
+            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "false"));
+            customNamedLocation = properties.getProperty("location-by-name");
+            // notification
+            consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
+            userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
+            uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
+
+    private static void fillList(String propertiesString, List<Integer> target) {
+        if (propertiesString != null) {
+            String[] strings = propertiesString.split(",");
+            if (strings != null) {
+                for (String string : strings) {
+                    if (string.length() > 0)
+                        target.add(Integer.parseInt(string));
+                }
+            }
+        }
+    }
+
 
     public static double getSpeed() {
         return speed;
@@ -123,4 +149,35 @@ public class Config {
         return whiteListedPokemon;
     }
 
+    public static List<Integer> getNeverTransferPokemon() {
+        return neverTransferPokemon;
+    }
+
+    public static boolean isUseCustomNamedLocation() {
+        return useCustomNamedLocation;
+    }
+
+    public static String getCustomNamedLocation() {
+        return customNamedLocation;
+    }
+
+    public static boolean isConsoleNotification() {
+        return consoleNotification;
+    }
+
+    public static boolean isUserInterfaceNotification() {
+        return userInterfaceNotification;
+    }
+
+    public static boolean isUiSystemNotification(){
+        return uiSystemNotification;
+    }
+
+    public static boolean isEggsIncubating() {
+        return eggsIncubating;
+    }
+
+    public static boolean isEggsHatching() {
+        return eggsHatching;
+    }
 }

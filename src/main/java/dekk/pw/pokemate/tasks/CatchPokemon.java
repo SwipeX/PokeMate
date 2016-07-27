@@ -12,7 +12,10 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.util.StringConverter;
+import javafx.scene.image.Image;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,9 +23,14 @@ import java.util.List;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon implements Task {
+public class CatchPokemon extends Task {
 
-    public void run(Context context) {
+    CatchPokemon(final Context context) {
+        super(context);
+    }
+
+    @Override
+    public void run() {
         try {
             Pokeball pokeball = null;
             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
@@ -51,7 +59,8 @@ public class CatchPokemon implements Task {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
-								System.out.println("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" +                                         p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
+                                String output = "Caught a " + StringConverter.convertPokename(target.getPokemonId().name()) + " (" + p.getCp() + " CP)" + " (Candy: " + p.getCandy() + ")";
+                                PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }
@@ -82,4 +91,6 @@ public class CatchPokemon implements Task {
                 return Pokeball.POKEBALL;
         }
     }
+
+
 }

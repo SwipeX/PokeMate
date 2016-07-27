@@ -1,0 +1,37 @@
+# PTC/Google login credentials
+username=golfpokemongo@gmail.com
+password=xxxx
+# Location by name: e.g. "Sydney" or "W12 8LP" or "Trafalgar Square, London" - set to true to use
+use-location-name=false
+location-by-name="Trafalgar Square, London"
+#Lat/Long
+latitude=40.7127837
+longitude=-74.0059413
+#Preferred throw item
+preferred_ball=ITEM_POKE_BALL
+#Google maps API key for walking
+api-key=AIzaSyA6cwdMiVJxmmGQ6HoqFtCgrsvGFZc7xd0
+#What IV% to keep pokemon at
+iv-ratio=90
+#What CP to keep pokemon above
+min-cp=500
+#show user interface
+show=true
+# should the bot EVER drop items (true/false)
+drop_items=false
+# Meters per second
+speed=10
+# Automatic evolving 
+automatic-evolving=true
+#Range to walk in, VERY sensitive
+range=.004
+#points in the map path
+map-points=15
+# Only whitelist certain pokemons
+whitelisted-pokemon=10,13,16
+# List of Pokémons ids to NEVER transfer, separated by commas.
+never-transfer=
+# Enable events notifications on console output
+console_notification=true
+# Enable toast notifications on UI (only if UI is enabled)
+ui_notification=false

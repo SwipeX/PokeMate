@@ -351,6 +351,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             "src=\'" + imgSrc + "\'" + ">" +
                             "</div>" +
                             "<div class=\'row\'>" +
+                            "<p>Index: " + pokemon.getPokemonId().getNumber() + "</p>" +
                             "<p>CP: " + pokemon.getCp() + "</p>" +
                             "<p>Candy: " + pokemon.getCandy() + "</p>" +
                             "<p>IV%: " + context.getIvRatio(pokemon) + "</p>" +
@@ -372,19 +373,20 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             mapComponent.getWebview().getEngine().executeScript("document.getElementById('pokemonManagementContent').innerHTML = " + pokeList);
             mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").setAttribute("isLoaded","true");
         } else if(transferStatus){
+            mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").setAttribute("isTransfering", "false");
             String pokemonToTransfer = mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").getAttribute("pokemonList");
             String[] pokemonList = pokemonToTransfer.split(",");
-            for(int i = 0; i < pokemonList.length; i++){
+            for(int i = 0; i < pokemonList.length-1; i++){
                 Long pokemonId = Long.parseLong(pokemonList[i]);
                 Pokemon thePokemon = context.getApi().getInventories().getPokebank().getPokemonById(pokemonId);
                 try {
+                    if(thePokemon != null)
                     System.out.println("Transfering " + thePokemon.getPokemonId() +  " has been " +thePokemon.transferPokemon().toString());
                 } catch (RemoteServerException | LoginFailedException e) {
                     e.printStackTrace();
                     mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").setAttribute("isLoaded", "false");
                 }
             }
-            mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").setAttribute("isTransfering", "false");
             mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").removeAttribute("pokemonList");
             mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").setAttribute("isLoaded", "false");
         }

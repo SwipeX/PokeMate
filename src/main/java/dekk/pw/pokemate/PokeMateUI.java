@@ -34,6 +34,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     protected static GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
+	protected static String messagesForLog = "";
     public static final double XVARIANCE = Config.getRange() * 1.5;
     public static final double VARIANCE = Config.getRange();
     public static Marker marker;
@@ -157,6 +158,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         updatePlayer(context, window);
                         updatePokemon(context);
                         updateItems(context);
+						updateLog(context);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -243,11 +245,17 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     public static void toast(String message) {
         if(Config.isConsoleNotification())
             System.out.println(message);
-
+		messagesForLog += message + "\\r\\n\\r\\n";
         if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
                 mapComponent.getWebview().getEngine().executeScript(
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }
+	
+	private void updateLog(Context context) {
+		mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').value = document.getElementById('logTextArea').value + \"" + messagesForLog + "\"");
+		mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').scrollTop = document.getElementById('logTextArea').scrollHeight");
+		messagesForLog = "";
+	}
 
     private static String millisToTimeString(long millis) {
         long seconds = (millis / 1000) % 60;

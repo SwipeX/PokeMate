@@ -105,7 +105,7 @@ public class TagPokestop implements Task {
 				if (maxRevive > 0)
 					retstr += " - Max Revive Potion (x" + maxRevive + ")";
 				if (razzBerry > 0)
-					retstr += " - Razz Berry Potion (x" + razzBerry + ")";
+					retstr += " - Razz Berry (x" + razzBerry + ")";
 				return retstr;
             case INVENTORY_FULL:
                 return "Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]";

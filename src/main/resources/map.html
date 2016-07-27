@@ -63,6 +63,7 @@
         <ul class="nav navbar-nav">
             <li class="active" id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
             <li id="items"><a href="#" onclick="showItem()">Items</a></li>
+			<li id="log"><a href="#" onclick="showLog()">Log</a></li>
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
@@ -150,6 +151,13 @@
                 </div>
             </div>
         </div>
+		<div id="logText">
+			<div class="col-sm-3">
+				<div style="height: 580px; overflow: auto;">
+					<textarea readonly id="logTextArea" style="height: 100%; overflow: auto; resize: none; width: 100%;"></textarea>
+				</div>
+			</div>
+		</div>
     </div>
 </div>
 
@@ -164,14 +172,23 @@
     function showPokemon() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userItem').hide();
+		$('#logText').hide();
         $('#userPokemon').show();
         $('#pokemons').addClass('active');
     }
     function showItem() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userPokemon').hide();
+		$('#logText').hide();
         $('#userItem').show();
         $('#items').addClass('active');
+    }
+	function showLog() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#userPokemon').hide();
+        $('#userItem').hide();
+		$('#logText').show();
+        $('#log').addClass('active');
     }
     $('#pokeFilter').change(function(){
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";

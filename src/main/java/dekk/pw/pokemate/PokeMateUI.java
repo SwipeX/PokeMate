@@ -17,9 +17,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -282,6 +284,17 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
                 mapComponent.getWebview().getEngine().executeScript(
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+
+    }
+
+    //For people like me who run bots in background but still like to see whats happening
+    public static void showNotification(String title, String message, Image image){
+        if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
+                .graphic(new ImageView(image))
+                .title(title)
+                .text(message)
+                .darkStyle()
+                .show());
     }
 	
 	private void updateLog() {

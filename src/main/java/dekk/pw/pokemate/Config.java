@@ -29,6 +29,7 @@ public class Config {
     private static List<Integer> neverTransferPokemon;
     private static boolean consoleNotification;
     private static boolean userInterfaceNotification;
+    private static boolean uiSystemNotification;
     private static boolean useCustomNamedLocation;
     private static String customNamedLocation;
 
@@ -61,6 +62,7 @@ public class Config {
             customNamedLocation = properties.getProperty("location-by-name");
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
+            uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "true"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -160,4 +162,9 @@ public class Config {
     public static boolean isUserInterfaceNotification() {
         return userInterfaceNotification;
     }
+
+    public static boolean isUiSystemNotification(){
+        return uiSystemNotification;
+    }
+
 }

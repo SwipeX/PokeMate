@@ -35,3 +35,5 @@ never-transfer=
 console_notification=true
 # Enable toast notifications on UI (only if UI is enabled)
 ui_notification=true
+#Enable popup notifications
+sys_notification=true

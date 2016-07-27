@@ -14,6 +14,8 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.util.StringConverter;
+import javafx.scene.image.Image;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +59,9 @@ public class CatchPokemon extends Task {
                                 List<Pokemon> pokemonList = context.getApi().getInventories().getPokebank().getPokemons();
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
-                                PokeMateUI.toast("Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")");
+                                String output = "Caught a " + getIvRatio(p) + "% " +  StringConverter.convertPokename(target.getPokemonId().name()) + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + StringConverter.convertItem(ball.getItemId().name()) + " (Candy: " + p.getCandy() + ")";
+                                PokeMateUI.toast(output);
+                                PokeMateUI.showNotification("Pokémon caught!", output, new Image(("icons/" + target.getPokemonId().getNumber() + ".png"),64,64,false,false));
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }

@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.security.MessageDigest;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -37,11 +38,29 @@ public class Context {
         return Login(null, httpClient);
     }
 
+    public static String getUsernameHash() {
+        try{
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(Config.getUsername().getBytes());
+            byte[] digest = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+
+            return sb.toString();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return Config.getUsername();
+    }
+
     public static CredentialProvider Login(Context context, OkHttpClient httpClient) {
         String token = null;
         try {
             if (Config.getUsername().contains("@")) {
-                File tokenFile = new File("token.txt");
+                File tokenFile = new File("tokens/" + Context.getUsernameHash() + ".txt");
                 if (tokenFile.exists()) {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
@@ -58,7 +77,7 @@ public class Context {
                         @Override
                         public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
                             System.out.println("Token received: " + googleAuthTokenJson);
-                            try (PrintWriter p = new PrintWriter("token.txt")) {
+                            try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
                                 p.write(googleAuthTokenJson.getRefreshToken());
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
@@ -81,6 +100,14 @@ public class Context {
 
     public AtomicDouble getLng() {
         return lng;
+    }
+
+    public void setLat(AtomicDouble lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(AtomicDouble lng) {
+        this.lng = lng;
     }
 
     public OkHttpClient getHttp() {
@@ -129,5 +156,12 @@ public class Context {
      */
     public int getIvRatio(Pokemon pokemon) {
         return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
+    }
+
+    public static String millisToTimeString(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = (millis / (1000 * 60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

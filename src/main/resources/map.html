@@ -53,6 +53,11 @@
         .hidden {
             display: none;
         }
+
+        .pokeBorder {
+            border: 1px solid black;
+            box-sizing: border-box;
+        }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
@@ -68,6 +73,7 @@
             <li class="active" id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
             <li id="items"><a href="#" onclick="showItem()">Items</a></li>
             <li id="manageItems"><a href="#" onclick="showManageItem()">Manage Items</a></li>
+            <li id="managePokemons"><a href="#" onclick="showManagePokemon()">Manage Pokemons</a></li>
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
@@ -161,6 +167,36 @@
         <span style="font-size: 20px; margin-top: 20px; margin-left: 15px;">Please Wait...</span>
     </div>
     <input id="deleteItemData" type="hidden" isDeleting="false">
+
+    <div id="pokemonManagement" class="row" isBeingViewed="false" isLoaded="false">
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="pokeFilter">Sort type:</label>
+            <select id="pokeManageFilter">
+                <option value="pokedex" selected>Pokedex ID</option>
+                <option value="cp">CP</option>
+                <option value="candy">Candy</option>
+                <option value="iv">IV</option>
+                <option value="recent">Recent</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="pokeSortType">Result order:</label>
+            <select id="pokeManageSortType">
+                <option value="asc" selected>Ascending</option>
+                <option value="des">Descending</option>
+            </select>
+        </div>
+        <div id="pokemonManagementInfo">
+        </div>
+        <div id="pokemonManagementInfo2">
+        </div>
+        <div id="pokemonManagementContent" style="margin-top: 20px;">
+            <span style="font-size: 20px; margin-top: 20px;">Please Wait...</span>
+        </div>
+    </div>
+
+    <input id="transferPokemonData" type="hidden" isTransfering="false">
+
 </div>
 
 
@@ -172,18 +208,20 @@
 <script src="js/bootstrap-notify.min.js"></script>
 <script>
     function showPokemon() {
+        resetManageItemsLayout();
+        resetManagePokemonLayout();
         $('#navbarOptions').find('.active').removeClass('active');
         $('#pokemons').addClass('active');
         $('#userItem').hide();
-        $('#itemManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
         $('#main').show();
         $('#userPokemon').show();
     }
     function showItem() {
+        resetManageItemsLayout();
+        resetManagePokemonLayout();
         $('#navbarOptions').find('.active').removeClass('active');
         $('#items').addClass('active');
         $('#userPokemon').hide();
-        $('#itemManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
         $('#main').show();
         $('#userItem').show();
     }
@@ -196,12 +234,33 @@
         $('#info-body').html(wait);
     });
     function showManageItem() {
+        resetManagePokemonLayout();
         $('#navbarOptions').find('.active').removeClass('active');
         $('#manageItems').addClass('active');
         $('#itemManagement').attr("isBeingViewed", "true");
         $('#main').hide();
+        $('#pokemonManagement').hide();
         $('#itemManagement').show();
     }
+    function showManagePokemon() {
+        resetManageItemsLayout();
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#managePokemons').addClass('active');
+        $('#pokemonManagement').attr("isBeingViewed", "true");
+        $('#main').hide();
+        $('#itemManagement').hide();
+        $('#pokemonManagement').show();
+    }
+    $('#pokeManageFilter').change(function(){
+        var wait = '<span style="font-size: 20px; margin-top: 20px;">Please Wait...</span>';
+        $('#pokemonManagementContent').html(wait);
+        $('#pokemonManagement').attr("isLoaded", "false");
+    });
+    $('#pokeManageSortType').change(function(){
+        var wait = '<span style="font-size: 20px; margin-top: 20px;">Please Wait...</span>';
+        $('#pokemonManagementContent').html(wait);
+        $('#pokemonManagement').attr("isLoaded", "false");
+    });
     $(document).on('click', "button.deleteItem", function(event) {
         var id = $(event.currentTarget).attr("data-id");
         var maxCount = $(event.currentTarget).attr("data-maxCount");
@@ -216,6 +275,31 @@
             $('#itemManagement').attr("isLoaded", "false");
         }
     });
+     $(document).on('click', "button.transferPokemons", function(event) {
+        var pokemons = $('.pokemonToTransfer:checked').map(function() {
+            return this.value;
+        }).get();
+        if(pokemons.length > 0){
+            $('#pokemonManagementContent').html("Transfering: " + pokemons.length + " pokemon(s). Please wait...");
+            $('#transferPokemonData').attr("pokemonList",pokemons).attr("isTransfering","true");
+        } else {
+            $('#pokemonManagementInfo2').html("Please select at least one pokemon");
+        }
+    });
+    function resetManageItemsLayout(){
+        $('#itemManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
+        var wait = '<span style="font-size: 20px; margin-top: 20px;">Please Wait...</span>';
+        $('#itemManagement').html(wait);
+
+    }
+    function resetManagePokemonLayout(){
+        $('#pokemonManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
+        $('#pokemonManagementInfo').html("");
+        $('#pokemonManagementInfo2').html("");
+        var wait = '<span style="font-size: 20px; margin-top: 20px;">Please Wait...</span>';
+        $('#pokemonManagementContent').html(wait);
+
+    }
 </script>
 </body>
 </html>

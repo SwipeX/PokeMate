@@ -28,6 +28,7 @@ public class Walking {
         }
     }
 
+    
         public static void walk(S2LatLng end, final Context context) {
             if (context.isWalking()) return;
             context.getWalking().set(true);
@@ -50,6 +51,7 @@ public class Walking {
                         System.out.println("Destination reached.");
                         context.getWalking().set(false);
                         cancel();
+
                     }
                     //   System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
                 }

@@ -41,3 +41,5 @@ sys_notification=true
 eggs_incubating=true
 # Enable auto eggs hatching
 eggs_hatching=true
+#Items to drop (remove from this list if you want to keep it, note that inventory management will now be left up to you, as it could be possible to run out of pokeballs)
+drop_item_list=ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE

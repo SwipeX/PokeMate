@@ -27,6 +27,7 @@ public class Config {
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
     private static List<Integer> neverTransferPokemon;
+	private static List<String> droppedItems;
     private static boolean consoleNotification;
     private static boolean userInterfaceNotification;
     private static boolean uiSystemNotification;
@@ -49,7 +50,6 @@ public class Config {
             minCP = Integer.parseInt(properties.getProperty("min-cp", "1"));
             mapPoints = Integer.parseInt(properties.getProperty("map-points", "50"));
             showUI = Boolean.parseBoolean(properties.getProperty("show", "true"));
-            dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
@@ -69,9 +69,26 @@ public class Config {
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
             uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
+			// dropped items
+			dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
+			String droppedItemNames = properties.getProperty("drop_item_list", "ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE");
+			droppedItems = new ArrayList<>();
+			fillListString(droppedItemNames, droppedItems);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+	
+	private static void fillListString(String propertiesString, List<String> target) {
+        if (propertiesString != null) {
+            String[] strings = propertiesString.split(",");
+            if (strings != null) {
+                for (String string : strings) {
+                    if (string.length() > 0)
+                        target.add(string);
+                }
+            }
         }
     }
 
@@ -180,4 +197,8 @@ public class Config {
     public static boolean isEggsHatching() {
         return eggsHatching;
     }
+	
+	public static List<String> getDroppedItems() {
+		return droppedItems;
+	}
 }

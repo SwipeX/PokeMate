@@ -51,14 +51,13 @@ public class AuthenticationListener implements GoogleCredentialProvider.OnGoogle
     @Override
     public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
         System.out.println("Token received: " + googleAuthTokenJson);
-        Path tokenPath = Paths.get("/tokens/");
+        Path tokenPath = Paths.get("tokens/");
         if(!Files.exists(tokenPath)){
             try {
                 Files.createDirectory(tokenPath);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-        }
+            }        }
         try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
             p.write(googleAuthTokenJson.getRefreshToken());
         } catch (FileNotFoundException e) {

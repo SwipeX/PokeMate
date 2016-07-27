@@ -208,7 +208,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                     "src=\'" + imgSrc + "\'" + "></td>" +
                     "<td style='width: 200px;'>Currently: " + (incubator.isInUse() ? "<b style='color:#ff0000;'>In use</b>" : "<b style='color:#00ff00;'>unused</b>") +
-                    "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "∞") +
+                    "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "\u221e") +
                     "<br/>Km walked : " + walked + "</td></tr>";
         }
         incubatorsList += "\"";

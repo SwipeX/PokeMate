@@ -7,6 +7,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import javafx.scene.image.Image;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,8 @@ public class IncubateEgg extends Task {
             if (incubators.size() > 0 && eggs.size() > 0) {
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
-                    PokeMateUI.toast("Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget()+"km)");
+                    String eggresult = "Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget()+"km)";
+                    PokeMateUI.toast(eggresult,"Egg Incubated!", new Image(("icons/items/egg.png"),64,64,false,false));
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {

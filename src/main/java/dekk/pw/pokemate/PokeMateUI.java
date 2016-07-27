@@ -17,9 +17,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -287,13 +289,20 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
     }
 
-    public static void toast(String message) {
+    public static void toast(String message, String title, Image image) {
         if(Config.isConsoleNotification())
             System.out.println(message);
 		messagesForLog += message + "\\r\\n\\r\\n";
-        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
-                mapComponent.getWebview().getEngine().executeScript(
-                        "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
+            mapComponent.getWebview().getEngine().executeScript(
+                    "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});");
+        });
+        if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
+                .graphic(new ImageView(image))
+                .title(title)
+                .text(message)
+                .darkStyle()
+                .show());
     }
 	
 	private void updateLog() {

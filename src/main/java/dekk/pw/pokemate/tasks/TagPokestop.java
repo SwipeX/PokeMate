@@ -1,16 +1,15 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Networking.Responses.FortSearchResponseOuterClass;
 import POGOProtos.Inventory.Item.ItemAwardOuterClass;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
-import com.pokegoapi.api.inventory.Item;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,7 @@ public class TagPokestop extends Task {
                         Walking.setLocation(context);
                         try {
                             String result = resultMessage(near.loot());
-                            PokeMateUI.toast(result);
+							PokeMateUI.toast(result, "PokéStop interaction!", new Image(("icons/pokestop.png"),64,64,false,false));
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
                         }

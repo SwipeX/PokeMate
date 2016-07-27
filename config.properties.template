@@ -30,5 +30,5 @@ whitelisted-pokemon=10,13,16
 never-transfer=
 # Enable events notifications on console output
 console_notification=true
-# Enable toats notifications on UI (only if UI is enabled)
+# Enable toast notifications on UI (only if UI is enabled)
 ui_notification=true

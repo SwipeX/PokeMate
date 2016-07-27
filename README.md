@@ -9,6 +9,8 @@
 + Traverses a set of nodes returned from Google's Directions API
 + Auto evolving when able.
 + Hatches eggs
++ Egg 'cracking'
++ Notifications
 
 ###Release
 You can download the release from the Releases tab, only requirement is Java 8. Instructions can be found on that page.
@@ -22,8 +24,6 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 5. Compile and Run `PokeMate.java`. Or `java -jar Pokemate.jar` from the jar.
 
 ## Planned Features
-* Egg 'cracking'
-* Notifications
 * User Interface improvments
 
 ![Image of map](http://i.imgur.com/W4hG8i6.png)

@@ -57,7 +57,7 @@ public class Config {
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
             // named location
-            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "true"));
+            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "false"));
             customNamedLocation = properties.getProperty("location-by-name");
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));

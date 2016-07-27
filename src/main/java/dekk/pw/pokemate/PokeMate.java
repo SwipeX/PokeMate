@@ -40,13 +40,11 @@ public class PokeMate {
         OkHttpClient http = builder.build();
         CredentialProvider auth = null;
 
-        // Co-ordinates by location name
-        boolean useNamedLocationConfig = Config.isUseCustomNamedLocation();
-        LatLongFromLocation fromLocation = new LatLongFromLocation(Config.getGoogleApiKey());
         AtomicDouble lat;
         AtomicDouble lng;
-
-        if (useNamedLocationConfig) {
+        // Co-ordinates by location name
+        if (Config.isUseCustomNamedLocation()) {
+            LatLongFromLocation fromLocation = new LatLongFromLocation(Config.getGoogleApiKey());
             String namedLocation = Config.getCustomNamedLocation();
             fromLocation.parseLocation(namedLocation);
 

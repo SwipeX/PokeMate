@@ -1,10 +1,9 @@
-﻿package dekk.pw.pokemate;
+package dekk.pw.pokemate;
 
 import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.service.directions.DirectionsRenderer;
 import com.lynden.gmapsfx.shapes.*;
 import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
@@ -195,7 +194,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +
                         "<td style='width: 200px;'>Currently " + (incubator.isInUse() ? "<b style='color:#ff0000;'>used</b>" : "<b style='color:#00ff00;'>unused</b>") +
-                        "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "∞") +
+                        "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "?") +
                         "<br/>Km walked : " + walked + "</td></tr>";
         }
         incubatorsList += "\"";

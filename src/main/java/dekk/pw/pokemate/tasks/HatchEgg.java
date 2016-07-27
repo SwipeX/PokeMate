@@ -23,11 +23,11 @@ class HatchEgg extends Task {
                 Pokemon hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
                 String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
                 if (hatchedPokemon == null) {
-                    PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details);
-                    PokeMateUI.showNotification("Hatched egg!", "Hatched egg " + egg.getId() + " " + details, new Image(("icons/egg.png"),64,64,false,false));
+                    PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details,"Hatched egg!",new Image(("icons/items/egg.png"),64,64,false,false));
                 } else {
-                    PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
-                    PokeMateUI.showNotification("Hatched egg!", "Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details, new Image(("icons/egg.png"),64,64,false,false));
+                    PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
+                                    "Hatched egg!",
+                                    new Image(("icons/egg.png"),64,64,false,false));
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {

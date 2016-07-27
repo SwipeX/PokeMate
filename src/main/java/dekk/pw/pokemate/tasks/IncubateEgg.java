@@ -30,8 +30,7 @@ public class IncubateEgg extends Task {
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
                     String eggresult = "Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget()+"km)";
-                    PokeMateUI.toast(eggresult);
-                    PokeMateUI.showNotification("Egg Incubated!", eggresult, new Image(("icons/egg.png"),64,64,false,false));
+                    PokeMateUI.toast(eggresult,"Egg Incubated!", new Image(("icons/items/egg.png"),64,64,false,false));
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {

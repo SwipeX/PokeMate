@@ -277,18 +277,14 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
     }
 
-    public static void toast(String message) {
+    public static void toast(String message, String title, Image image) {
         if(Config.isConsoleNotification())
             System.out.println(message);
 		messagesForLog += message + "\\r\\n\\r\\n";
-        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
-                mapComponent.getWebview().getEngine().executeScript(
-                        "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
-
-    }
-
-    //For people like me who run bots in background but still like to see whats happening
-    public static void showNotification(String title, String message, Image image){
+        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
+            mapComponent.getWebview().getEngine().executeScript(
+                    "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});");
+        });
         if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
                 .graphic(new ImageView(image))
                 .title(title)

@@ -20,7 +20,7 @@ public class TaskController extends Thread {
                 new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
-        if(Config.isReleasing())        tasks.add(new ReleasePokemon());
+        tasks.add(new ReleasePokemon());
         if (Config.isAutoEvolving())    tasks.add(new EvolvePokemon());
         tasks.add(new TagPokestop());
         tasks.add(new IncubateEgg());

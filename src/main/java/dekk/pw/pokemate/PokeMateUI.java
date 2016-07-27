@@ -254,7 +254,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     public static void showNotification(String title, String message, Image image){
-        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> Notifications.create()
+        if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
                 .graphic(new ImageView(image))
                 .title(title)
                 .text(message)

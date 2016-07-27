@@ -175,7 +175,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     private void updateEggs(Context context) {
         String eggsList = "\"";
         for(EggPokemon egg :  context.getApi().getInventories().getHatchery().getEggs()) {
-            String imgSrc = "icons/items/0.png";
+            String imgSrc = "icons/items/egg.png";
             String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
 
             eggsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
@@ -193,8 +193,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             String walked = new DecimalFormat("#0.#").format(incubator.getKmWalked());
             incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +
-                        "<td style='width: 200px;'>Currently " + (incubator.isInUse() ? "<b style='color:#ff0000;'>used</b>" : "<b style='color:#00ff00;'>unused</b>") +
-                        "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "?") +
+                        "<td style='width: 200px;'>Currently: " + (incubator.isInUse() ? "<b style='color:#ff0000;'>In use</b>" : "<b style='color:#00ff00;'>unused</b>") +
+                        "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "∞") +
                         "<br/>Km walked : " + walked + "</td></tr>";
         }
         incubatorsList += "\"";

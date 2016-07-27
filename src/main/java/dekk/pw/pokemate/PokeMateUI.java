@@ -179,10 +179,22 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         for(EggPokemon egg :  context.getApi().getInventories().getHatchery().getEggs()) {
             String imgSrc = "icons/items/egg.png";
             String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
+            String percent = new DecimalFormat("#0.#").format(((egg.getEggKmWalked() * 100) / (egg.getEggKmWalkedTarget() * 100)) * 100);
+            String percentClass = "";
+            double percentTmp = Double.valueOf(percent.replace(",", "."));
+
+            if(percentTmp >= 66) {
+                percentClass = " progress-bar-success";
+            }else if(percentTmp >= 33) {
+                percentClass = " progress-bar-warning";
+            }else{
+                percentClass = " progress-bar-danger";
+            }
 
             eggsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +
-                        "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km</td></tr>";
+                        "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km<br/>" +
+                        "<div class='progress'><div class='progress-bar active progress-bar-striped" + percentClass + "' role='progressbar' aria-valuenow='" + percent + "' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: " + percent.replace(",", ".") + "%;'>" + percent + "%</div></div></td></tr>";
         }
         eggsList += "\"";
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-eggs').innerHTML = " + eggsList);

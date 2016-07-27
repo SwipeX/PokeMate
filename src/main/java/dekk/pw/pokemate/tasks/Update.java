@@ -29,6 +29,7 @@ public class Update implements Task {
             PlayerProfile player;
             context.setProfile(player = context.getApi().getPlayerProfile());
             player.updateProfile();
+            context.getApi().getInventories().updateInventories(true);
 //            long nextXP = REQUIRED_EXPERIENCES[player.getStats().getLevel()] - REQUIRED_EXPERIENCES[player.getStats().getLevel() - 1];
 //            long curTotalXP = player.getStats().getExperience();
 //            long curLevelXP = curTotalXP - REQUIRED_EXPERIENCES[player.getStats().getLevel() - 1];

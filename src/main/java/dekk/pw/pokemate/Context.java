@@ -83,6 +83,14 @@ public class Context {
         return lng;
     }
 
+    public void setLat(AtomicDouble lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(AtomicDouble lng) {
+        this.lng = lng;
+    }
+
     public OkHttpClient getHttp() {
         return http;
     }

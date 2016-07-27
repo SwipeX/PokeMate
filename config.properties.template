@@ -1,6 +1,9 @@
 # PTC/Google login credentials
 username=
 password=
+# Location by name: e.g. "Sydney" or "W12 8LP" or "Trafalgar Square, London" - set to true to use
+use-location-name=false
+location-by-name="Trafalgar Square, London"
 #Lat/Long
 latitude=40.774578
 longitude=-73.972774
@@ -28,3 +31,7 @@ map-points=15
 whitelisted-pokemon=10,13,16
 # List of Pokémons ids to NEVER transfer, separated by commas.
 never-transfer=
+# Enable events notifications on console output
+console_notification=true
+# Enable toast notifications on UI (only if UI is enabled)
+ui_notification=true

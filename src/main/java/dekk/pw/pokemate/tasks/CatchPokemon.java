@@ -10,10 +10,8 @@ import com.pokegoapi.api.map.pokemon.EncounterResult;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
-import dekk.pw.pokemate.Config;
-import dekk.pw.pokemate.Context;
-import dekk.pw.pokemate.PokeMateUI;
-import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.*;
+import javafx.scene.image.Image;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +52,7 @@ public class CatchPokemon implements Task {
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
                                 String output = "Caught a " + getIvRatio(p) + "% " +  target.getPokemonId() + " [" +p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "] at " + p.getCp() + " CP using a " + ball.getItemId().name() + " (Candy: " + p.getCandy() + ")";
                                 PokeMateUI.toast(output);
-                                //PokeMateUI.notification("Pokemon caught!",output);
+                                PokeMateUI.showNotification("Pokémon caught!", output, new Image(("icons/" + target.getPokemonId().getNumber() + ".png"),64,64,false,false));
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }

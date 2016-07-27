@@ -7,6 +7,7 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import javafx.scene.image.Image;
 
 import java.io.DataInputStream;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class EvolvePokemon implements Task {
                             if (result.isSuccessful()) {
                                 String evolutionresult = pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies";
                                 PokeMateUI.toast(evolutionresult);
-                                //PokeMateUI.notification("Evolution result!", evolutionresult);
+                                PokeMateUI.showNotification("Pokemon evolved!", evolutionresult, new Image(("icons/" + pokemon.getPokemonId().getNumber() + ".png"),64,64,false,false));
                             }
                         }
                     }

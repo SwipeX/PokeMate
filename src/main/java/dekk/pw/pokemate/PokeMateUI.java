@@ -17,9 +17,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -177,10 +179,22 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         for(EggPokemon egg :  context.getApi().getInventories().getHatchery().getEggs()) {
             String imgSrc = "icons/items/egg.png";
             String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
+            String percent = new DecimalFormat("#0.#").format(((egg.getEggKmWalked() * 100) / (egg.getEggKmWalkedTarget() * 100)) * 100);
+            String percentClass = "";
+            double percentTmp = Double.valueOf(percent.replace(",", "."));
+
+            if(percentTmp >= 66) {
+                percentClass = " progress-bar-success";
+            }else if(percentTmp >= 33) {
+                percentClass = " progress-bar-warning";
+            }else{
+                percentClass = " progress-bar-danger";
+            }
 
             eggsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +
-                        "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km</td></tr>";
+                        "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km<br/>" +
+                        "<div class='progress'><div class='progress-bar active progress-bar-striped" + percentClass + "' role='progressbar' aria-valuenow='" + percent + "' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: " + percent.replace(",", ".") + "%;'>" + percent + "%</div></div></td></tr>";
         }
         eggsList += "\"";
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-eggs').innerHTML = " + eggsList);
@@ -275,13 +289,20 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
     }
 
-    public static void toast(String message) {
+    public static void toast(String message, String title, Image image) {
         if(Config.isConsoleNotification())
             System.out.println(message);
 		messagesForLog += message + "\\r\\n\\r\\n";
-        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
-                mapComponent.getWebview().getEngine().executeScript(
-                        "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
+            mapComponent.getWebview().getEngine().executeScript(
+                    "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});");
+        });
+        if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
+                .graphic(new ImageView(image))
+                .title(title)
+                .text(message)
+                .darkStyle()
+                .show());
     }
 	
 	private void updateLog() {

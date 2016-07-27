@@ -158,7 +158,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         updatePlayer(context, window);
                         updatePokemon(context);
                         updateItems(context);
-						updateLog(context);
+						updateLog();
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {

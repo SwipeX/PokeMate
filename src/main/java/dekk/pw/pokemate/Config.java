@@ -36,7 +36,7 @@ public class Config {
     private static boolean eggsIncubating;
     private static boolean eggsHatching;
 	private static int cpMinimumForMessage;
-    public final static String POKE = "Pok\u00E9";
+    public final static String POKE = "Pok\\u00E9";
 
     private static Properties properties = new Properties();
 

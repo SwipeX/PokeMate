@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class Update implements Task {
+public class Update extends Task {
 
     private static final int[] REQUIRED_EXPERIENCES = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
@@ -23,8 +23,12 @@ public class Update implements Task {
 
     private static DecimalFormat ratioFormat = new DecimalFormat("#0.00");
 
+    Update(final Context context) {
+        super(context);
+    }
+
     @Override
-    public void run(Context context) {
+    public void run() {
         try {
             PlayerProfile player;
             context.setProfile(player = context.getApi().getPlayerProfile());

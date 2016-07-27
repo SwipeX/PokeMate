@@ -17,8 +17,14 @@ import java.util.ArrayList;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class TagPokestop implements Task {
-    public void run(final Context context) {
+public class TagPokestop extends Task {
+
+    TagPokestop(final Context context) {
+        super(context);
+    }
+
+    @Override
+    public void run() {
         try {
             MapObjects map = context.getApi().getMap().getMapObjects();
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());

@@ -31,3 +31,7 @@ map-points=15
 whitelisted-pokemon=10,13,16
 # List of Pokémons ids to NEVER transfer, separated by commas.
 never-transfer=
+# Enable events notifications on console output
+console_notification=true
+# Enable toast notifications on UI (only if UI is enabled)
+ui_notification=true

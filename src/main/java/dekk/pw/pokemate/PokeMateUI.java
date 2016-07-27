@@ -356,7 +356,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             ItemId id = ItemId.valueOf(mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("itemId"));
             Integer count = Integer.parseInt(mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("itemCount"));
             if (id.toString().equalsIgnoreCase("ITEM_INCUBATOR_BASIC_UNLIMITED")) {
-                System.out.println("Don't delete this item are you stupid?");
+                System.out.println("This item cannot be deleted");
                 mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded", "false");
             } else {
                 try {

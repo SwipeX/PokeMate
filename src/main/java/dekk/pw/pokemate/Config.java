@@ -25,7 +25,6 @@ public class Config {
     private static boolean autoEvolving;
     private static double range;
     private static int mapPoints;
-    private static boolean releasing;
     private static List<Integer> whiteListedPokemon;
     private static List<Integer> neverTransferPokemon;
     private static boolean consoleNotification;
@@ -50,7 +49,6 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
-            releasing = Boolean.parseBoolean(properties.getProperty("release", "true"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
             whiteListedPokemon = new ArrayList<>();
@@ -81,10 +79,6 @@ public class Config {
         }
     }
 
-
-    public static boolean isReleasing(){
-        return releasing;
-    }
 
     public static double getSpeed() {
         return speed;

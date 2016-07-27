@@ -27,7 +27,7 @@ class HatchEgg extends Task {
                 } else {
                     PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
                             "Hatched egg!",
-                            "icons/egg.png");
+                            "icons/items/egg.png");
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {

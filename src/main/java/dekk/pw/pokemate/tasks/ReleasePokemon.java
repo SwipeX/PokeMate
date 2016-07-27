@@ -6,7 +6,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
-
+import dekk.pw.pokemate.PokeMateUI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +30,7 @@ public class ReleasePokemon extends Task {
                 //Passing this filter means they are not a 'perfect pokemon'
                 try {
                     p.transferPokemon();
+					PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                 } catch (LoginFailedException | RemoteServerException e) {
                     e.printStackTrace();
                 }

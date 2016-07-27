@@ -62,12 +62,19 @@ public class CatchPokemon extends Task {
                                 Collections.sort(pokemonList, (a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
                                 String output = "Caught a " + StringConverter.convertPokename(target.getPokemonId().name()) + " (" + p.getCp() + " CP)" + " (Candy: " + p.getCandy() + ")";
-                                PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
+								if (p.getCp() > Config.getMinimumCPForMessage()) {
+									PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
+								}
+								else {
+									System.out.println(output);
+									PokeMateUI.addMessageToLog(output);
+								}
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }
                         } else {
                             System.out.println(target.getPokemonId() + " fled.");
+							PokeMateUI.addMessageToLog(target.getPokemonId() + " fled.");
                         }
                     }
                 }

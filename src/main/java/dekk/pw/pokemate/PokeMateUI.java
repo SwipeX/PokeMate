@@ -318,6 +318,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .darkStyle()
                 .show());
     }
+	
+	public static void addMessageToLog(String message) {
+		messagesForLog += message + "\\r\\n\\r\\n";
+	}
 
     private void updateLog() {
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').value = document.getElementById('logTextArea').value + \"" + messagesForLog + "\"");

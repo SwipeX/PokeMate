@@ -35,6 +35,7 @@ public class Config {
     private static String customNamedLocation;
     private static boolean eggsIncubating;
     private static boolean eggsHatching;
+	private static int cpMinimumForMessage;
     public final static String POKE = "Pok\u00E9";
 
     private static Properties properties = new Properties();
@@ -74,6 +75,8 @@ public class Config {
 			String droppedItemNames = properties.getProperty("drop_item_list", "ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE");
 			droppedItems = new ArrayList<>();
 			fillListString(droppedItemNames, droppedItems);
+			// minimum cp for message
+			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -200,5 +203,9 @@ public class Config {
 	
 	public static List<String> getDroppedItems() {
 		return droppedItems;
+	}
+	
+	public static int getMinimumCPForMessage() {
+		return cpMinimumForMessage;
 	}
 }

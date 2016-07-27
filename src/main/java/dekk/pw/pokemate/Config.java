@@ -29,8 +29,12 @@ public class Config {
     private static List<Integer> neverTransferPokemon;
     private static boolean consoleNotification;
     private static boolean userInterfaceNotification;
+    private static boolean uiSystemNotification;
     private static boolean useCustomNamedLocation;
     private static String customNamedLocation;
+    private static boolean eggsIncubating;
+    private static boolean eggsHatching;
+    public final static String POKE = "Pok\\u00E9";
 
     private static Properties properties = new Properties();
 
@@ -49,6 +53,8 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
+            eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
+            eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
             whiteListedPokemon = new ArrayList<>();
@@ -57,10 +63,12 @@ public class Config {
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
             // named location
-            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "true"));
+            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "false"));
             customNamedLocation = properties.getProperty("location-by-name");
+            // notification
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
+            uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -159,5 +167,17 @@ public class Config {
 
     public static boolean isUserInterfaceNotification() {
         return userInterfaceNotification;
+    }
+
+    public static boolean isUiSystemNotification(){
+        return uiSystemNotification;
+    }
+
+    public static boolean isEggsIncubating() {
+        return eggsIncubating;
+    }
+
+    public static boolean isEggsHatching() {
+        return eggsHatching;
     }
 }

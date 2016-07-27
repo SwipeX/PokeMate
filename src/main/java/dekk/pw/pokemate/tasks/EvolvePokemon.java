@@ -7,6 +7,8 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.StringConverter;
+import javafx.scene.image.Image;
 
 import java.io.DataInputStream;
 import java.util.HashMap;
@@ -15,7 +17,7 @@ import java.util.ListIterator;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class EvolvePokemon implements Task {
+public class EvolvePokemon extends Task {
     private static final HashMap<Integer, Integer> CANDY_AMOUNTS = new HashMap<>();
 
     static {
@@ -32,8 +34,12 @@ public class EvolvePokemon implements Task {
         }
     }
 
+    EvolvePokemon(final Context context) {
+        super(context);
+    }
+
     @Override
-    public void run(Context context) {
+    public void run() {
         try {
             ListIterator<Pokemon> iterator = context.getApi().getInventories().getPokebank().getPokemons().listIterator();
             while (iterator.hasNext()) {
@@ -46,7 +52,8 @@ public class EvolvePokemon implements Task {
                         if (pokemon.getCandy() >= required) {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
-                                PokeMateUI.toast(pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies");
+                                String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
+                                PokeMateUI.toast(evolutionresult, Config.POKE+"mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
                             }
                         }
                     }

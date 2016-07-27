@@ -49,6 +49,10 @@
             width: 100%;
             height: calc(100% - 0px);
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
@@ -63,12 +67,13 @@
         <ul class="nav navbar-nav">
             <li class="active" id="pokemons"><a href="#" onclick="showPokemon()">Pokemon</a></li>
             <li id="items"><a href="#" onclick="showItem()">Items</a></li>
+            <li id="manageItems"><a href="#" onclick="showManageItem()">Manage Items</a></li>
             <!--<li><a href="#">Info</a></li>-->
         </ul>
     </div>
 </nav>
 <div class="container-fluid">
-    <div class="row">
+    <div id="main" class="row">
         <div class="col-sm-9 map">
             <div class="google-map-canvas" id="map-canvas">
             </div>
@@ -151,6 +156,11 @@
             </div>
         </div>
     </div>
+
+    <div id="itemManagement" class="row" isBeingViewed="false" isLoaded="false">
+        <span style="font-size: 20px; margin-top: 20px; margin-left: 15px;">Please Wait...</span>
+    </div>
+    <input id="deleteItemData" type="hidden" isDeleting="false">
 </div>
 
 
@@ -163,15 +173,19 @@
 <script>
     function showPokemon() {
         $('#navbarOptions').find('.active').removeClass('active');
-        $('#userItem').hide();
-        $('#userPokemon').show();
         $('#pokemons').addClass('active');
+        $('#userItem').hide();
+        $('#itemManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
+        $('#main').show();
+        $('#userPokemon').show();
     }
     function showItem() {
         $('#navbarOptions').find('.active').removeClass('active');
-        $('#userPokemon').hide();
-        $('#userItem').show();
         $('#items').addClass('active');
+        $('#userPokemon').hide();
+        $('#itemManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
+        $('#main').show();
+        $('#userItem').show();
     }
     $('#pokeFilter').change(function(){
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";
@@ -180,6 +194,27 @@
     $('#pokeSortType').change(function(){
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";
         $('#info-body').html(wait);
+    });
+    function showManageItem() {
+        $('#navbarOptions').find('.active').removeClass('active');
+        $('#manageItems').addClass('active');
+        $('#itemManagement').attr("isBeingViewed", "true");
+        $('#main').hide();
+        $('#itemManagement').show();
+    }
+    $(document).on('click', "button.deleteItem", function(event) {
+        var id = $(event.currentTarget).attr("data-id");
+        var maxCount = $(event.currentTarget).attr("data-maxCount");
+        maxCount = parseInt(maxCount);
+        var count = $('#'+id).val();
+        count = parseInt(count);
+        if(count > 0 && count <= maxCount){
+            $('#itemManagement').html("Deleting: " + id + ", Count: " + count + ". Please wait...");
+            $('#deleteItemData').attr("itemId",id).attr("itemCount",count).attr("isDeleting","true");
+        } else {
+            $('#itemManagement').html("Invalid Input");
+            $('#itemManagement').attr("isLoaded", "false");
+        }
     });
 </script>
 </body>

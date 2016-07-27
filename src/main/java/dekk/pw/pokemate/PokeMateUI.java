@@ -11,6 +11,8 @@ import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.inventory.Item;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -23,6 +25,8 @@ import javafx.stage.Stage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import static POGOProtos.Inventory.Item.ItemIdOuterClass.*;
 
 /**
  * Created by $ Tim Dekker on 7/23/2016.
@@ -157,6 +161,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         updatePlayer(context, window);
                         updatePokemon(context);
                         updateItems(context);
+                        itemManagement(context);
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -247,6 +252,52 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
                 mapComponent.getWebview().getEngine().executeScript(
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
+    }
+
+    public static void itemManagement(Context context) {
+        boolean viewStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").getAttribute("isBeingViewed").equalsIgnoreCase("true");
+        boolean loadStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").getAttribute("isLoaded").equalsIgnoreCase("true");
+        boolean deleteStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("isDeleting").equalsIgnoreCase("true");
+        if(viewStatus && !loadStatus){
+            String itemsList = "\"";
+            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                if (item.getCount() > 0) {
+                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                    itemsList += "<div class=\'col-xs-3\'>" +
+                            "<div class=\'row\'>" +
+                                "<img style=\'width: 70px; height: 70px; \'" +
+                                "src=\'" + imgSrc + "\'" + ">" +
+                            "</div>" +
+                            "<div class=\'row form-group\'>" +
+                                "<input type=\'text\' class=\'form-control\' id=\'" + item.getItemId() + "\' value=\'" + item.getCount() + "\'>"+
+                                "<button type=\'button\' class=\'btn btn-danger deleteItem\' data-maxCount=\'" + item.getCount() + "\' data-id=\'" + item.getItemId() + "\'>Delete</button>" +
+                            "</div>" +
+                            "</div>";
+                }
+            }
+            itemsList += "\"";
+            mapComponent.getWebview().getEngine().executeScript("document.getElementById('itemManagement').innerHTML = " + itemsList);
+            mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded","true");
+        } else if(deleteStatus){
+            ItemId id = ItemId.valueOf(mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("itemId"));
+            Integer count = Integer.parseInt(mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("itemCount"));
+            if(id.toString().equalsIgnoreCase("ITEM_INCUBATOR_BASIC_UNLIMITED")){
+                System.out.println("Don't delete this item are you stupid?");
+                mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded","false");
+            } else{
+                try {
+                    context.getApi().getInventories().getItemBag().removeItem(id,count);
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").setAttribute("isDeleting","false");
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").removeAttribute("itemId");
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").removeAttribute("itemCount");
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded","false");
+                } catch (RemoteServerException | LoginFailedException e) {
+                    e.printStackTrace();
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded","false");
+                }
+            }
+        }
+
     }
 
     private static String millisToTimeString(long millis) {

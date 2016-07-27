@@ -32,7 +32,6 @@ public class PokeMate {
             System.exit(1);
         }
 
-        PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -72,6 +71,7 @@ public class PokeMate {
 
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
+            PokeMateUI.setPoke(this);
             new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
         }
         TaskController controller = new TaskController(context);

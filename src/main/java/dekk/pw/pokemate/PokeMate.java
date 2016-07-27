@@ -29,6 +29,7 @@ public class PokeMate {
             System.out.println("You are required to use a config.properties file to run the application.");
             System.exit(1);
         }
+
         PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
@@ -65,9 +66,11 @@ public class PokeMate {
         auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
         PokemonGo go = new PokemonGo(auth, http);
+
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
         context.setLat(lat);
         context.setLng(lng);
+
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             new Thread(() -> Application.launch(PokeMateUI.class, null)).start();

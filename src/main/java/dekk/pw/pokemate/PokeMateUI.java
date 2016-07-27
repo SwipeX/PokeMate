@@ -12,6 +12,8 @@ import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import dekk.pw.pokemate.tasks.Navigate;
+import org.controlsfx.control.Notifications;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -20,7 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
-import org.controlsfx.control.Notifications;
+
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

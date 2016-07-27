@@ -1,7 +1,6 @@
 package dekk.pw.pokemate;
 
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
-import com.pokegoapi.api.pokemon.Pokemon;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -27,6 +26,7 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
+    private static List<Integer> neverTransferPokemons;
 
     private static Properties properties = new Properties();
 
@@ -47,20 +47,29 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
-            if (whiteList != null) {
-                String[] strings = whiteList.split(",");
-                if (strings != null) {
-                    whiteListedPokemon = new ArrayList<>();
-                    for (String string : strings) {
-                        whiteListedPokemon.add(Integer.parseInt(string));
-                    }
-                }
-            }
+            whiteListedPokemon = new ArrayList<>();
+            fillList(whiteList, whiteListedPokemon);
+
+            String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
+            neverTransferPokemons = new ArrayList<>();
+            fillList(neverTransferPokemonNames, neverTransferPokemons);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
+
+    private static void fillList(String propertiesString, List<Integer> target) {
+        if (propertiesString != null) {
+            String[] strings = propertiesString.split(",");
+            if (strings != null) {
+                for (String string : strings) {
+                    target.add(Integer.parseInt(string));
+                }
+            }
+        }
+    }
+
 
     public static double getSpeed() {
         return speed;
@@ -121,6 +130,10 @@ public class Config {
 
     public static List<Integer> getWhitelistedPokemon() {
         return whiteListedPokemon;
+    }
+
+    public static List<Integer> getNeverTransferPokemons() {
+        return neverTransferPokemons;
     }
 
 }

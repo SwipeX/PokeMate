@@ -26,3 +26,5 @@ range=.004
 map-points=15
 # Only whitelist certain pokemons
 whitelisted-pokemon=10,13,16
+# List of Pokémons ids to NEVER transfer, separated by commas.
+never-transfer=

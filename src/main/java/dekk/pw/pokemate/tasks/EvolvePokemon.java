@@ -53,7 +53,7 @@ public class EvolvePokemon extends Task {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
                                 String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
-                                PokeMateUI.toast(evolutionresult, "Pokémon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
+                                PokeMateUI.toast(evolutionresult, Config.POKE+"mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
                             }
                         }
                     }

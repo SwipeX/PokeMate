@@ -34,6 +34,7 @@ public class Config {
     private static String customNamedLocation;
     private static boolean eggsIncubating;
     private static boolean eggsHatching;
+    public final static String POKE = "Pok\\u00E9";
 
     private static Properties properties = new Properties();
 

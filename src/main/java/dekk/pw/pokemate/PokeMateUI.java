@@ -253,6 +253,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }
 
+    //For people like me who run bots in background but still like to see whats happening
     public static void showNotification(String title, String message, Image image){
         if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
                 .graphic(new ImageView(image))

@@ -1,7 +1,7 @@
 package dekk.pw.pokemate.util;
 
 /**
- * CodeFactory production, created on 27.07.2016 by iDreamInBinary
+ * created on 27.07.2016 by iDreamInBinary
  */
 public class StringConverter {
 

@@ -70,6 +70,7 @@ public class Config {
     }
 
     private static void fillList(String propertiesString, List<Integer> target) {
+        //This fixed an issue for me
         if (propertiesString != null && !propertiesString.equals("")) {
             String[] strings = propertiesString.split(",");
             if (strings != null) {

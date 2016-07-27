@@ -8,7 +8,6 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.StringConverter;
-import javafx.scene.image.Image;
 
 import java.io.DataInputStream;
 import java.util.HashMap;

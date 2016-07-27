@@ -4,7 +4,6 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
-import javafx.scene.image.Image;
 
 import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 

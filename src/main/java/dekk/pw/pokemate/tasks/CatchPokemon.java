@@ -15,7 +15,6 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.StringConverter;
-import javafx.scene.image.Image;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +60,7 @@ public class CatchPokemon extends Task {
                                 Pokemon p = pokemonList.get(pokemonList.size() - 1);
                                 String output = "Caught a " + StringConverter.convertPokename(target.getPokemonId().name()) + " (" + p.getCp() + " CP)" + " (Candy: " + p.getCandy() + ")";
                                 PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
+
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }

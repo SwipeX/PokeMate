@@ -10,7 +10,6 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
-import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 

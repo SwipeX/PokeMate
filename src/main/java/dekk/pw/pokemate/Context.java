@@ -37,8 +37,8 @@ public class Context {
         return Login(null, httpClient);
     }
 
-    public static CredentialProvider Login(Context context, OkHttpClient httpClient) {
-        String token = null;
+    private static CredentialProvider Login(Context context, OkHttpClient httpClient) {
+        String token;
         try {
             if (Config.getUsername().contains("@")) {
                 File tokenFile = new File("token.txt");

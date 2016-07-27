@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by TimD on 7/21/2016.
  */
 public class TaskController extends Thread {
-    public static final double VARIANCE = Config.getRange();
+    private static final double VARIANCE = Config.getRange();
     private Context context;
     private static ArrayList<Task> tasks = new ArrayList<Task>();
 
@@ -20,16 +20,12 @@ public class TaskController extends Thread {
                 new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
         tasks.add(new Update());
         tasks.add(new CatchPokemon());
-        if (Config.isAutoEvolving()) {
-            tasks.add(new EvolvePokemon());
-        }
         tasks.add(new ReleasePokemon());
+        if (Config.isAutoEvolving())    tasks.add(new EvolvePokemon());
         tasks.add(new TagPokestop());
         tasks.add(new IncubateEgg());
         tasks.add(new HatchEgg());
-        if (Config.isDropItems()) {
-            tasks.add(new DropItems());
-        }
+        if (Config.isDropItems())       tasks.add(new DropItems());
     }
 
     /**

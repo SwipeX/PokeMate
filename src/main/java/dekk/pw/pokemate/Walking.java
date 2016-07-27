@@ -3,7 +3,6 @@ package dekk.pw.pokemate;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.maps.model.DirectionsStep;
-import com.pokegoapi.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -87,7 +86,7 @@ public class Walking {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                         //  Log.i("WALKER", "Set location: [" + context.getLat().get() + ", " + context.getLng().get() + "]");
+                        //  Log.i("WALKER", "Set location: [" + context.getLat().get() + ", " + context.getLng().get() + "]");
                         remainingSteps--;
                     }
                     //Log.i("WALKER", "Arrived at: [" + step.endLocation.lat + ", " + step.endLocation.lng + "]");

@@ -4,21 +4,25 @@ import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.service.directions.DirectionsRenderer;
-import com.lynden.gmapsfx.shapes.*;
+import com.lynden.gmapsfx.shapes.Polygon;
+import com.lynden.gmapsfx.shapes.PolygonOptions;
 import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
+import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.api.inventory.Item;
 import dekk.pw.pokemate.tasks.Navigate;
+import org.controlsfx.control.Notifications;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -160,7 +164,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
-                     e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -248,6 +252,17 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 mapComponent.getWebview().getEngine().executeScript(
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }
+
+    //For people like me who run bots in background but still like to see whats happening
+    public static void showNotification(String title, String message, Image image){
+        if(Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
+                .graphic(new ImageView(image))
+                .title(title)
+                .text(message)
+                .darkStyle()
+                .show());
+    }
+
 
     private static String millisToTimeString(long millis) {
         long seconds = (millis / 1000) % 60;

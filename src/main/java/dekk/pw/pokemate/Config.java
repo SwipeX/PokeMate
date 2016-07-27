@@ -38,9 +38,9 @@ public class Config {
 
     private static Properties properties = new Properties();
 
-    static {
+    public static void load(String configPath){
         try {
-            properties.load(new FileInputStream("config.properties"));
+            properties.load(new FileInputStream(configPath));
             username = properties.getProperty("username");
             password = properties.getProperty("password");
             googleApiKey = properties.getProperty("api-key");

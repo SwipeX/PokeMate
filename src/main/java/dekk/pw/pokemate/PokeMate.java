@@ -22,17 +22,11 @@ import java.util.concurrent.TimeUnit;
  * Created by TimD on 7/21/2016.
  */
 public class PokeMate {
-    public static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
+    public static File configProperties;
     private static Context context;
     public static long startTime;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
-        if (!Files.exists(CONFIG_PROPERTIES)) {
-            System.out.println("You are required to use a config.properties file to run the application.");
-            System.exit(1);
-        }
-
-        PokeMateUI.setPoke(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -72,6 +66,7 @@ public class PokeMate {
 
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
+            PokeMateUI.setPoke(this);
             new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
         }
         TaskController controller = new TaskController(context);
@@ -80,6 +75,16 @@ public class PokeMate {
     }
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
+        if (args[0].length() == 0){
+            System.out.println("USAGE: java -jar Pokemate.jar config.properties");
+            System.exit(1);
+        }
+        configProperties = new File(args[0]);
+        if (!Files.exists(configProperties.toPath())) {
+            System.out.println("You are specific path of config.properties file to run the application.");
+            System.exit(1);
+        }
+        Config.load(configProperties.getPath());
         new PokeMate();
     }
 

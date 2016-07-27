@@ -27,6 +27,10 @@ public class Config {
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
     private static List<Integer> neverTransferPokemon;
+    private static boolean consoleNotification;
+    private static boolean userInterfaceNotification;
+    private static boolean useCustomNamedLocation;
+    private static String customNamedLocation;
 
     private static Properties properties = new Properties();
 
@@ -52,6 +56,11 @@ public class Config {
             String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
+            // named location
+            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "false"));
+            customNamedLocation = properties.getProperty("location-by-name");
+            consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
+            userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -136,4 +145,19 @@ public class Config {
         return neverTransferPokemon;
     }
 
+    public static boolean isUseCustomNamedLocation() {
+        return useCustomNamedLocation;
+    }
+
+    public static String getCustomNamedLocation() {
+        return customNamedLocation;
+    }
+
+    public static boolean isConsoleNotification() {
+        return consoleNotification;
+    }
+
+    public static boolean isUserInterfaceNotification() {
+        return userInterfaceNotification;
+    }
 }

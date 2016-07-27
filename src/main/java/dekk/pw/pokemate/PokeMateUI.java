@@ -4,13 +4,14 @@ import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.service.directions.DirectionsRenderer;
 import com.lynden.gmapsfx.shapes.*;
 import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.inventory.Item;
+import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.api.inventory.EggIncubator;
 import dekk.pw.pokemate.tasks.Navigate;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -34,6 +35,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     protected static GoogleMapView mapComponent;
     protected GoogleMap map;
     protected static PokeMate poke;
+	protected static String messagesForLog = "";
     public static final double XVARIANCE = Config.getRange() * 1.5;
     public static final double VARIANCE = Config.getRange();
     public static Marker marker;
@@ -157,6 +159,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         updatePlayer(context, window);
                         updatePokemon(context);
                         updateItems(context);
+			updateLog();
+                        updateIncubators(context);
+                        updateEggs(context);
+
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -164,6 +170,35 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 }
             }
         }).start();
+    }
+
+    private void updateEggs(Context context) {
+        String eggsList = "\"";
+        for(EggPokemon egg :  context.getApi().getInventories().getHatchery().getEggs()) {
+            String imgSrc = "icons/items/egg.png";
+            String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
+
+            eggsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
+                        "src=\'" + imgSrc + "\'" + "></td>" +
+                        "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km</td></tr>";
+        }
+        eggsList += "\"";
+        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-eggs').innerHTML = " + eggsList);
+    }
+
+    private void updateIncubators(Context context) {
+        String incubatorsList = "\"";
+        for(EggIncubator incubator : context.getApi().getInventories().getIncubators()) {
+            String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "901" : "902") + ".png";
+            String walked = new DecimalFormat("#0.#").format(incubator.getKmWalked());
+            incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
+                        "src=\'" + imgSrc + "\'" + "></td>" +
+                        "<td style='width: 200px;'>Currently: " + (incubator.isInUse() ? "<b style='color:#ff0000;'>In use</b>" : "<b style='color:#00ff00;'>unused</b>") +
+                        "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "∞") +
+                        "<br/>Km walked : " + walked + "</td></tr>";
+        }
+        incubatorsList += "\"";
+        mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-incubators').innerHTML = " + incubatorsList);
     }
 
     private void updatePlayer(Context context, InfoWindow window) {
@@ -182,7 +217,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
             if (item.getCount() > 0) {
                 String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
-                itemsList += "<tr><td><img style=\'width: 70px; height: 70px; \' " +
+                itemsList += "<tr><td><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
             }
         }
@@ -241,10 +276,19 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     public static void toast(String message) {
-        Platform.runLater(() ->
+        if(Config.isConsoleNotification())
+            System.out.println(message);
+		messagesForLog += message + "\\r\\n\\r\\n";
+        if(Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() ->
                 mapComponent.getWebview().getEngine().executeScript(
                         "$.notify(\"" + message + "\", {\n\tanimate: {\n\t\tenter: \'animated bounceInDown\',\n\t\texit: \'animated bounceOutUp\'\n\t}\n});"));
     }
+	
+	private void updateLog() {
+		mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').value = document.getElementById('logTextArea').value + \"" + messagesForLog + "\"");
+		mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').scrollTop = document.getElementById('logTextArea').scrollHeight");
+		messagesForLog = "";
+	}
 
     private static String millisToTimeString(long millis) {
         long seconds = (millis / 1000) % 60;

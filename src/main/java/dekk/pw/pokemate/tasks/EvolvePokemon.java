@@ -15,7 +15,7 @@ import java.util.ListIterator;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class EvolvePokemon implements Task {
+public class EvolvePokemon extends Task {
     private static final HashMap<Integer, Integer> CANDY_AMOUNTS = new HashMap<>();
 
     static {
@@ -32,8 +32,12 @@ public class EvolvePokemon implements Task {
         }
     }
 
+    EvolvePokemon(final Context context) {
+        super(context);
+    }
+
     @Override
-    public void run(Context context) {
+    public void run() {
         try {
             ListIterator<Pokemon> iterator = context.getApi().getInventories().getPokebank().getPokemons().listIterator();
             while (iterator.hasNext()) {

@@ -29,7 +29,7 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 ![Image of map](http://i.imgur.com/W4hG8i6.png)
 
 ##Slack
-Come join us on slack! https://shielded-earth-81203.herokuapp.com/ #pokemate
+Come join us on slack! https://shielded-earth-81203.herokuapp.com/ #pokemate-dev #pokemate-help
 
 ### Credits
 

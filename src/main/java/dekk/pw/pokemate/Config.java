@@ -32,6 +32,8 @@ public class Config {
     private static boolean uiSystemNotification;
     private static boolean useCustomNamedLocation;
     private static String customNamedLocation;
+    private static boolean eggsIncubating;
+    private static boolean eggsHatching;
 
     private static Properties properties = new Properties();
 
@@ -50,6 +52,8 @@ public class Config {
             autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
+            eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
+            eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
             whiteListedPokemon = new ArrayList<>();
@@ -60,6 +64,7 @@ public class Config {
             // named location
             useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "false"));
             customNamedLocation = properties.getProperty("location-by-name");
+            // notification
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
             uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "true"));
@@ -167,4 +172,11 @@ public class Config {
         return uiSystemNotification;
     }
 
+    public static boolean isEggsIncubating() {
+        return eggsIncubating;
+    }
+
+    public static boolean isEggsHatching() {
+        return eggsHatching;
+    }
 }

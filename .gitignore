@@ -82,6 +82,4 @@ fabric.properties
 
 # PTC Login credentials
 config.properties
-
-token.txt
-.idea/misc.xml
+*.txt

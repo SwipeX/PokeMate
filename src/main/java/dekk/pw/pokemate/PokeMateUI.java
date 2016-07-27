@@ -4,6 +4,7 @@ import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.*;
+import com.lynden.gmapsfx.javascript.event.*;
 import com.lynden.gmapsfx.shapes.*;
 import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
@@ -21,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
+import netscape.javascript.JSObject;
 import org.controlsfx.control.Notifications;
 
 import java.text.DecimalFormat;
@@ -122,6 +124,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .position(center);
 
         InfoWindow window = new InfoWindow(infoOptions);
+        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> { window.open(map, marker); });
         window.open(map, marker);
         new Thread(() -> {
             while (true) {
@@ -208,7 +211,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                     "src=\'" + imgSrc + "\'" + "></td>" +
                     "<td style='width: 200px;'>Currently: " + (incubator.isInUse() ? "<b style='color:#ff0000;'>In use</b>" : "<b style='color:#00ff00;'>unused</b>") +
-                    "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "∞") +
+                    "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "\u221e") +
                     "<br/>Km walked : " + walked + "</td></tr>";
         }
         incubatorsList += "\"";

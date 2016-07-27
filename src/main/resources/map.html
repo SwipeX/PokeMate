@@ -273,6 +273,7 @@
         } else {
             $('#itemManagement').html("Invalid Input");
             $('#itemManagement').attr("isLoaded", "false");
+            $('#deleteItemData').attr("isDeleting","false");
         }
     });
      $(document).on('click', "button.transferPokemons", function(event) {
@@ -287,12 +288,14 @@
         }
     });
     function resetManageItemsLayout(){
+        $('#deleteItemData').attr("isDeleting","false");
         $('#itemManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
         var wait = '<span style="font-size: 20px; margin-top: 20px;">Please Wait...</span>';
         $('#itemManagement').html(wait);
 
     }
     function resetManagePokemonLayout(){
+        $('#transferPokemonData').attr("isTransfering","false");
         $('#pokemonManagement').attr("isBeingViewed", "false").attr("isLoaded", "false").hide();
         $('#pokemonManagementInfo').html("");
         $('#pokemonManagementInfo2').html("");

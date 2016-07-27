@@ -11,6 +11,7 @@ import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.inventory.Item;
+import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
@@ -25,9 +26,6 @@ import javafx.stage.Stage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static POGOProtos.Inventory.Item.ItemIdOuterClass.*;
-
 /**
  * Created by $ Tim Dekker on 7/23/2016.
  */

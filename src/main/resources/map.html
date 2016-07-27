@@ -153,13 +153,14 @@
                 </div>
             </div>
         </div>
-		<div id="logText">
-			<div class="col-sm-3">
-				<div style="height: 580px; overflow: auto;">
-					<textarea readonly id="logTextArea" style="height: 100%; overflow: auto; resize: none; width: 100%;"></textarea>
-				</div>
-			</div>
-		</div>
+        <div id="logText">
+            <div class="col-sm-3">
+                <div style="height: 580px; overflow: auto;">
+                    <textarea readonly id="logTextArea"
+                              style="height: 100%; overflow: auto; resize: none; width: 100%;"></textarea>
+                </div>
+            </div>
+        </div>
         <div id="userIncubators" style="margin-top: 15px;">
             <div class="col-sm-3">
                 <div style="height: 580px; overflow: auto;">
@@ -225,7 +226,7 @@
     function showPokemon() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userItem').hide();
-		$('#logText').hide();
+        $('#logText').hide();
         $('#userIncubators').hide();
         $('#userEggs').hide();
         $('#userPokemon').show();
@@ -234,15 +235,15 @@
     function showItem() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userPokemon').hide();
-		$('#logText').hide();
+        $('#logText').hide();
         $('#userItem').show();
         $('#items').addClass('active');
     }
-	function showLog() {
+    function showLog() {
         $('#navbarOptions').find('.active').removeClass('active');
         $('#userPokemon').hide();
         $('#userItem').hide();
-		$('#logText').show();
+        $('#logText').show();
         $('#log').addClass('active');
         $('#userIncubators').hide();
         $('#userEggs').hide();
@@ -265,11 +266,11 @@
         $('#userEggs').show();
         $('#eggs').addClass('active');
     }
-    $('#pokeFilter').change(function(){
+    $('#pokeFilter').change(function () {
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";
         $('#info-body').html(wait);
     });
-    $('#pokeSortType').change(function(){
+    $('#pokeSortType').change(function () {
         var wait = "<tr><td>wait</td><td>wait</td><td>wait</td><td>wait</td></tr>";
         $('#info-body').html(wait);
     });

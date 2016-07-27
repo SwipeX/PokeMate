@@ -37,7 +37,7 @@ public class TagPokestop extends Task {
                         Walking.setLocation(context);
                         try {
                             String result = resultMessage(near.loot());
-							PokeMateUI.toast(result, "PokéStop interaction!", new Image(("icons/pokestop.png"),64,64,false,false));
+							PokeMateUI.toast(result, "PokéStop interaction!", "icons/pokestop.png");
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
                         }

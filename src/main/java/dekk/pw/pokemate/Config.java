@@ -67,7 +67,7 @@ public class Config {
             // notification
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
-            uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "true"));
+            uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());

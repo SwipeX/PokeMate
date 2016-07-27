@@ -9,8 +9,12 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by TimD on 7/27/2016.
@@ -47,6 +51,14 @@ public class AuthenticationListener implements GoogleCredentialProvider.OnGoogle
     @Override
     public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
         System.out.println("Token received: " + googleAuthTokenJson);
+        Path tokenPath = Paths.get("/tokens/");
+        if(!Files.exists(tokenPath)){
+            try {
+                Files.createDirectory(tokenPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
             p.write(googleAuthTokenJson.getRefreshToken());
         } catch (FileNotFoundException e) {

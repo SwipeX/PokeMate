@@ -7,6 +7,7 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.StringConverter;
 import javafx.scene.image.Image;
 
 import java.io.DataInputStream;
@@ -48,7 +49,7 @@ public class EvolvePokemon implements Task {
                         if (pokemon.getCandy() >= required) {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
-                                String evolutionresult = pokemon.getPokemonId() + " has evolved into " + result.getEvolvedPokemon().getPokemonId() + " costing " + required + " candies";
+                                String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId()) + " costing " + required + " candies";
                                 PokeMateUI.toast(evolutionresult);
                                 PokeMateUI.showNotification("Pokemon evolved!", evolutionresult, new Image(("icons/" + pokemon.getPokemonId().getNumber() + ".png"),64,64,false,false));
                             }

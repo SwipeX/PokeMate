@@ -27,8 +27,6 @@ after_success:
 
 before_deploy:
   - ./gradlew fatJar
-    on:
-      tags: true
 
 deploy:
   provider: releases

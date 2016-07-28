@@ -88,6 +88,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     public static void addMessageToLog(String message) {
         messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
+		if (Config.isConsoleNotification()) {
+			System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
+		}
     }
 
     private static String millisToTimeString(long millis) {

@@ -32,15 +32,16 @@ public class ReleasePokemon extends Task {
             } else {
                 Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
             }
-            list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.isFavorite() && context.getIvRatio(p) < Config.getIvRatio() && !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
-                //Passing this filter means they are not a 'perfect pokemon'
-                try {
-                    p.transferPokemon();
-					PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
-                } catch (LoginFailedException | RemoteServerException e) {
-                    e.printStackTrace();
-                }
-
+            list.stream()
+				.filter(p -> ((p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.isFavorite() && context.getIvRatio(p) < Config.getIvRatio() && !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())) || (Config.getAlwaysTransferPokemon().contains(p.getPokemonId().getNumber()) && list.indexOf(p) < list.size() - 1)))
+				.forEach(p -> {
+					//Passing this filter means they are not a 'perfect pokemon' or on the list to always be transferred
+					try {
+						p.transferPokemon();
+						PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+					} catch (LoginFailedException | RemoteServerException e) {
+						e.printStackTrace();
+					}
             });
         }
     }

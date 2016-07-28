@@ -27,7 +27,7 @@ automatic_evolving=true
 range=.004
 #points in the map path
 map_points=15
-# Only whitelist certain pokemons
+# Only evolve certain pokemons. If auto-evolve is on, only these pokemon are evolved
 whitelisted_pokemon=10,13,16
 # List of Pokémons ids to NEVER transfer, separated by commas.
 never_transfer=
@@ -47,3 +47,5 @@ drop_item_list=ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,I
 minimum_cp_for_ui_message=0
 # Prefer IV over CP when transfering? true keeps highest IV, false keeps highest CP
 transfer_prefers_iv=false
+# Always transfer the pokemon, regardless of CP, IV%, or any setting above. Based upon the transfer_prefers_iv settings, and therefore the best IV% or CP one is kept.
+always_transfer_pokemon=

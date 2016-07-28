@@ -39,6 +39,8 @@ public class Config {
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
     private static Properties properties = new Properties();
+	private static List<Integer> alwaysTransferPokemon;
+	private static String alwaysTransferPokemonText;
 
     public static void load(String configPath) {
         try {
@@ -78,6 +80,11 @@ public class Config {
 			fillListString(droppedItemNames, droppedItems);
 			// minimum cp for message
 			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
+			// always transfer pokemon
+			alwaysTransferPokemon = new ArrayList<>();
+			alwaysTransferPokemonText = properties.getProperty("always_transfer_pokemon", null);
+			fillList(alwaysTransferPokemonText, alwaysTransferPokemon);
+			
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -217,4 +224,8 @@ public class Config {
     public static void setTransferPrefersIV(boolean transferPrefersIV) {
         Config.transferPrefersIV = transferPrefersIV;
     }
+	
+	public static List<Integer> getAlwaysTransferPokemon() {
+		return alwaysTransferPokemon;
+	}
 }

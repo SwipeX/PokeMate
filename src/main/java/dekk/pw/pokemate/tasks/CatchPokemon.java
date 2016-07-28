@@ -68,16 +68,13 @@ public class CatchPokemon extends Task {
                                     if (p.getCp() > Config.getMinimumCPForMessage()) {
                                         PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
                                     } else {
-										output += "(IV: " + getIvRatio(p) + "%)";
-                                        System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output);
-                                        PokeMateUI.addMessageToLog(output);
+                                        PokeMateUI.addMessageToLog(output + " (IV: " + getIvRatio(p) + "%)");
                                     }
                                 }
                             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                                 ex.printStackTrace();
                             }
                         } else {
-                            System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
                             PokeMateUI.addMessageToLog(target.getPokemonId() + " fled.");
                         }
                     }

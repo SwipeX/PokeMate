@@ -14,6 +14,7 @@ import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.inventory.EggIncubator;
 import dekk.pw.pokemate.tasks.Navigate;
+import dekk.pw.pokemate.tasks.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -227,7 +228,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
         window.setContent("<h4>" + player.getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() + " - Progress: " + ratio +
                 "%</h5><h5>XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +
-                "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
+                "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5><h5>XP/Hr: " + Update.getXpHr() + "</h5>");
     }
 
     private void updateItems(Context context) {

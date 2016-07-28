@@ -60,6 +60,8 @@ public class TagPokestop extends Task {
                                     }
                                     context.getWalking().set(true);
                                     break;
+                                default:
+                                    break;
                             }
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();

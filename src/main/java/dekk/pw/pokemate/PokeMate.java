@@ -66,7 +66,7 @@ public class PokeMate {
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);
-            new Thread(() -> Application.launch(PokeMateUI.class, (String) null)).start();
+            new Thread(() -> Application.launch(PokeMateUI.class, "")).start();
         }
         TaskController controller = new TaskController(context);
         controller.start();

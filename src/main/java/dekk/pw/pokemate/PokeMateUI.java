@@ -11,6 +11,9 @@ import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.inventory.Item;
+import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.inventory.EggIncubator;
 import dekk.pw.pokemate.tasks.Navigate;
@@ -29,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Created by $ Tim Dekker on 7/23/2016.
  */
@@ -165,10 +167,11 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         updatePlayer(context, window);
                         updatePokemon(context);
                         updateItems(context);
+                        itemManagement(context);
+                        pokemonManagement(context);
                         updateLog();
                         updateIncubators(context);
                         updateEggs(context);
-
                     });
                     Thread.sleep(UPDATE_TIME);
                 } catch (InterruptedException e) {
@@ -328,6 +331,146 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').value = document.getElementById('logTextArea').value + \"" + messagesForLog + "\"");
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').scrollTop = document.getElementById('logTextArea').scrollHeight");
         messagesForLog = "";
+    }
+
+    public static void itemManagement(Context context) {
+        boolean viewStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").getAttribute("isBeingViewed").equalsIgnoreCase("true");
+        boolean loadStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").getAttribute("isLoaded").equalsIgnoreCase("true");
+        boolean deleteStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("isDeleting").equalsIgnoreCase("true");
+        if (viewStatus && !loadStatus) {
+            String itemsList = "\"";
+            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+                if (item.getCount() > 0) {
+                    String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
+                    itemsList += "<div class=\'col-xs-3\'>" +
+                            "<div class=\'row\'>" +
+                            "<img style=\'width: 70px; height: 70px; \'" +
+                            "src=\'" + imgSrc + "\'" + ">" +
+                            "</div>" +
+                            "<div class=\'row form-group\'>" +
+                            "<input type=\'text\' class=\'form-control\' id=\'" + item.getItemId() + "\' value=\'" + item.getCount() + "\'>" +
+                            "<button type=\'button\' class=\'btn btn-danger deleteItem\' data-maxCount=\'" + item.getCount() + "\' data-id=\'" + item.getItemId() + "\'>Delete</button>" +
+                            "</div>" +
+                            "</div>";
+                }
+            }
+            itemsList += "\"";
+            mapComponent.getWebview().getEngine().executeScript("document.getElementById('itemManagement').innerHTML = " + itemsList);
+            mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded", "true");
+        } else if (deleteStatus) {
+            ItemId id = ItemId.valueOf(mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("itemId"));
+            Integer count = Integer.parseInt(mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").getAttribute("itemCount"));
+            if (id.toString().equalsIgnoreCase("ITEM_INCUBATOR_BASIC_UNLIMITED")) {
+                System.out.println("This item cannot be deleted");
+                mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded", "false");
+            } else {
+                try {
+                    context.getApi().getInventories().getItemBag().removeItem(id, count);
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").setAttribute("isDeleting", "false");
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").removeAttribute("itemId");
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("deleteItemData").removeAttribute("itemCount");
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded", "false");
+                } catch (RemoteServerException | LoginFailedException e) {
+                    e.printStackTrace();
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("itemManagement").setAttribute("isLoaded", "false");
+                }
+            }
+        }
+    }
+
+    public static void pokemonManagement(Context context) {
+        boolean viewStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").getAttribute("isBeingViewed").equalsIgnoreCase("true");
+        boolean loadStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").getAttribute("isLoaded").equalsIgnoreCase("true");
+        boolean transferStatus = mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").getAttribute("isTransfering").equalsIgnoreCase("true");
+        if(viewStatus && !loadStatus){
+            String pokeFilter = mapComponent.getWebview().getEngine().executeScript("$( \"#pokeManageFilter\" ).val();").toString();
+            String pokeSortType = mapComponent.getWebview().getEngine().executeScript("$( \"#pokeManageSortType\" ).val();").toString();
+            String pokeSort = pokeFilter + "-" + pokeSortType;
+            switch (pokeSort) {
+                case "pokedex-des":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
+                    break;
+                case "pokedex-asc":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
+                    break;
+                case "cp-des":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                    break;
+                case "cp-asc":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
+                    break;
+                case "recent-des":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
+                    break;
+                case "recent-asc":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
+                    break;
+                case "candy-des":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCandy() - a.getCandy());
+                    break;
+                case "candy-asc":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCandy() - b.getCandy());
+                    break;
+                case "iv-des":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
+                    break;
+                case "iv-asc":
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                    break;
+                default:
+                    context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                    break;
+            }
+            String pokeList = "\"";
+            for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+                if (pokemon.getPokemonFamily() != null) {
+                    String imgSrc = "icons/" + pokemon.getPokemonId().getNumber() + ".png";
+                    pokeList += "<div class=\'col-xs-3 pokeBorder\'>" +
+                            "<div class=\'row\'>" +
+                            "<img style=\'width: 70px; height: 70px; \'" +
+                            "src=\'" + imgSrc + "\'" + ">" +
+                            "</div>" +
+                            "<div class=\'row\'>" +
+                            "<p>Index: " + pokemon.getPokemonId().getNumber() + "</p>" +
+                            "<p>CP: " + pokemon.getCp() + "</p>" +
+                            "<p>Candy: " + pokemon.getCandy() + "</p>" +
+                            "<p>IV%: " + context.getIvRatio(pokemon) + "</p>" +
+                            "</div>" +
+                            "<div class=\'row form-group\'>" +
+                            "<input align=\'center\' type=\'checkbox\' class=\'form-control pokemonToTransfer\' id=\'" + pokemon.getId() + "\' value=\'" + pokemon.getId() + "\'>"+
+                            "</div>" +
+                            "</div>";
+                }
+            }
+            pokeList += "\"";
+            String pokeInfo = "\"";
+            Integer totalPoke = context.getApi().getInventories().getPokebank().getPokemons().size();
+            pokeInfo +=  "<div class=\'row\'>" +
+                    "<p>Total Pokemon: " + totalPoke + "</p>" +
+                    "<button type=\'button\' class=\'btn btn-primary transferPokemons\'>Transfer Pokemon(s)</button>" +
+                    "</div>" + "\"";
+            mapComponent.getWebview().getEngine().executeScript("document.getElementById('pokemonManagementInfo').innerHTML = " + pokeInfo);
+            mapComponent.getWebview().getEngine().executeScript("document.getElementById('pokemonManagementContent').innerHTML = " + pokeList);
+            mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").setAttribute("isLoaded","true");
+        } else if(transferStatus){
+            mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").setAttribute("isTransfering", "false");
+            String pokemonToTransfer = mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").getAttribute("pokemonList");
+            String[] pokemonList = pokemonToTransfer.split(",");
+            for(int i = 0; i < pokemonList.length-1; i++){
+                Long pokemonId = Long.parseLong(pokemonList[i]);
+                Pokemon thePokemon = context.getApi().getInventories().getPokebank().getPokemonById(pokemonId);
+                try {
+                    if(thePokemon != null)
+                    System.out.println("Transfering " + thePokemon.getPokemonId() +  " has been " +thePokemon.transferPokemon().toString());
+                } catch (RemoteServerException | LoginFailedException e) {
+                    e.printStackTrace();
+                    mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").setAttribute("isLoaded", "false");
+                }
+            }
+            mapComponent.getWebview().getEngine().getDocument().getElementById("transferPokemonData").removeAttribute("pokemonList");
+            mapComponent.getWebview().getEngine().getDocument().getElementById("pokemonManagement").setAttribute("isLoaded", "false");
+        }
+
     }
 
     private static String millisToTimeString(long millis) {

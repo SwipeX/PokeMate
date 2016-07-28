@@ -13,6 +13,7 @@ import java.util.Properties;
  * Created by $ Tim Dekker on 7/23/2016.
  */
 public class Config {
+    public final static String POKE = "Pok\u00E9";
     private static double speed;
     private static int preferredBall;
     private static String googleApiKey;
@@ -35,14 +36,13 @@ public class Config {
     private static String customNamedLocation;
     private static boolean eggsIncubating;
     private static boolean eggsHatching;
+    private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
-    public final static String POKE = "Pok\u00E9";
-
     private static Properties properties = new Properties();
 
-    static {
+    public static void load(String configPath) {
         try {
-            properties.load(new FileInputStream("config.properties"));
+            properties.load(new FileInputStream(configPath));
             username = properties.getProperty("username");
             password = properties.getProperty("password");
             googleApiKey = properties.getProperty("api-key");
@@ -56,6 +56,7 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
             eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
+            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer-prefers-iv", "false"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted-pokemon", null);
             whiteListedPokemon = new ArrayList<>();
@@ -208,4 +209,12 @@ public class Config {
 	public static int getMinimumCPForMessage() {
 		return cpMinimumForMessage;
 	}
+
+    public static boolean isTransferPrefersIV() {
+        return transferPrefersIV;
+    }
+
+    public static void setTransferPrefersIV(boolean transferPrefersIV) {
+        Config.transferPrefersIV = transferPrefersIV;
+    }
 }

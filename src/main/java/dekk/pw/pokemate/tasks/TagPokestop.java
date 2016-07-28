@@ -19,6 +19,8 @@ import java.util.ArrayList;
  */
 public class TagPokestop extends Task {
 
+    private static final int retryAmount = 50;
+
     TagPokestop(final Context context) {
         super(context);
     }
@@ -37,8 +39,30 @@ public class TagPokestop extends Task {
                     .forEach(near -> {
                         Walking.setLocation(context);
                         try {
-                            String result = resultMessage(near.loot());
-                            PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
+                             /* Softban Bypass */
+                            PokestopLootResult result;
+                            result = near.loot();
+                            PokeMateUI.toast(resultMessage(result), Config.POKE + "Stop interaction!", "icons/pokestop.png");
+                            switch (result.getResult()) {
+                                case SUCCESS:
+                                case INVENTORY_FULL:
+                                    if (result.getExperience() == 0 && !Config.isSoftbanBypass()) { //Softbanned
+
+                                        context.getWalking().set(false);
+                                        PokeMateUI.toast("Softbanned! Bypassing..", Config.POKE + "Stop interaction!", "icons/pokestop.png");
+                                        for (int i = 0; i<retryAmount; i++) {
+                                            result = near.loot();
+                                            if (result.getExperience() > 0) {
+                                                PokeMateUI.toast("No longer softbanned", Config.POKE + "Stop interaction!", "icons/pokestop.png");
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    context.getWalking().set(true);
+                                    break;
+                                default:
+                                    break;
+                            }
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
                         }

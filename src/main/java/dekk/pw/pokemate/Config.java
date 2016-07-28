@@ -38,6 +38,7 @@ public class Config {
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
+    private static boolean softbanBypass;
     private static Properties properties = new Properties();
 
     public static void load(String configPath) {
@@ -78,12 +79,15 @@ public class Config {
 			fillListString(droppedItemNames, droppedItems);
 			// minimum cp for message
 			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
+            // softban bypass
+            softbanBypass =  Boolean.parseBoolean(properties.getProperty("softban_bypass", "false"));
+
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-	
+
 	private static void fillListString(String propertiesString, List<String> target) {
         if (propertiesString != null) {
             String[] strings = propertiesString.split(",");
@@ -201,6 +205,8 @@ public class Config {
     public static boolean isEggsHatching() {
         return eggsHatching;
     }
+
+    public static boolean isSoftbanBypass() { return softbanBypass; }
 	
 	public static List<String> getDroppedItems() {
 		return droppedItems;

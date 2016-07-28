@@ -17,9 +17,12 @@ cache:
   - "$HOME/.gradle/wrapper/"
 
 script:
-  - ./gradlew assemble
   - ./gradlew check
+
+after_script:
   - ./gradlew fatJar
+    on:
+      tags: true
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

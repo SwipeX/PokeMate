@@ -58,7 +58,7 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
             eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
-            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer-prefers-iv", "false"));
+            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer_prefers_iv", "false"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted_pokemon", null);
             whiteListedPokemon = new ArrayList<>();

@@ -26,11 +26,6 @@ public class PokeMate {
     private static Context context;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
-        if (!configProperties.exists()) {
-            System.out.println("You are required to use a config.properties file to run the application.");
-            System.exit(1);
-        }
-
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -71,7 +66,7 @@ public class PokeMate {
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);
-            new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
+            new Thread(() -> Application.launch(PokeMateUI.class, (String) null)).start();
         }
         TaskController controller = new TaskController(context);
         controller.start();
@@ -80,15 +75,16 @@ public class PokeMate {
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
         if (args.length == 0) {
-            System.out.println("Using default config.properties location");
             configProperties = new File("config.properties");
+            System.out.println("Using default config.properties location");
         } else {
             configProperties = new File(args[0]);
-            if (!configProperties.exists()) {
-                System.out.println("Cannot find config.properties at " + configProperties.toPath());
-                System.exit(1);
-            }
-            System.out.println("Using config.properties at " + configProperties.toPath());
+            System.out.println("Using configuration file: " + configProperties.toPath());
+        }
+
+        if (!configProperties.exists()) {
+            System.out.println("ERROR - Could not find the required config.properties file: " + configProperties.getAbsolutePath());
+            System.exit(1);
         }
 
         Config.load(configProperties.getPath());

@@ -3,6 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
+notifications:
+  slack: pokemate:tLifbcDVbHB5N6BXiDuiTd7D
+
 branches:
   only:
   - master
@@ -17,15 +20,13 @@ cache:
   - "$HOME/.gradle/wrapper/"
 
 script:
-  - ./gradle assemble
-  - ./gradle check
-  - ./gradle fatJar
+  - ./gradlew check
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-notifications:
-  slack: pokemate:tLifbcDVbHB5N6BXiDuiTd7D
+before_deploy:
+  - ./gradlew fatJar
 
 deploy:
   provider: releases
@@ -33,4 +34,4 @@ deploy:
     secure: g6DNRUNzMyAqC+Do3X3Fil0lwrkKXTS4kQFj6GGvckXsPDAYFqatVMI7CY4Dho1AtFBkwYBkr83XncNi59AjolfkGkxa0oIgwyhZWh2GRLYYNrL2ewBLaoiTRLhruc4wOS6u/GkOD+W6FnuDbfIzRco+byHnqMrFEEgkKMFxOMJnB4FZeaGg/gCGzGwP/R6eU29R0VYduyXXmfTPHOTgcEK/tG4uo50umC1df/L0N7ptoAhkMAicws+K/BbcShYdGJdG0brmC5rHmgEwRNt/pGpQjDgAMb+yNmPqtS6FKMvuAjfT6l1HVtZuuz/QNWYcwKma+4GG1tFFX3y+k0yCaRnmOyV5RFT98l29aOG7rL/UbIFgjPTQhbmTpQ4cCV3WR8aJbKsnVkCWqHd7nA6OsVDsxn2f0r3tYjmXGvdbYgxa6hFGcWKVwyTf7KS5uAQQORFufYb/IGN+0sJwvhghwdsHoXDThU7QjqAfMxRwiFaFrzAU70GGunVQ0rCDUdXRcSemezinHfdSlcnggE9d5b7OZ5BVDzzzgMS0v/DX3xj4vomPLKgAJTQabLeP8WDGExOsWw9S8gKa7UbTS6vbzsJNpxZS2C5OwpJS+iiN5Iz3X5Tdb1yOKkECcdbOpFAPDY3egeX6PO3eNGKcf7aP6VviKviesT4iYMmv3SYsKK8=
   file: "build/libs/pokemate-all-${TRAVIS_TAG}.jar"
   on:
-    repo: SwipeX/PokeMate
+    tags: true

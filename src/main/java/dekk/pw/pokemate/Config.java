@@ -13,6 +13,7 @@ import java.util.Properties;
  * Created by $ Tim Dekker on 7/23/2016.
  */
 public class Config {
+    public final static String POKE = "Pok\u00E9";
     private static double speed;
     private static int preferredBall;
     private static String googleApiKey;
@@ -37,13 +38,11 @@ public class Config {
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
-    public final static String POKE = "Pok\u00E9";
-
     private static Properties properties = new Properties();
 
-    static {
+    public static void load(String configPath) {
         try {
-            properties.load(new FileInputStream("config.properties"));
+            properties.load(new FileInputStream(configPath));
             username = properties.getProperty("username");
             password = properties.getProperty("password");
             googleApiKey = properties.getProperty("api-key");

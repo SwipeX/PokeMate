@@ -38,6 +38,7 @@ public class Config {
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
+    private static boolean softbanBypass;
     private static Properties properties = new Properties();
 
     public static void load(String configPath) {
@@ -45,28 +46,28 @@ public class Config {
             properties.load(new FileInputStream(configPath));
             username = properties.getProperty("username");
             password = properties.getProperty("password");
-            googleApiKey = properties.getProperty("api-key");
+            googleApiKey = properties.getProperty("api_key");
             speed = Double.parseDouble(properties.getProperty("speed", "1.0"));
-            ivRatio = Integer.parseInt(properties.getProperty("iv-ratio", "85"));
-            minCP = Integer.parseInt(properties.getProperty("min-cp", "1"));
-            mapPoints = Integer.parseInt(properties.getProperty("map-points", "50"));
+            ivRatio = Integer.parseInt(properties.getProperty("iv_ratio", "85"));
+            minCP = Integer.parseInt(properties.getProperty("min_cp", "1"));
+            mapPoints = Integer.parseInt(properties.getProperty("map_points", "50"));
             showUI = Boolean.parseBoolean(properties.getProperty("show", "true"));
-            autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic-evolving", "true"));
+            autoEvolving = Boolean.parseBoolean(properties.getProperty("automatic_evolving", "true"));
             range = Double.parseDouble(properties.getProperty("range", ".04"));
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
             eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
             transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer-prefers-iv", "false"));
             //whitelist
-            String whiteList = properties.getProperty("whitelisted-pokemon", null);
+            String whiteList = properties.getProperty("whitelisted_pokemon", null);
             whiteListedPokemon = new ArrayList<>();
             fillList(whiteList, whiteListedPokemon);
-            String neverTransferPokemonNames = properties.getProperty("never-transfer", null);
+            String neverTransferPokemonNames = properties.getProperty("never_transfer", null);
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
             // named location
-            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use-location-name", "false"));
-            customNamedLocation = properties.getProperty("location-by-name");
+            useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use_location_name", "false"));
+            customNamedLocation = properties.getProperty("location_by_name");
             // notification
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));

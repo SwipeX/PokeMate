@@ -5,6 +5,7 @@ import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.util.SystemTimeImpl;
 import dekk.pw.pokemate.tasks.TaskController;
 import dekk.pw.pokemate.util.LatLongFromLocation;
 import javafx.application.Application;
@@ -57,7 +58,8 @@ public class PokeMate {
 
         auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
-        PokemonGo go = new PokemonGo(auth, http);
+        //PokemonGo go = new PokemonGo(auth, http);
+        PokemonGo go = new PokemonGo(auth, http, new SystemTimeImpl());
 
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
         context.setLat(lat);

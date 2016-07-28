@@ -4,22 +4,16 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.auth.*;
-
-import dekk.pw.pokemate.util.AuthenticationListener;
+import com.pokegoapi.auth.CredentialProvider;
+import com.pokegoapi.auth.GoogleAutoCredentialProvider;
+import com.pokegoapi.auth.PtcCredentialProvider;
+import com.pokegoapi.util.SystemTimeImpl;
 import okhttp3.OkHttpClient;
 
-import java.awt.Desktop;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.net.URI;
+import java.security.MessageDigest;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.security.MessageDigest;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -73,13 +67,13 @@ public class Context {
                     token = scanner.nextLine();
                     scanner.close();
                     if (token != null) {
-                        return new GoogleCredentialProvider(httpClient, token);
+                        return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
                     }
                 } else {
-                    return new GoogleCredentialProvider(httpClient, new AuthenticationListener());
+                    return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
                 }
             } else {
-                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
+                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword(), new SystemTimeImpl());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,16 +81,23 @@ public class Context {
         return null;
     }
 
+    public static String millisToTimeString(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = (millis / (1000 * 60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
     public AtomicDouble getLat() {
         return lat;
     }
 
-    public AtomicDouble getLng() {
-        return lng;
-    }
-
     public void setLat(AtomicDouble lat) {
         this.lat = lat;
+    }
+
+    public AtomicDouble getLng() {
+        return lng;
     }
 
     public void setLng(AtomicDouble lng) {
@@ -149,12 +150,5 @@ public class Context {
      */
     public int getIvRatio(Pokemon pokemon) {
         return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
-    }
-
-    public static String millisToTimeString(long millis) {
-        long seconds = (millis / 1000) % 60;
-        long minutes = (millis / (1000 * 60)) % 60;
-        long hours = (millis / (1000 * 60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

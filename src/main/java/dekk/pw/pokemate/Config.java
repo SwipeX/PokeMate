@@ -38,7 +38,6 @@ public class Config {
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
-    private static boolean softbanBypass;
     private static Properties properties = new Properties();
 
     public static void load(String configPath) {

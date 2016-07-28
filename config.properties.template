@@ -48,4 +48,4 @@ minimum_cp_for_ui_message=0
 # Prefer IV over CP when transfering? true keeps highest IV, false keeps highest CP
 transfer_prefers_iv=false
 # should the bot bypass softbans
-softban-bypass=true
+softban_bypass=true

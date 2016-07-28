@@ -68,6 +68,7 @@ public class CatchPokemon extends Task {
                                     if (p.getCp() > Config.getMinimumCPForMessage()) {
                                         PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
                                     } else {
+										output += "(IV: " + getIvRatio(p) + "%)";
                                         System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output);
                                         PokeMateUI.addMessageToLog(output);
                                     }

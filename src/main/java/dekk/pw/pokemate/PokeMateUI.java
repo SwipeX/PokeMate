@@ -15,6 +15,7 @@ import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.Pokemon;
 import dekk.pw.pokemate.tasks.Navigate;
+import dekk.pw.pokemate.tasks.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;

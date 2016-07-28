@@ -3,6 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
+notifications:
+  slack: pokemate:tLifbcDVbHB5N6BXiDuiTd7D
+
 branches:
   only:
   - master
@@ -19,16 +22,13 @@ cache:
 script:
   - ./gradlew check
 
-after_script:
-  - ./gradlew fatJar
-    on:
-      tags: true
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-notifications:
-  slack: pokemate:tLifbcDVbHB5N6BXiDuiTd7D
+before_deploy:
+  - ./gradlew fatJar
+    on:
+      tags: true
 
 deploy:
   provider: releases

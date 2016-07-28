@@ -12,8 +12,14 @@ public class StringConverter {
 
     //return an item name thats not all uppercase and doesn't have underscores
     public static String convertItem(String itemName){
-        String[] result = (itemName.substring(5,6).toUpperCase() + itemName.substring(6).replaceAll("_", " ").toLowerCase()).split("\\s+");
-        return result[0] + " " + result[1].substring(0,1).toUpperCase() + result[1].substring(1);
+		if ((itemName.length() - itemName.replace("_", "").length()) > 1) {
+			String[] result = (itemName.substring(5,6).toUpperCase() + itemName.substring(6).replaceAll("_", " ").toLowerCase()).split("\\s+");
+			return result[0] + " " + result[1].substring(0,1).toUpperCase() + result[1].substring(1);
+		}
+		else {
+			String[] result = (itemName.substring(5,6).toUpperCase() + itemName.substring(6).replaceAll("_", " ").toLowerCase()).split("\\s+");
+			return result[0].substring(0,1).toUpperCase() + result[0].substring(1);
+		}
     }
 
 }

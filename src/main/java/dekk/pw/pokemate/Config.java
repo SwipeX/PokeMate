@@ -1,6 +1,7 @@
 package dekk.pw.pokemate;
 
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
+import dekk.pw.pokemate.tasks.Navigate;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ public class Config {
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
+    private static Navigate.NavigationType navigationType;
     private static boolean softbanBypass;
     private static Properties properties = new Properties();
 
@@ -57,7 +59,7 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
             eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
-            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer-prefers-iv", "false"));
+            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer_prefers_iv", "false"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted_pokemon", null);
             whiteListedPokemon = new ArrayList<>();
@@ -79,6 +81,7 @@ public class Config {
 			fillListString(droppedItemNames, droppedItems);
 			// minimum cp for message
 			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
+            navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
             // softban bypass
             softbanBypass =  Boolean.parseBoolean(properties.getProperty("softban_bypass", "false"));
 
@@ -88,7 +91,11 @@ public class Config {
         }
     }
 
-	private static void fillListString(String propertiesString, List<String> target) {
+    public static Navigate.NavigationType getNavigationType() {
+        return navigationType;
+    }
+
+    private static void fillListString(String propertiesString, List<String> target) {
         if (propertiesString != null) {
             String[] strings = propertiesString.split(",");
             if (strings != null) {

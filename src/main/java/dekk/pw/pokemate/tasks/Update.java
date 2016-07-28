@@ -20,7 +20,7 @@ public class Update extends Task {
 
     private static int experienceGained = 0;
     private static long lastExperience = 0;
-
+	private static double xpHr;
     private static DecimalFormat ratioFormat = new DecimalFormat("#0.00");
 
     Update(final Context context) {
@@ -48,5 +48,9 @@ public class Update extends Task {
             Context.Login(context.getHttp());
         }
     }
+	
+	public static String getXpHr() {
+		return String.format("%.2f", xpHr);
+	}
 
 }

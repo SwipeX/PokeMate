@@ -1,5 +1,6 @@
 package dekk.pw.pokemate;
 
+import com.google.common.geometry.S2LatLng;
 import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
@@ -15,6 +16,7 @@ import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.Pokemon;
 import dekk.pw.pokemate.tasks.Navigate;
+import dekk.pw.pokemate.tasks.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -165,13 +167,15 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .position(center);
 
         InfoWindow window = new InfoWindow(infoOptions);
-        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> { window.open(map, marker); });
+        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> {
+            window.open(map, marker);
+        });
         window.open(map, marker);
         new Thread(() -> {
             while (true) {
                 Platform.runLater(() -> {
                     List<DirectionsStep[]> directionsSteps = Navigate.getDirections();
-                    if (directionsSteps != null && directionsSteps.size() > Config.getMapPoints() - 1 && !directions) {
+                    if (Navigate.getNavigationType() == Navigate.NavigationType.STREETS &&directionsSteps != null && Navigate.populated && !directions) {
                         synchronized (poke) {
                             List<LatLong> locs = new ArrayList<>();
                             for (DirectionsStep[] steps : directionsSteps) {
@@ -185,13 +189,30 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             PolylineOptions polyOpts = new PolylineOptions()
                                     .path(mvc)
                                     .strokeColor("red")
-                                    .strokeWeight(2)
+                                    .strokeWeight(1)
                                     .strokeOpacity(0.8);
 
                             Polyline poly = new Polyline(polyOpts);
                             map.addMapShape(poly);
                             directions = true;
                         }
+                    } else if (Navigate.getNavigationType() == Navigate.NavigationType.POKESTOPS && Navigate.populated && !directions) {
+                        List<LatLong> locs = new ArrayList<>();
+                        Navigate.getRoute().forEach(a -> locs.add(new LatLong(a.latDegrees(), a.lngDegrees())));
+
+                        LatLong[] array = locs.toArray(new LatLong[0]);
+                        System.out.println(array.length);
+                        MVCArray mvc = new MVCArray(array);
+
+                        PolylineOptions polyOpts = new PolylineOptions()
+                                .path(mvc)
+                                .strokeColor("red")
+                                .strokeWeight(1)
+                                .strokeOpacity(0.8);
+
+                        Polyline poly = new Polyline(polyOpts);
+                        map.addMapShape(poly);
+                        directions = true;
                     }
                     marker.setPosition(new LatLong(context.getLat().get(), context.getLng().get()));
                     int currentZoom = map.getZoom();

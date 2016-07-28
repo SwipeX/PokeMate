@@ -1,14 +1,19 @@
 package dekk.pw.pokemate.tasks;
 
+import com.google.common.geometry.S2LatLng;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.*;
+import com.pokegoapi.api.map.fort.Pokestop;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 /**
  * Created by TimD on 7/21/2016.
@@ -18,24 +23,66 @@ public class Navigate extends Task {
 
     private final LatLng min, max;
     private static List<DirectionsStep[]> routes = new ArrayList<>();
+    private static List<S2LatLng> route = new ArrayList<>();
     private int routesIndex = 0;
     private static final Object lock = new Object();
+    NavigationType navigationType = NavigationType.STREETS;
 
     public Navigate(final Context context, LatLng min, LatLng max) {
         super(context);
         this.min = new LatLng(min.lat < max.lat ? min.lat : max.lat, min.lng < max.lng ? min.lng : max.lng);
         this.max = new LatLng(min.lat > max.lat ? min.lat : max.lat, min.lng > max.lng ? min.lng : max.lng);
-        populateDirections(context);
+        switch (navigationType) {
+            //Untested
+            case POKESTOPS:
+                populateRoute(context);
+                return;
+            default:
+                populateDirections(context);
+        }
+    }
+
+    /**
+     *  Attempts to generate a route to all found pokestops...
+     * @param context
+     */
+    private void populateRoute(Context context) {
+        try {
+            Stream<Pokestop> stream = context.getApi().getMap().getMapObjects().getPokestops().stream().sorted((a, b) -> {
+                S2LatLng locationA = S2LatLng.fromDegrees(a.getLatitude(), a.getLongitude());
+                S2LatLng locationB = S2LatLng.fromDegrees(b.getLatitude(), b.getLongitude());
+                S2LatLng self = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
+                Double distanceA = self.getEarthDistance(locationA);
+                Double distanceB = self.getEarthDistance(locationB);
+                return distanceA.compareTo(distanceB);
+            });
+            stream.forEach(stop -> route.add(S2LatLng.fromDegrees(stop.getLatitude(), stop.getLongitude())));
+            route.add(S2LatLng.fromDegrees(context.getLat().get(), context.getLng().get()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return;
     }
 
     @Override
     public void run() {
         if (context.isWalking()) {
             return;
-        } else if (routesIndex >= getDirections().size()) {
+        } else if (navigationType.equals(NavigationType.STREETS) && routesIndex >= getDirections().size()) {
+            routesIndex = 0;
+        } else if (navigationType.equals(NavigationType.POKESTOPS) && routesIndex >= route.size()) {
             routesIndex = 0;
         }
-        Walking.walk(context, getDirections().get(routesIndex++));
+        switch (navigationType) {
+            case POKESTOPS:
+                Walking.walk(context, route.get(routesIndex++));
+                return;
+            case POKEMON:
+                //TODO: walk dynamically to nearest pokemon
+                return;
+            default:
+                Walking.walk(context, getDirections().get(routesIndex++));
+        }
     }
 
 
@@ -97,5 +144,9 @@ public class Navigate extends Task {
         synchronized (lock) {
             return routes;
         }
+    }
+
+    enum NavigationType {
+        STREETS, POKESTOPS, POKEMON
     }
 }

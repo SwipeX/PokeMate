@@ -1,11 +1,11 @@
 package dekk.pw.pokemate;
 
-import POGOProtos.Networking.Envelopes.RequestEnvelopeOuterClass;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.util.SystemTimeImpl;
 import dekk.pw.pokemate.tasks.TaskController;
 import dekk.pw.pokemate.util.LatLongFromLocation;
 import javafx.application.Application;
@@ -13,7 +13,6 @@ import okhttp3.OkHttpClient;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
@@ -23,15 +22,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class PokeMate {
     public static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
-    private static Context context;
     public static long startTime;
+    private static File configProperties;
+    private static Context context;
 
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
-        if (!Files.exists(CONFIG_PROPERTIES)) {
-            System.out.println("You are required to use a config.properties file to run the application.");
-            System.exit(1);
-        }
-
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -63,7 +58,8 @@ public class PokeMate {
 
         auth = Context.Login(http);
         System.out.println("Logged in as " + Config.getUsername());
-        PokemonGo go = new PokemonGo(auth, http);
+        //PokemonGo go = new PokemonGo(auth, http);
+        PokemonGo go = new PokemonGo(auth, http, new SystemTimeImpl());
 
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
         context.setLat(lat);
@@ -72,7 +68,7 @@ public class PokeMate {
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);
-            new Thread(() -> Application.launch(PokeMateUI.class, null)).start();
+            new Thread(() -> Application.launch(PokeMateUI.class, "")).start();
         }
         TaskController controller = new TaskController(context);
         controller.start();
@@ -80,6 +76,20 @@ public class PokeMate {
     }
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
+        if (args.length == 0) {
+            configProperties = new File("config.properties");
+            System.out.println("Using default config.properties location");
+        } else {
+            configProperties = new File(args[0]);
+            System.out.println("Using configuration file: " + configProperties.toPath());
+        }
+
+        if (!configProperties.exists()) {
+            System.out.println("ERROR - Could not find the required config.properties file: " + configProperties.getAbsolutePath());
+            System.exit(1);
+        }
+
+        Config.load(configProperties.getPath());
         new PokeMate();
     }
 

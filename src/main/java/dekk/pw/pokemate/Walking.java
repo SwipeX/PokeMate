@@ -29,7 +29,7 @@ public class Walking {
         }
     }
 
-    public static void walk(S2LatLng end, final Context context) {
+    public static void walk( final Context context, S2LatLng end) {
         if (context.isWalking())
             return;
         context.getWalking().set(true);

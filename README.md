@@ -9,7 +9,7 @@
 + Traverses a set of nodes returned from Google's Directions API
 + Auto evolving when able.
 + Hatches eggs
-+ Egg 'cracking'
++ Egg 'cracking' - (hatching an egg? [look at our wiki](https://github.com/SwipeX/PokeMate/wiki/Eggs))
 + Notifications
 
 ###Release

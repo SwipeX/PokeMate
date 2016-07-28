@@ -17,3 +17,6 @@ cache:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  slack: pokemate:tLifbcDVbHB5N6BXiDuiTd7D

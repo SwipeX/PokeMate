@@ -36,8 +36,6 @@ public class Update extends Task {
             context.getApi().getInventories().updateInventories(true);
 //            long nextXP = REQUIRED_EXPERIENCES[player.getStats().getLevel()] - REQUIRED_EXPERIENCES[player.getStats().getLevel() - 1];
             long curTotalXP = player.getStats().getExperience();
-//            long curLevelXP = curTotalXP - REQUIRED_EXPERIENCES[player.getStats().getLevel() - 1];
-//            String ratio = ratioFormat.format((double) curLevelXP / nextXP * 100.D);
             if (curTotalXP > lastExperience) {
                 if (lastExperience != 0) {
                     experienceGained += curTotalXP - lastExperience;

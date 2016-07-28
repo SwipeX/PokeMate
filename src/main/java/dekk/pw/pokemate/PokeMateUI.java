@@ -3,16 +3,17 @@ package dekk.pw.pokemate;
 import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
+import com.lynden.gmapsfx.javascript.event.UIEventType;
 import com.lynden.gmapsfx.javascript.object.*;
-import com.lynden.gmapsfx.javascript.event.*;
-import com.lynden.gmapsfx.shapes.*;
+import com.lynden.gmapsfx.shapes.Polygon;
+import com.lynden.gmapsfx.shapes.PolygonOptions;
 import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
-import com.pokegoapi.api.player.PlayerProfile;
-import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.api.inventory.Item;
-import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.inventory.EggIncubator;
+import com.pokegoapi.api.inventory.Item;
+import com.pokegoapi.api.player.PlayerProfile;
+import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.api.pokemon.Pokemon;
 import dekk.pw.pokemate.tasks.Navigate;
 import dekk.pw.pokemate.tasks.Update;
 import javafx.application.Application;
@@ -25,10 +26,11 @@ import javafx.scene.web.WebEvent;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import org.controlsfx.control.Notifications;
-import java.util.Date;
-import java.text.SimpleDateFormat;
+
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,14 +39,27 @@ import java.util.List;
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
     public static final int UPDATE_TIME = 5000;
-    boolean directions;
-    protected static GoogleMapView mapComponent;
-    protected GoogleMap map;
-    protected static PokeMate poke;
-    protected static String messagesForLog = "";
     public static final double XVARIANCE = Config.getRange() * 1.5;
     public static final double VARIANCE = Config.getRange();
+    private static final String NOTIFY = "$.notify({\n" +
+            "icon: '%s',\n" +
+            "message: '%s',\n" +
+            "},{\n" +
+            "icon_type: 'img'," +
+            "type: \"info\",\n" +
+            "animate: {\n" +
+            "enter: 'animated bounceInDown',\n" +
+            "exit: 'animated bounceOutUp'\n" +
+            "},\n" +
+            "});";
     public static Marker marker;
+    protected static GoogleMapView mapComponent;
+    protected static PokeMate poke;
+    protected static String messagesForLog = "";
+    private static int experienceGained = 0;
+    private static long lastExperience = 0;
+    protected GoogleMap map;
+    boolean directions;
     int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
@@ -54,6 +69,32 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     //}
     public static void setPoke(PokeMate p) {
         poke = p;
+    }
+
+    public static void toast(String message, String title, String image) {
+        if (Config.isConsoleNotification())
+            System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
+        messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
+        if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
+            mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message));
+        });
+        if (Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
+                .graphic(new ImageView(new Image(image, 64, 64, false, false)))
+                .title(title)
+                .text(message)
+                .darkStyle()
+                .show());
+    }
+
+    public static void addMessageToLog(String message) {
+        messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
+    }
+
+    private static String millisToTimeString(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = (millis / (1000 * 60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     @Override
@@ -78,7 +119,6 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         stage.getIcons().add(new Image(classloader.getResourceAsStream("icon.png")));
         stage.show();
     }
-
 
     @Override
     public void mapInitialized() {
@@ -225,10 +265,18 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         long runTime = System.currentTimeMillis() - PokeMate.startTime;
         double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
         double curLevelXP = player.getStats().getExperience() - requiredXp[player.getStats().getLevel() - 1];
+        long curTotalXP = player.getStats().getExperience();
+        if (curTotalXP > lastExperience) {
+            if (lastExperience != 0) {
+                experienceGained += curTotalXP - lastExperience;
+            }
+            lastExperience = curTotalXP;
+        }
+
         String ratio = new DecimalFormat("#0.00").format(curLevelXP / nextXP * 100.D);
         window.setContent("<h4>" + player.getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() + " - Progress: " + ratio +
-                "%</h5><h5>XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +
-                "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5><h5>XP/Hr: " + Update.getXpHr() + "</h5>");
+                "%</h5><h5>XP/Hour: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "</h5><h5>XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +
+                "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
     }
 
     private void updateItems(Context context) {
@@ -294,47 +342,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
     }
 
-    private static final String NOTIFY = "$.notify({\n" +
-            "icon: '%s',\n" +
-            "message: '%s',\n" +
-            "},{\n" +
-            "icon_type: 'img',"+
-            "type: \"info\",\n" +
-            "animate: {\n" +
-            "enter: 'animated bounceInDown',\n" +
-            "exit: 'animated bounceOutUp'\n" +
-            "},\n" +
-            "});";
-
-    public static void toast(String message, String title, String image) {
-        if (Config.isConsoleNotification())
-            System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
-        messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
-        if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
-            mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message));
-        });
-        if (Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
-                .graphic(new ImageView(new Image(image, 64, 64, false, false)))
-                .title(title)
-                .text(message)
-                .darkStyle()
-                .show());
-    }
-	
-	public static void addMessageToLog(String message) {
-		messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
-	}
-
     private void updateLog() {
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').value = document.getElementById('logTextArea').value + \"" + messagesForLog + "\"");
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('logTextArea').scrollTop = document.getElementById('logTextArea').scrollHeight");
         messagesForLog = "";
-    }
-
-    private static String millisToTimeString(long millis) {
-        long seconds = (millis / 1000) % 60;
-        long minutes = (millis / (1000 * 60)) % 60;
-        long hours = (millis / (1000 * 60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

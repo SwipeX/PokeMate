@@ -24,9 +24,10 @@ public class Navigate extends Task {
     private final LatLng min, max;
     private static List<DirectionsStep[]> routes = new ArrayList<>();
     private static List<S2LatLng> route = new ArrayList<>();
+    public static boolean populated;
     private int routesIndex = 0;
     private static final Object lock = new Object();
-    NavigationType navigationType = NavigationType.STREETS;
+    static NavigationType navigationType = Config.getNavigationType();
 
     public Navigate(final Context context, LatLng min, LatLng max) {
         super(context);
@@ -36,32 +37,61 @@ public class Navigate extends Task {
             //Untested
             case POKESTOPS:
                 populateRoute(context);
-                return;
+                break;
             default:
                 populateDirections(context);
+                break;
         }
+        populated = true;
     }
 
+    public static NavigationType getNavigationType() {
+        return navigationType;
+    }
+
+    public static List<S2LatLng> getRoute() {
+        return route;
+    }
+
+    S2LatLng last;
+    List<String> ids = new ArrayList<>();
+
     /**
-     *  Attempts to generate a route to all found pokestops...
+     * Attempts to generate a route to all found pokestops...
+     *
      * @param context
      */
     private void populateRoute(Context context) {
         try {
-            Stream<Pokestop> stream = context.getApi().getMap().getMapObjects().getPokestops().stream().sorted((a, b) -> {
-                S2LatLng locationA = S2LatLng.fromDegrees(a.getLatitude(), a.getLongitude());
-                S2LatLng locationB = S2LatLng.fromDegrees(b.getLatitude(), b.getLongitude());
-                S2LatLng self = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
-                Double distanceA = self.getEarthDistance(locationA);
-                Double distanceB = self.getEarthDistance(locationB);
-                return distanceA.compareTo(distanceB);
-            });
-            stream.forEach(stop -> route.add(S2LatLng.fromDegrees(stop.getLatitude(), stop.getLongitude())));
+            List<Pokestop> stops = context.getApi().getMap().getMapObjects().getPokestops().stream().filter(a ->
+                    //only pokestops in our region
+                    a.getLatitude() >= min.lat &&
+                            a.getLatitude() <= max.lat &&
+                            a.getLongitude() >= min.lng &&
+                            a.getLongitude() <= max.lng).collect(Collectors.toList());
+            long count = stops.size();
+            last = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
+            while (route.size() < count - 1) {
+                List<Pokestop> tempStops = stops.stream().filter(a -> !ids.contains(a.getId())).sorted((a, b) -> {
+                    S2LatLng locationA = S2LatLng.fromDegrees(a.getLatitude(), a.getLongitude());
+                    S2LatLng locationB = S2LatLng.fromDegrees(b.getLatitude(), b.getLongitude());
+                    Double distanceA = last.getEarthDistance(locationA);
+                    Double distanceB = last.getEarthDistance(locationB);
+                    return distanceA.compareTo(distanceB);
+                }).collect(Collectors.toList());
+
+                if (tempStops.size() == 0) {
+                    System.out.println("CRTICAL POKESTOP LOCATION ERROR BREAKING!");
+                    break;
+                }
+                Pokestop first = tempStops.get(0);
+                route.add(last = S2LatLng.fromDegrees(first.getLatitude(), first.getLongitude()));
+                ids.add(first.getId());
+            }
             route.add(S2LatLng.fromDegrees(context.getLat().get(), context.getLng().get()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return;
     }
 
     @Override
@@ -146,7 +176,7 @@ public class Navigate extends Task {
         }
     }
 
-    enum NavigationType {
+    public enum NavigationType {
         STREETS, POKESTOPS, POKEMON
     }
 }

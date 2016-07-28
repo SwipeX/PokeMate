@@ -45,8 +45,7 @@ public class Walking {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                context.getLat().addAndGet(deltaLat);
-                context.getLng().addAndGet(deltaLng);
+                context.getApi().setLocation(context.getLat().addAndGet(deltaLat), context.getLng().addAndGet(deltaLng), 0);
                 stepsRequired.getAndAdd(-1);
                 if (stepsRequired.get() <= 0) {
                     System.out.println("Destination reached.");

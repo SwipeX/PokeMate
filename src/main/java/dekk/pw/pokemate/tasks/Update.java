@@ -34,7 +34,6 @@ public class Update extends Task {
             context.setProfile(player = context.getApi().getPlayerProfile());
             player.updateProfile();
             context.getApi().getInventories().updateInventories(true);
-//            long nextXP = REQUIRED_EXPERIENCES[player.getStats().getLevel()] - REQUIRED_EXPERIENCES[player.getStats().getLevel() - 1];
             long curTotalXP = player.getStats().getExperience();
             if (curTotalXP > lastExperience) {
                 if (lastExperience != 0) {
@@ -43,7 +42,6 @@ public class Update extends Task {
                 lastExperience = curTotalXP;
             }
             long runTime = System.currentTimeMillis() - PokeMate.startTime;
-			PokeMateUI.addMessageToLog("XP/HR - "  + (experienceGained / (runTime / 3.6E6)));
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
             System.out.println("Attempting to Login");

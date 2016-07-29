@@ -29,7 +29,8 @@ dependencies {
 
     compile 'com.google.maps:google-maps-services:0.1.15'
 
-    compile 'com.github.Grover-c13:PokeGOAPI-Java:f9e9162b9f'
+    //compile 'com.github.Grover-c13:PokeGOAPI-Java:dcaa793557'
+    compile files('libs/PokeGOAPI-Java-0.0.1-SNAPSHOT.jar')
 
     compile 'com.squareup.okhttp3:okhttp:3.4.0-RC1'
 

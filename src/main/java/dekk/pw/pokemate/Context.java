@@ -9,6 +9,7 @@ import com.pokegoapi.auth.*;
 import com.pokegoapi.util.SystemTimeImpl;
 import okhttp3.OkHttpClient;
 
+import javax.swing.*;
 import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -84,9 +85,9 @@ public class Context {
                     System.out.println("-----------------------------------------");
                     System.out.println("  Please go to the following URL");
                     System.out.println(GoogleUserCredentialProvider.LOGIN_URL);
-                    System.out.println("Enter authorization code:");
-                    Scanner sc = new Scanner(System.in);
-                    String access = sc.nextLine();
+                    Desktop.getDesktop().browse(URI.create(GoogleUserCredentialProvider.LOGIN_URL));
+
+                    String access = JOptionPane.showInputDialog("Enter authorization code: ");
                     provider.login(access);
                     try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
                         p.println(provider.getRefreshToken());

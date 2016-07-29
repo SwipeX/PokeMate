@@ -6,6 +6,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.Time;
 import javafx.scene.image.Image;
 
 import java.util.List;
@@ -19,6 +20,7 @@ class HatchEgg extends Task {
     public void run() {
         try {
             List<HatchedEgg> eggs = context.getApi().getInventories().getHatchery().queryHatchedEggs();
+            Time.sleepRate();
             eggs.forEach(egg -> {
                 Pokemon hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
                 String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());

@@ -5,6 +5,7 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Config;
+import dekk.pw.pokemate.util.Time;
 import javafx.scene.image.Image;
 import dekk.pw.pokemate.util.StringConverter;
 
@@ -25,8 +26,10 @@ public class DropItems extends Task {
             ItemId id = ItemId.valueOf(itemToDrop);
             try {
                 int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                Time.sleepRate();
                 if (count > 0) {
                     context.getApi().getInventories().getItemBag().removeItem(id, count);
+                    Time.sleepRate();
                     String removedItem = "Removed " + StringConverter.convertItem(id.name()) + "(x" + count + ")";
                     PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                 }

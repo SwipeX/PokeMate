@@ -40,6 +40,7 @@ public class Config {
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
     private static Navigate.NavigationType navigationType;
+    private static boolean softbanBypass;
     private static Properties properties = new Properties();
 
     public static void load(String configPath) {
@@ -81,6 +82,9 @@ public class Config {
 			// minimum cp for message
 			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
             navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
+            // softban bypass
+            softbanBypass =  Boolean.parseBoolean(properties.getProperty("softban_bypass", "false"));
+
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -208,6 +212,8 @@ public class Config {
     public static boolean isEggsHatching() {
         return eggsHatching;
     }
+
+    public static boolean isSoftbanBypass() { return softbanBypass; }
 	
 	public static List<String> getDroppedItems() {
 		return droppedItems;

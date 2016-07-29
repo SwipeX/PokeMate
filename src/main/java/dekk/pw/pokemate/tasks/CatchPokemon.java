@@ -55,7 +55,7 @@ public class CatchPokemon extends Task {
                 if (target != null && pokeball != null) {
                     Walking.setLocation(context);
                     EncounterResult encounterResult = target.encounterPokemon();
-                    if (encounterResult.wasSuccessful()) {
+                    if (encounterResult.wasSuccessful() && !Config.getIgnoreCatchingPokemon().contains(target.getPokemonId().getNumber())) {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
                             try {

@@ -49,3 +49,5 @@ minimum_cp_for_ui_message=0
 transfer_prefers_iv=false
 #navigation type can be either STREETS or POKESTOPS
 navigation_type = STREETS
+# Ignore catching certain pokemons
+ignore_catching_pokemon=

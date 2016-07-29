@@ -36,7 +36,7 @@ public class CatchPokemon extends Task {
     public void run() {
         try {
             Pokeball pokeball = null;
-            List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
+             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon().stream().filter(p-> !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId().getNumber())).collect(Collectors.toList());
             if (pokemon.size() > 0) {
                 Item ball = context.getApi().getInventories().getItemBag().getItem(ItemIdOuterClass.ItemId.forNumber(Config.getPreferredBall()));
                 if (ball != null && ball.getCount() > 0) {

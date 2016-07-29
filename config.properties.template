@@ -50,4 +50,4 @@ transfer_prefers_iv=false
 #navigation type can be either STREETS or POKESTOPS
 navigation_type = STREETS
 # Ignore catching certain pokemons
-ignore_catch_pokemon = 10,13,16
+ignore_catching_pokemon=

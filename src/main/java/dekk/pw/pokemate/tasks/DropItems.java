@@ -21,18 +21,18 @@ public class DropItems extends Task {
 
     @Override
     public void run() {
-		Config.getDroppedItems().stream().forEach(itemToDrop -> {
-			ItemId id = ItemId.valueOf(itemToDrop);
-			try {
-				int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
-				context.getApi().getInventories().getItemBag().removeItem(id, count);
-				if (count > 0) {
-					String removedItem = "Removed " + StringConverter.convertItem(id.name()) + "(x" + count + ")";
-					PokeMateUI.toast(removedItem,"Items removed!", "icons/items/"+id.getNumber()+".png");
-				}
-			} catch (RemoteServerException | LoginFailedException e) {
-				e.printStackTrace();
-			}
-		});
-	}
+        Config.getDroppedItems().stream().forEach(itemToDrop -> {
+            ItemId id = ItemId.valueOf(itemToDrop);
+            try {
+                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                if (count > 0) {
+                    context.getApi().getInventories().getItemBag().removeItem(id, count);
+                    String removedItem = "Removed " + StringConverter.convertItem(id.name()) + "(x" + count + ")";
+                    PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                }
+            } catch (RemoteServerException | LoginFailedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }

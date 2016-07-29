@@ -9,6 +9,9 @@ import dekk.pw.pokemate.util.Time;
 import javafx.scene.image.Image;
 import dekk.pw.pokemate.util.StringConverter;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 
 /**
@@ -22,10 +25,12 @@ public class DropItems extends Task {
 
     @Override
     public void run() {
-        Config.getDroppedItems().stream().forEach(itemToDrop -> {
-            ItemId id = ItemId.valueOf(itemToDrop);
+        List<Item> itemsToDrop = context.getApi().getInventories().getItemBag().getItems().stream().filter(i-> Config.getDroppedItems().contains(i.getItemId().toString())).collect(Collectors.toList());
+
+        itemsToDrop.forEach(itemToDrop -> {
+            ItemId id = itemToDrop.getItemId();
             try {
-                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                int count = itemToDrop.getCount();
                 Time.sleepRate();
                 if (count > 0) {
                     context.getApi().getInventories().getItemBag().removeItem(id, count);

@@ -36,7 +36,7 @@ public class CatchPokemon extends Task {
     public void run() {
         try {
             Pokeball pokeball = null;
-            List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon();
+             List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon().stream().filter(p-> !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId().getNumber())).collect(Collectors.toList());
             if (pokemon.size() > 0) {
                 Item ball = context.getApi().getInventories().getItemBag().getItem(ItemIdOuterClass.ItemId.forNumber(Config.getPreferredBall()));
                 if (ball != null && ball.getCount() > 0) {
@@ -55,7 +55,7 @@ public class CatchPokemon extends Task {
                 if (target != null && pokeball != null) {
                     Walking.setLocation(context);
                     EncounterResult encounterResult = target.encounterPokemon();
-                    if (encounterResult.wasSuccessful() && !Config.getIgnoreCatchingPokemon().contains(target.getPokemonId().getNumber())) {
+                    if (encounterResult.wasSuccessful()) {
                         CatchResult catchResult = target.catchPokemon(pokeball);
                         if (catchResult.getStatus().equals(CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS)) {
                             try {

@@ -69,7 +69,6 @@ public class Config {
             fillList(neverTransferPokemonNames, neverTransferPokemon);
             
             //pokemon catching ignore
-            //pokemon catching ignore
             String ignoreCatch = properties.getProperty("ignore_catching_pokemon", null);
             ignoreCatchingPokemon = new ArrayList<>();
             fillList(ignoreCatch, ignoreCatchingPokemon);

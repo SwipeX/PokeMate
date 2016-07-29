@@ -6,6 +6,7 @@ import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.auth.GoogleAutoCredentialProvider;
+import com.pokegoapi.auth.GoogleUserCredentialProvider;
 import com.pokegoapi.auth.PtcCredentialProvider;
 import com.pokegoapi.util.SystemTimeImpl;
 import okhttp3.OkHttpClient;
@@ -66,8 +67,16 @@ public class Context {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
                     scanner.close();
-                    if (token != null) {
-                        return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
+                    if (token != null && Config.getUsername().contains("@")) {
+                            GoogleUserCredentialProvider provider = new GoogleUserCredentialProvider(httpClient);
+                            System.out.println("-----------------------------------------");
+                            System.out.println("  Please go to the following URL");
+                            System.out.println(GoogleUserCredentialProvider.LOGIN_URL);
+                            System.out.println("Enter authorisation code:");
+                            Scanner sc = new Scanner(System.in);
+                            String access = sc.nextLine();
+                            provider.login(access);
+                            return provider;
                     }
                 } else {
                     return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());

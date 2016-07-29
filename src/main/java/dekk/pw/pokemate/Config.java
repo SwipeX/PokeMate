@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -67,7 +68,7 @@ public class Config {
             String neverTransferPokemonNames = properties.getProperty("never_transfer", null);
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
-            
+
             //pokemon catching ignore
             String ignoreCatch = properties.getProperty("ignore_catching_pokemon", null);
             ignoreCatchingPokemon = new ArrayList<>();
@@ -98,27 +99,24 @@ public class Config {
     }
 
     private static void fillListString(String propertiesString, List<String> target) {
-        if (propertiesString != null) {
-            String[] strings = propertiesString.split(",");
-            if (strings != null) {
-                for (String string : strings) {
-                    if (string.length() > 0)
-                        target.add(string);
-                }
-            }
+        if (propertiesString == null) {
+            return;
         }
+
+        Arrays.asList(propertiesString.split(",")).stream()
+                .filter(s -> s.length() > 0)
+                .forEach(target::add);
     }
 
     private static void fillList(String propertiesString, List<Integer> target) {
-        if (propertiesString != null) {
-            String[] strings = propertiesString.split(",");
-            if (strings != null) {
-                for (String string : strings) {
-                    if (string.length() > 0)
-                        target.add(Integer.parseInt(string));
-                }
-            }
+        if (propertiesString == null) {
+            return;
         }
+
+        Arrays.asList(propertiesString.split(",")).stream()
+                .filter(s -> s.length() > 0)
+                .map(Integer::parseInt)
+                .forEach(target::add);
     }
 
 

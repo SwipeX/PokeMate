@@ -28,6 +28,7 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
+    private static List<Integer> ignoreCatchingPokemon;
     private static List<Integer> neverTransferPokemon;
 	private static List<String> droppedItems;
     private static boolean consoleNotification;
@@ -66,6 +67,12 @@ public class Config {
             String neverTransferPokemonNames = properties.getProperty("never_transfer", null);
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
+            
+            //pokemon catching ignore
+            //pokemon catching ignore
+            String ignoreCatch = properties.getProperty("ignore_catching_pokemon", null);
+            ignoreCatchingPokemon = new ArrayList<>();
+            fillList(ignoreCatch, ignoreCatchingPokemon);
             // named location
             useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use_location_name", "false"));
             customNamedLocation = properties.getProperty("location_by_name");
@@ -180,6 +187,10 @@ public class Config {
     public static List<Integer> getNeverTransferPokemon() {
         return neverTransferPokemon;
     }
+    public static List<Integer> getIgnoreCatchingPokemon() {
+        return ignoreCatchingPokemon;
+    }
+
 
     public static boolean isUseCustomNamedLocation() {
         return useCustomNamedLocation;

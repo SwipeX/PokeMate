@@ -67,8 +67,7 @@ public class Context {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
                     scanner.close();
-                    if (token != null) {
-                        if (Config.getUsername().contains("@")) {
+                    if (token != null && Config.getUsername().contains("@")) {
                             GoogleUserCredentialProvider provider = new GoogleUserCredentialProvider(httpClient);
                             System.out.println("-----------------------------------------");
                             System.out.println("  Please go to the following URL");
@@ -78,7 +77,6 @@ public class Context {
                             String access = sc.nextLine();
                             provider.login(access);
                             return provider;
-                        }
                     }
                 } else {
                     return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());

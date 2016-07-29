@@ -19,6 +19,8 @@ class HatchEgg extends Task {
     public void run() {
         try {
             List<HatchedEgg> eggs = context.getApi().getInventories().getHatchery().queryHatchedEggs();
+            //try another inventory update to ensure hatched pokemon are added to bank
+            context.getApi().getInventories().updateInventories(true);
             eggs.forEach(egg -> {
                 Pokemon hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
                 String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
@@ -27,7 +29,7 @@ class HatchEgg extends Task {
                 } else {
                     PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
                             "Hatched egg!",
-                            "icons/egg.png");
+                            "icons/items/egg.png");
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {

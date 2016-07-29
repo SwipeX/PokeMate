@@ -4,15 +4,16 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.auth.*;
+import com.pokegoapi.auth.CredentialProvider;
+import com.pokegoapi.auth.GoogleAutoCredentialProvider;
+import com.pokegoapi.auth.PtcCredentialProvider;
+import com.pokegoapi.util.SystemTimeImpl;
 import okhttp3.OkHttpClient;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.security.MessageDigest;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.security.MessageDigest;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -39,7 +40,7 @@ public class Context {
     }
 
     public static String getUsernameHash() {
-        try{
+        try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(Config.getUsername().getBytes());
             byte[] digest = md.digest();
@@ -49,7 +50,7 @@ public class Context {
             }
 
             return sb.toString();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -64,29 +65,15 @@ public class Context {
                 if (tokenFile.exists()) {
                     Scanner scanner = new Scanner(tokenFile);
                     token = scanner.nextLine();
+                    scanner.close();
                     if (token != null) {
-                        return new GoogleCredentialProvider(httpClient, token);
+                        return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
                     }
                 } else {
-                    return new GoogleCredentialProvider(httpClient, new GoogleCredentialProvider.OnGoogleLoginOAuthCompleteListener() {
-                        @Override
-                        public void onInitialOAuthComplete(GoogleAuthJson googleAuthJson) {
-
-                        }
-
-                        @Override
-                        public void onTokenIdReceived(GoogleAuthTokenJson googleAuthTokenJson) {
-                            System.out.println("Token received: " + googleAuthTokenJson);
-                            try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
-                                p.write(googleAuthTokenJson.getRefreshToken());
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
                 }
             } else {
-                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
+                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword(), new SystemTimeImpl());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,16 +81,23 @@ public class Context {
         return null;
     }
 
+    public static String millisToTimeString(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = (millis / (1000 * 60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
     public AtomicDouble getLat() {
         return lat;
     }
 
-    public AtomicDouble getLng() {
-        return lng;
-    }
-
     public void setLat(AtomicDouble lat) {
         this.lat = lat;
+    }
+
+    public AtomicDouble getLng() {
+        return lng;
     }
 
     public void setLng(AtomicDouble lng) {
@@ -156,12 +150,5 @@ public class Context {
      */
     public int getIvRatio(Pokemon pokemon) {
         return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
-    }
-
-    public static String millisToTimeString(long millis) {
-        long seconds = (millis / 1000) % 60;
-        long minutes = (millis / (1000 * 60)) % 60;
-        long hours = (millis / (1000 * 60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

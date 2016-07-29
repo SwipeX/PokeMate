@@ -29,7 +29,7 @@ public class Walking {
         }
     }
 
-    public static void walk(S2LatLng end, final Context context) {
+    public static void walk( final Context context, S2LatLng end) {
         if (context.isWalking())
             return;
         context.getWalking().set(true);
@@ -45,8 +45,7 @@ public class Walking {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                context.getLat().addAndGet(deltaLat);
-                context.getLng().addAndGet(deltaLng);
+                context.getApi().setLocation(context.getLat().addAndGet(deltaLat), context.getLng().addAndGet(deltaLng), 0);
                 stepsRequired.getAndAdd(-1);
                 if (stepsRequired.get() <= 0) {
                     System.out.println("Destination reached.");

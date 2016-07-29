@@ -13,12 +13,14 @@ import javafx.scene.image.Image;
 import java.io.DataInputStream;
 import java.util.HashMap;
 import java.util.ListIterator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by TimD on 7/22/2016.
  */
 public class EvolvePokemon extends Task {
-    private static final HashMap<Integer, Integer> CANDY_AMOUNTS = new HashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> CANDY_AMOUNTS = new ConcurrentHashMap<>();
 
     static {
         try {
@@ -41,9 +43,8 @@ public class EvolvePokemon extends Task {
     @Override
     public void run() {
         try {
-            ListIterator<Pokemon> iterator = context.getApi().getInventories().getPokebank().getPokemons().listIterator();
-            while (iterator.hasNext()) {
-                Pokemon pokemon = iterator.next();
+            CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
+            for (Pokemon pokemon : pokeList)
                 if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
                     int number = pokemon.getPokemonId().getNumber();
                     if (CANDY_AMOUNTS.containsKey(number)) {
@@ -53,14 +54,13 @@ public class EvolvePokemon extends Task {
                             EvolutionResult result = pokemon.evolve();
                             if (result.isSuccessful()) {
                                 String evolutionresult = StringConverter.convertPokename(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.convertPokename(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
-                                PokeMateUI.toast(evolutionresult, Config.POKE+"mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
+                                PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
                             }
                         }
                     }
                 }
-            }
-        } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
+        } catch (RemoteServerException | LoginFailedException e1) {
+            e1.printStackTrace();
         }
     }
 }

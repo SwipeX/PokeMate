@@ -40,6 +40,7 @@ public class DropItems extends Task implements Runnable {
                         context.APILock.attempt(1000);
                         APIStartTime = System.currentTimeMillis();
                         context.getApi().getInventories().getItemBag().removeItem(id, count);
+                        context.getApi().getInventories().getItemBag().removeItem(id, count - Config.getMinItemAmount());
                         APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                         if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                             sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);

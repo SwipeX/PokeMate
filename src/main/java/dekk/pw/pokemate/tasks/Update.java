@@ -1,6 +1,5 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Inventory.Item.ItemAwardOuterClass;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.exceptions.LoginFailedException;
@@ -10,7 +9,6 @@ import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 

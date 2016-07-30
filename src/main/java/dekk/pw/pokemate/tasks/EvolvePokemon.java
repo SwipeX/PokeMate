@@ -49,7 +49,7 @@ public class EvolvePokemon extends Task implements Runnable {
         try {
             CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
             for (Pokemon pokemon : pokeList)
-                if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
+                if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId())) {
                     int number = pokemon.getPokemonId().getNumber();
                     if (CANDY_AMOUNTS.containsKey(number)) {
                         int required = CANDY_AMOUNTS.get(number);

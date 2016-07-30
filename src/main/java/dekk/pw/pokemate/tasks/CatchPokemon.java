@@ -124,7 +124,7 @@ public class CatchPokemon extends Task implements Runnable {
 
 
     private boolean shouldIgnore(final CatchablePokemon p) {
-        return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId().getNumber());
+        return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId());
     }
 
     private List<Pokemon> pokemons() {

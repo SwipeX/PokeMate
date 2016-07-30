@@ -10,7 +10,7 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
-import javafx.scene.image.Image;
+import dekk.pw.pokemate.util.StringConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +55,8 @@ public class TagPokestop extends Task {
         switch (result.getResult()) {
             case SUCCESS:
                 String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]";
+                
+                //The key holds the item id and the value holds the count
                 Map<Integer, Integer> receivedItems = new HashMap<Integer, Integer>();
 
                 //check what items we got from the pokestop

@@ -64,7 +64,7 @@ public class CatchPokemon extends Task  implements Runnable {
                         ball = itemBag().getItem(pb.getBallType());
                         if (ball != null && ball.getCount() > 0) {
                             pokeball = pb;
-                            break;
+                            continue;
                         }
                     }
                 }

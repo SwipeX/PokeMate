@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import dekk.pw.pokemate.util.StringConverter;
 
 import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
+import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -22,20 +23,40 @@ public class DropItems extends Task {
 
     @Override
     public void run() {
-        Config.getDroppedItems().stream().forEach(itemToDrop -> {
-            ItemId id = ItemId.valueOf(itemToDrop);
-            try {
-                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
-                Time.sleepRate();
-                if (count > 0) {
-                    context.getApi().getInventories().getItemBag().removeItem(id, count);
-                    Time.sleepRate();
-                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
-                    PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+        while(context.getRunStatus()) {
+            Config.getDroppedItems().stream().forEach(itemToDrop -> {
+                ItemId id = ItemId.valueOf(itemToDrop);
+                try {
+                    context.APILock.attempt(1000);
+                    APIStartTime = System.currentTimeMillis();
+                    int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                    APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                    if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                        sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                    }
+                    context.APILock.release();
+
+                    if (count > 0) {
+                        context.APILock.attempt(1000);
+                        APIStartTime = System.currentTimeMillis();
+                        context.getApi().getInventories().getItemBag().removeItem(id, count);
+                        APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                        if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                            sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                        }
+                        context.APILock.release();
+
+                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
+                        PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                    }
+                } catch (RemoteServerException | LoginFailedException e) {
+                    System.out.println("[DropItems] Hit Rate Limited");
+                    //e.printStackTrace();
+                } catch (InterruptedException e) {
+                    System.out.println("[] Error - Timed out waiting for API");
+                    // e.printStackTrace();
                 }
-            } catch (RemoteServerException | LoginFailedException e) {
-                e.printStackTrace();
-            }
-        });
+            });
+        }
     }
 }

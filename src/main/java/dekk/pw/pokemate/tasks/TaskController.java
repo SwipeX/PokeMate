@@ -5,7 +5,8 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Config;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -17,43 +18,30 @@ public class TaskController extends Thread {
 
     public TaskController(final Context context) {
         this.context = context;
-        tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
-                new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
-
-        tasks.add(new Update(context));
-        tasks.add(new CatchPokemon(context));
-
-        if (Config.isAutoEvolving()) {
-            tasks.add(new EvolvePokemon(context));
-        }
-
-        tasks.add(new ReleasePokemon(context));
-        tasks.add(new TagPokestop(context));
-
-        if(Config.isEggsIncubating()) {
-            tasks.add(new IncubateEgg(context));
-        }
-
-        if(Config.isEggsHatching()) {
-            tasks.add(new HatchEgg(context));
-        }
-
-        if (Config.isDropItems()) {
-            tasks.add(new DropItems(context));
-        }
     }
 
     /**
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
-        try {
-            while (true) {
-                tasks.forEach(Task::run);
-                TimeUnit.SECONDS.sleep(5);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ExecutorService executor = Executors.newFixedThreadPool(6);
+
+
+        executor.submit(new Navigate(context,
+            new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+            new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
+
+
+        executor.submit(new Update(context));
+        executor.submit(new CatchPokemon(context));
+        executor.submit(new ReleasePokemon(context));
+        executor.submit(new TagPokestop(context));
+
+        if (Config.isAutoEvolving()) executor.submit(new EvolvePokemon(context));
+        if (Config.isEggsIncubating()) executor.submit(new IncubateEgg(context));
+        if (Config.isEggsHatching()) executor.submit(new HatchEgg(context));
+        if (Config.isDropItems()) executor.submit(new DropItems(context));
+
     }
 }
+

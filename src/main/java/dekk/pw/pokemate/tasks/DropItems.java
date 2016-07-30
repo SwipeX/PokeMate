@@ -25,16 +25,13 @@ public class DropItems extends Task implements Runnable {
     public void run() {
         while(context.getRunStatus()) {
             System.out.println("DropItems Started");
+
             Config.getDroppedItems().stream().forEach(itemToDrop -> {
                 ItemId id = ItemId.valueOf(itemToDrop);
                 try {
                     context.APILock.attempt(1000);
                     APIStartTime = System.currentTimeMillis();
                     int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
-                    APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                    if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                        sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                    }
 
                     if (count > Config.getMinItemAmount()) {
                         APIStartTime = System.currentTimeMillis();
@@ -43,7 +40,6 @@ public class DropItems extends Task implements Runnable {
                         if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                             sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                         }
-
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                         context.APILock.release();

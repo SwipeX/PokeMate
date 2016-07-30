@@ -66,7 +66,7 @@ public class TagPokestop extends Task implements Runnable {
                     });
             } catch (LoginFailedException | RemoteServerException e) {
                 System.out.println("[Tag PokeStop] Hit Rate Limited");
-                e.printStackTrace();
+                //e.printStackTrace();
             } catch (InterruptedException e) {
                 System.out.println("[Tag PokeStop] Error - Timed out waiting for API");
                 // e.printStackTrace();

@@ -35,7 +35,7 @@ public class Context {
     private AtomicBoolean walking = new AtomicBoolean(false);
     private CredentialProvider credentialProvider;
     private static SystemTimeImpl time = new SystemTimeImpl();
-    private int MinimumAPIWaitTime = 4000;
+    private int MinimumAPIWaitTime = 1500;
     public Mutex APILock = new Mutex();
     private boolean runStatus;
 

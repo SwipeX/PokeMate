@@ -15,7 +15,6 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.StringConverter;
-import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

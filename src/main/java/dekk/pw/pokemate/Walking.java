@@ -4,7 +4,6 @@ import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.maps.model.DirectionsStep;
 import com.pokegoapi.util.Log;
-import dekk.pw.pokemate.util.Time;
 
 import java.util.Timer;
 import java.util.TimerTask;

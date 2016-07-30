@@ -15,6 +15,8 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static POGOProtos.Inventory.Item.ItemIdOuterClass.*;
 /**
  * Created by TimD on 7/21/2016.
  */

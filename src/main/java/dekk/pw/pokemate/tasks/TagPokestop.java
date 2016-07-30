@@ -13,7 +13,8 @@ import dekk.pw.pokemate.Walking;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map;
 /**
  * Created by TimD on 7/21/2016.
  */
@@ -52,66 +53,16 @@ public class TagPokestop extends Task {
         switch (result.getResult()) {
             case SUCCESS:
                 String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]";
-                int pokeBall = 0, greatBall = 0, ultraBall = 0, masterBall = 0, potion = 0, superPotion = 0, hyperPotion = 0, maxPotion = 0, razzBerry = 0, revive = 0, maxRevive = 0;
+                Map<Integer, Integer> receivedItems = new HashMap<Integer, Integer>();
+
+                //check what items we got from the pokestop
                 for (ItemAwardOuterClass.ItemAward item : result.getItemsAwarded()) {
-                    switch (item.getItemId().name()) {
-                        case "ITEM_POKE_BALL":
-                            pokeBall++;
-                            break;
-                        case "ITEM_GREAT_BALL":
-                            greatBall++;
-                            break;
-                        case "ITEM_ULTRA_BALL":
-                            ultraBall++;
-                            break;
-                        case "ITEM_MASTER_BALL":
-                            masterBall++;
-                            break;
-                        case "ITEM_POTION":
-                            potion++;
-                            break;
-                        case "ITEM_SUPER_POTION":
-                            superPotion++;
-                            break;
-                        case "ITEM_HYPER_POTION":
-                            hyperPotion++;
-                            break;
-                        case "ITEM_MAX_POTION":
-                            maxPotion++;
-                            break;
-                        case "ITEM_REVIVE":
-                            revive++;
-                            break;
-                        case "ITEM_MAX_REVIVE":
-                            maxRevive++;
-                            break;
-                        case "ITEM_RAZZ_BERRY":
-                            razzBerry++;
-                            break;
-                    }
+                    receivedItems.put(item.getItemId().getNumber(), receivedItems.getOrDefault((item.getItemId().getNumber()),0) + 1);
                 }
-                if (pokeBall > 0)
-                    retstr += " - Poke Ball (x" + pokeBall + ")";
-                if (greatBall > 0)
-                    retstr += " - Great Ball (x" + greatBall + ")";
-                if (masterBall > 0)
-                    retstr += " - Master Ball (x" + masterBall + ")";
-                if (ultraBall > 0)
-                    retstr += " - Ultra Ball (x" + ultraBall + ")";
-                if (potion > 0)
-                    retstr += " - Potion (x" + potion + ")";
-                if (superPotion > 0)
-                    retstr += " - Super Potion (x" + superPotion + ")";
-                if (hyperPotion > 0)
-                    retstr += " - Hyper Potion (x" + hyperPotion + ")";
-                if (maxPotion > 0)
-                    retstr += " - Max Potion (x" + maxPotion + ")";
-                if (revive > 0)
-                    retstr += " - Revive (x" + revive + ")";
-                if (maxRevive > 0)
-                    retstr += " - Max Revive Potion (x" + maxRevive + ")";
-                if (razzBerry > 0)
-                    retstr += " - Razz Berry (x" + razzBerry + ")";
+                //build the rest of the string
+                for (Map.Entry<Integer, Integer> item : receivedItems.entrySet()) {
+                    retstr += " - " + StringConverter.convertItem(ItemIdOuterClass.ItemId.valueOf(item.getKey()).name()) + "(x" + item.getValue() + ")";
+                }
                 return retstr;
             case INVENTORY_FULL:
                 return "Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]";

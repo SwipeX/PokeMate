@@ -66,7 +66,9 @@ public class ReleasePokemon extends Task implements Runnable {
                             Time.sleepRate();
                             PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                         } catch (LoginFailedException | RemoteServerException e) {
-                            e.printStackTrace();
+
+                            System.out.println("[ReleasePokemon] Hit Max Limit");
+                            //e.printStackTrace();
                         } catch (InterruptedException e) {
                         System.out.println("[ReleasePokemon] Error - Timed out waiting for API");
                         // e.printStackTrace();

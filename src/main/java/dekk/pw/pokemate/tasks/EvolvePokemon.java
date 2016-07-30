@@ -53,7 +53,6 @@ public class EvolvePokemon extends Task implements Runnable {
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
                 for (Pokemon pokemon : pokeList)
                     if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
                         int number = pokemon.getPokemonId().getNumber();
@@ -75,6 +74,8 @@ public class EvolvePokemon extends Task implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("[] Error - Timed out waiting for API");
                 // e.printStackTrace();
+            }finally   {
+                context.APILock.release();
             }
         }
     }

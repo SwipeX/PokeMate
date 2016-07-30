@@ -36,19 +36,19 @@ public class TagPokestop extends Task implements Runnable {
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
 
                 ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
                 if (pokestops.size() == 0) {
                     System.out.println("[Tag Pokestop] Ending Loop - No Stops Found");
                     continue;
                 }
-
+                System.out.println("[Tag PokeStop] " + pokestops.size() + " Pokestops Found.. Tagging");
                 pokestops.stream()
                     .filter(Pokestop::canLoot)
                     .forEach(near -> {
                         Walking.setLocation(context);
                         try {
+                            System.out.println("[Tag PokeStop] Tagging PokeStop in range");
                             context.APILock.attempt(1000);
                             APIStartTime = System.currentTimeMillis();
                             String result = resultMessage(near.loot());
@@ -56,14 +56,15 @@ public class TagPokestop extends Task implements Runnable {
                             if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                                 sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                             }
-                            context.APILock.release();
                             PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         } catch (LoginFailedException | RemoteServerException e) {
-                            System.out.println("[Tag Pokestop] Hit Rate Limited");
+                            System.out.println("[Tag Pokestop] Exceeded Rate Limit");
                             //e.printStackTrace();
                         } catch (InterruptedException e) {
                             System.out.println("[Tag Pokestop] Error - Timed out waiting for API");
                             //e.printStackTrace();
+                        } finally   {
+                            context.APILock.release();
                         }
                     });
             } catch (LoginFailedException | RemoteServerException e) {

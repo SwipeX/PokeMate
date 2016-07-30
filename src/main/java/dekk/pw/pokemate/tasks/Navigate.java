@@ -77,7 +77,7 @@ public class Navigate extends Task implements Runnable {
                             a.getLongitude() <= max.lng).collect(Collectors.toList());
             APIElapsedTime = System.currentTimeMillis() - APIStartTime;
             if ( APIElapsedTime < context.getMinimumAPIWaitTime()) { sleep(context.getMinimumAPIWaitTime()-APIElapsedTime); }
-            context.APILock.release();
+
             int count = stops.size();
             System.out.println("Stops found: " + count);
             last = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
@@ -108,6 +108,8 @@ public class Navigate extends Task implements Runnable {
         } catch (InterruptedException e) {
             System.out.println("[Navigate] Error - TImed out waiting for API");
                 //e.printStackTrace();
+        }finally   {
+            context.APILock.release();
         }
     }
 

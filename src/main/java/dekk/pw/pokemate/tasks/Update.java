@@ -45,17 +45,17 @@ public class Update extends Task implements Runnable {
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
+
                 player.updateProfile();
 
-                context.APILock.attempt(1000);
+
                 APIStartTime = System.currentTimeMillis();
                 context.getApi().getInventories().updateInventories(true);
                 APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
+
 
                 long curTotalXP = player.getStats().getExperience();
                 if (curTotalXP > lastExperience) {
@@ -84,6 +84,8 @@ public class Update extends Task implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("[Navigate] Error - Timed out waiting for API");
                 // e.printStackTrace();
+            }finally   {
+                context.APILock.release();
             }
         }
     }

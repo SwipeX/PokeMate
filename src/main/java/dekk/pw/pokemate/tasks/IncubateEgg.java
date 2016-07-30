@@ -33,7 +33,7 @@ public class IncubateEgg extends Task implements Runnable {
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
+
 
                 List<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
                 if (incubators.size() > 0 && eggs.size() > 0) {
@@ -48,6 +48,8 @@ public class IncubateEgg extends Task implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("[] Error - Timed out waiting for API");
                 // e.printStackTrace();
+            }finally   {
+                context.APILock.release();
             }
         }
     }

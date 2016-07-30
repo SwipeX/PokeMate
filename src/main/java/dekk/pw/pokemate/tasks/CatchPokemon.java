@@ -64,6 +64,7 @@ public class CatchPokemon extends Task  implements Runnable {
                         ball = itemBag().getItem(pb.getBallType());
                         if (ball != null && ball.getCount() > 0) {
                             pokeball = pb;
+                            context.APILock.release();
                             continue;
                         }
                     }
@@ -110,7 +111,6 @@ public class CatchPokemon extends Task  implements Runnable {
                                 log(output + " [IV: " + getIvRatio(p) + "%]");
                             }
                         });
-                    context.APILock.release();
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
@@ -120,6 +120,8 @@ public class CatchPokemon extends Task  implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("[CatchPokemon] Error - TImed out waiting for API");
                 // e.printStackTrace();
+            }finally   {
+                context.APILock.release();
             }
             System.out.println("[CatchPokemon] Ending Loop");
         }

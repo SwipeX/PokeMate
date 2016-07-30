@@ -38,7 +38,7 @@ public class ReleasePokemon extends Task implements Runnable {
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
+
 
                 for (List<Pokemon> list : groups.values()) {
                     if (Config.isTransferPrefersIV()) {
@@ -53,32 +53,26 @@ public class ReleasePokemon extends Task implements Runnable {
                         !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
                         //Passing this filter means they are not a 'perfect pokemon'
                         try {
-                            context.APILock.attempt(1000);
                             APIStartTime = System.currentTimeMillis();
                             p.transferPokemon();
                             APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                             if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                                 sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                             }
-                            context.APILock.release();
-
 
                             Time.sleepRate();
                             PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                         } catch (LoginFailedException | RemoteServerException e) {
-
                             System.out.println("[ReleasePokemon] Hit Max Limit");
                             //e.printStackTrace();
-                        } catch (InterruptedException e) {
-                        System.out.println("[ReleasePokemon] Error - Timed out waiting for API");
-                        // e.printStackTrace();
-                    }
-
+                        }
                     });
                 }
             } catch (InterruptedException e) {
                 System.out.println("[] Error - TImed out waiting for API");
                 // e.printStackTrace();
+            }finally   {
+                context.APILock.release();
             }
         }
     }

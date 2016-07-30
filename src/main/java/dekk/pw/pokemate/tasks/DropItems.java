@@ -40,7 +40,6 @@ public class DropItems extends Task implements Runnable {
                         }
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
-                        context.APILock.release();
                     }
                 } catch (RemoteServerException | LoginFailedException e) {
                     System.out.println("[DropItems] Hit Rate Limited");
@@ -48,6 +47,8 @@ public class DropItems extends Task implements Runnable {
                 } catch (InterruptedException e) {
                     System.out.println("[] Error - Timed out waiting for API");
                     // e.printStackTrace();
+                } finally   {
+                    context.APILock.release();
                 }
             });
         }

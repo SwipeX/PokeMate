@@ -55,6 +55,8 @@ class HatchEgg extends Task  implements Runnable{
                     } catch (InterruptedException e) {
                         System.out.println("[] Error - Timed out waiting for API");
                         // e.printStackTrace();
+                    }finally   {
+                        context.APILock.release();
                     }
                 });
             } catch (LoginFailedException e) {
@@ -67,6 +69,8 @@ class HatchEgg extends Task  implements Runnable{
                 // e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally   {
+                context.APILock.release();
             }
         }
     }

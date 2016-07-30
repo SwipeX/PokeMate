@@ -24,8 +24,6 @@ public class DropItems extends Task implements Runnable {
     @Override
     public void run() {
         while(context.getRunStatus()) {
-            System.out.println("DropItems Started");
-
             Config.getDroppedItems().stream().forEach(itemToDrop -> {
                 ItemId id = ItemId.valueOf(itemToDrop);
                 try {
@@ -35,14 +33,13 @@ public class DropItems extends Task implements Runnable {
 
                     if (count > Config.getMinItemAmount()) {
                         APIStartTime = System.currentTimeMillis();
-                        context.getApi().getInventories().getItemBag().removeItem(id, count - Config.getMinItemAmount());
+                        context.getApi().getInventories().getItemBag().removeItem(id, count - (count - Config.getMinItemAmount()));
                         APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                         if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                             sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                         }
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
-                        context.APILock.release();
                     }
                 } catch (RemoteServerException | LoginFailedException e) {
                     System.out.println("[DropItems] Hit Rate Limited");
@@ -50,6 +47,8 @@ public class DropItems extends Task implements Runnable {
                 } catch (InterruptedException e) {
                     System.out.println("[] Error - Timed out waiting for API");
                     // e.printStackTrace();
+                } finally   {
+                    context.APILock.release();
                 }
             });
         }

@@ -35,7 +35,7 @@ public class CatchPokemon extends Task  implements Runnable {
     @Override
     public void run() {
         while(context.getRunStatus()) {
-            //System.out.println("[CatchPokemon] Active");
+            System.out.println("[CatchPokemon] Starting Loop");
             try {
                 Pokeball pokeball = null;
                 context.APILock.attempt(1000);
@@ -48,9 +48,10 @@ public class CatchPokemon extends Task  implements Runnable {
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
-                context.APILock.release();
+
 
                 if (pokemon.size() == 0) {
+                    System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
                     continue;
                 }
 
@@ -63,25 +64,36 @@ public class CatchPokemon extends Task  implements Runnable {
                         ball = itemBag().getItem(pb.getBallType());
                         if (ball != null && ball.getCount() > 0) {
                             pokeball = pb;
-                            continue;
+                            break;
                         }
                     }
                 }
-
+                APIStartTime = System.currentTimeMillis();
                 CatchablePokemon target = pokemon.get(0);
+                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                }
+
                 if (target == null || pokeball == null) {
+                    System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
+                    context.APILock.release();
                     continue;
                 }
 
                 Walking.setLocation(context);
                 EncounterResult encounterResult = target.encounterPokemon();
                 if (!encounterResult.wasSuccessful()) {
+                    System.out.println("[CatchPokemon] Ending Loop - Caught Pokemon");
+                    context.APILock.release();
                     continue;
                 }
 
                 CatchResult catchResult = target.catchPokemon(pokeball);
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
                     log(target.getPokemonId() + " fled.");
+                    System.out.println("[CatchPokemon] Ending Loop - Pokemon Ran Away");
+                    context.APILock.release();
                     continue;
                 }
 
@@ -110,7 +122,11 @@ public class CatchPokemon extends Task  implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("[CatchPokemon] Error - TImed out waiting for API");
                 // e.printStackTrace();
+            }finally {
+                context.APILock.release();
             }
+            System.out.println("[CatchPokemon] Ending Loop");
+                context.APILock.release();
         }
     }
 

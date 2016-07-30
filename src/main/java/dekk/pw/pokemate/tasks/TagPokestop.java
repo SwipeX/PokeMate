@@ -11,7 +11,6 @@ import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 import static dekk.pw.pokemate.util.Time.sleep;
@@ -21,7 +20,8 @@ import static dekk.pw.pokemate.util.Time.sleep;
  */
 public class TagPokestop extends Task implements Runnable {
 
-    MapObjects map;
+    private MapObjects map;
+    
     TagPokestop(final Context context) {
         super(context);
     }

@@ -1,25 +1,19 @@
 package dekk.pw.pokemate.util;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
- * created on 27.07.2016 by iDreamInBinary
+ * @author kylestev
  */
 public class StringConverter {
-
-    //return a pokemon name thats not all uppercase
-    public static String convertPokename(String pokeName){
-        return pokeName.substring(0, 1).toUpperCase() + pokeName.substring(1).toLowerCase();
+	public static String titleCase(final String sentence) {
+        return Arrays.asList(sentence.split("\\s|_")).stream()
+                .map(StringConverter::titlizeWord)
+                .collect(Collectors.joining(" "));
     }
 
-    //return an item name thats not all uppercase and doesn't have underscores
-    public static String convertItem(String itemName){
-		if ((itemName.length() - itemName.replace("_", "").length()) > 1) {
-			String[] result = (itemName.substring(5,6).toUpperCase() + itemName.substring(6).replaceAll("_", " ").toLowerCase()).split("\\s+");
-			return result[0] + " " + result[1].substring(0,1).toUpperCase() + result[1].substring(1);
-		}
-		else {
-			String[] result = (itemName.substring(5,6).toUpperCase() + itemName.substring(6).replaceAll("_", " ").toLowerCase()).split("\\s+");
-			return result[0].substring(0,1).toUpperCase() + result[0].substring(1);
-		}
+    private static String titlizeWord(final String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
     }
-
 }

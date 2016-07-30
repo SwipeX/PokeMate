@@ -39,7 +39,8 @@ public class TagPokestop extends Task implements Runnable {
 
                 ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
                 if (pokestops.size() == 0) {
-                    return;
+                    System.out.println("[Tag Pokestop] Ending Loop - No Stops Found");
+                    continue;
                 }
 
                 pokestops.stream()

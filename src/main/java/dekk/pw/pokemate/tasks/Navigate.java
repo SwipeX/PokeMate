@@ -79,6 +79,7 @@ public class Navigate extends Task implements Runnable {
             if ( APIElapsedTime < context.getMinimumAPIWaitTime()) { sleep(context.getMinimumAPIWaitTime()-APIElapsedTime); }
             context.APILock.release();
             int count = stops.size();
+            System.out.println("Stops found: " + count);
             last = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
             while (route.size() < count - 1) {
                 List<Pokestop> tempStops = stops.stream().filter(a -> !ids.contains(a.getId())).sorted((a, b) -> {
@@ -115,9 +116,9 @@ public class Navigate extends Task implements Runnable {
         while(context.getRunStatus()) {
             if (context.isWalking()) {
                 continue;
-            } else if (navigationType.equals(NavigationType.STREETS) && routesIndex >= getDirections().size()) {
+            } else if (navigationType == (NavigationType.STREETS) && routesIndex >= getDirections().size()) {
                 routesIndex = 0;
-            } else if (navigationType.equals(NavigationType.POKESTOPS) && routesIndex >= route.size()) {
+            } else if (navigationType == (NavigationType.POKESTOPS) && routesIndex >= route.size()) {
                 routesIndex = 0;
             }
             switch (navigationType) {

@@ -23,7 +23,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
  * Created by TimD on 7/21/2016.
  * Credit: https://github.com/mjmfighter/pokemon-go-bot/blob/master/src/main/java/com/mjmfighter/pogobot/LocationWalker.java
  */
-public class Navigate extends Task {
+public class Navigate extends Task implements Runnable {
 
     private final LatLng min, max;
     private static List<DirectionsStep[]> routes = new ArrayList<>();

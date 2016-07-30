@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 import java.util.List;
 import static dekk.pw.pokemate.util.Time.sleep;
 
-class HatchEgg extends Task {
+class HatchEgg extends Task  implements Runnable{
     HatchEgg(final Context context) {
         super(context);
     }

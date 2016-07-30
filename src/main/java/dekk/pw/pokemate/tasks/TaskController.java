@@ -24,7 +24,7 @@ public class TaskController extends Thread {
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
-        ExecutorService executor = Executors.newFixedThreadPool(6);
+        ExecutorService executor = Executors.newFixedThreadPool(9);
 
 
         executor.submit(new Navigate(context,

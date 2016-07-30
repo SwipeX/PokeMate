@@ -15,6 +15,7 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.StringConverter;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,7 +27,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon extends Task {
+public class CatchPokemon extends Task  implements Runnable {
 
     CatchPokemon(final Context context) {
         super(context);
@@ -35,7 +36,7 @@ public class CatchPokemon extends Task {
     @Override
     public void run() {
         while(context.getRunStatus()) {
-            System.out.println("[CatchPokemon] Active");
+            //System.out.println("[CatchPokemon] Active");
             try {
                 Pokeball pokeball = null;
                 context.APILock.attempt(1000);
@@ -107,12 +108,10 @@ public class CatchPokemon extends Task {
             } catch (LoginFailedException | RemoteServerException e) {
                 //e.printStackTrace();
                 System.out.println("[CatchPokemon] Hit Rate Limited");
-                Time.sleepRate();
             } catch (InterruptedException e) {
                 System.out.println("[CatchPokemon] Error - TImed out waiting for API");
                 // e.printStackTrace();
             }
-            System.out.println("[CatchPokemon] Loop Ended");
         }
     }
 

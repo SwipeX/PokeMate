@@ -20,7 +20,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class EvolvePokemon extends Task {
+public class EvolvePokemon extends Task implements Runnable {
     private static final ConcurrentHashMap<Integer, Integer> CANDY_AMOUNTS = new ConcurrentHashMap<>();
 
     static {
@@ -43,7 +43,7 @@ public class EvolvePokemon extends Task {
 
     @Override
     public void run() {
-        System.out.println("[Evolve] Activating..");
+        //System.out.println("[Evolve] Activating..");
         while(context.getRunStatus()) {
             try {
                 context.APILock.attempt(1000);

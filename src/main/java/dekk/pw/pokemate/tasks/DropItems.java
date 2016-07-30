@@ -15,7 +15,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class DropItems extends Task {
+public class DropItems extends Task implements Runnable {
 
     DropItems(final Context context) {
         super(context);
@@ -36,7 +36,7 @@ public class DropItems extends Task {
                     }
                     context.APILock.release();
 
-                    if (count > 0) {
+                    if (count > Config.getMinItemAmount()) {
                         context.APILock.attempt(1000);
                         APIStartTime = System.currentTimeMillis();
                         context.getApi().getInventories().getItemBag().removeItem(id, count);

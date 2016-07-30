@@ -18,7 +18,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class TagPokestop extends Task {
+public class TagPokestop extends Task implements Runnable {
 
     TagPokestop(final Context context) {
         super(context);
@@ -47,7 +47,14 @@ public class TagPokestop extends Task {
                     .forEach(near -> {
                         Walking.setLocation(context);
                         try {
+                            context.APILock.attempt(1000);
+                            APIStartTime = System.currentTimeMillis();
                             String result = resultMessage(near.loot());
+                            APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                            if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                                sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                            }
+                            context.APILock.release();
                             PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         } catch (LoginFailedException | RemoteServerException e) {
                             System.out.println("[Tag Pokestop] Hit Rate Limited");

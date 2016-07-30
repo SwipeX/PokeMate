@@ -21,7 +21,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class ReleasePokemon extends Task {
+public class ReleasePokemon extends Task implements Runnable {
 
     ReleasePokemon(final Context context) {
         super(context);
@@ -53,12 +53,24 @@ public class ReleasePokemon extends Task {
                         !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
                         //Passing this filter means they are not a 'perfect pokemon'
                         try {
+                            context.APILock.attempt(1000);
+                            APIStartTime = System.currentTimeMillis();
                             p.transferPokemon();
+                            APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                            if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                                sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                            }
+                            context.APILock.release();
+
+
                             Time.sleepRate();
                             PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
                         } catch (LoginFailedException | RemoteServerException e) {
                             e.printStackTrace();
-                        }
+                        } catch (InterruptedException e) {
+                        System.out.println("[ReleasePokemon] Error - Timed out waiting for API");
+                        // e.printStackTrace();
+                    }
 
                     });
                 }

@@ -82,7 +82,7 @@ public class CatchPokemon extends Task {
                         .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))
                         .findFirst()
                         .ifPresent(p -> {
-                            String output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.convertPokename(targetId), p.getCp(), p.getCandy());
+                            String output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
 
                             if (p.getCp() > Config.getMinimumCPForMessage()) {
                                 PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");

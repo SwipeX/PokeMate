@@ -30,7 +30,7 @@ public class DropItems extends Task {
                 if (count > 0) {
                     context.getApi().getInventories().getItemBag().removeItem(id, count);
                     Time.sleepRate();
-                    String removedItem = "Removed " + StringConverter.convertItem(id.name()) + "(x" + count + ")";
+                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                     PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                 }
             } catch (RemoteServerException | LoginFailedException e) {

@@ -60,10 +60,10 @@ public class TagPokestop extends Task implements Runnable {
                             PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         } catch (LoginFailedException | RemoteServerException e) {
                             System.out.println("[Tag Pokestop] Hit Rate Limited");
-                            e.printStackTrace();
+                            //e.printStackTrace();
                         } catch (InterruptedException e) {
                             System.out.println("[Tag Pokestop] Error - Timed out waiting for API");
-                            e.printStackTrace();
+                            //e.printStackTrace();
                         }
                     });
             } catch (LoginFailedException | RemoteServerException e) {

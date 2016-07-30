@@ -35,20 +35,18 @@ public class DropItems extends Task implements Runnable {
                     if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                         sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                     }
-                    context.APILock.release();
 
                     if (count > Config.getMinItemAmount()) {
-                        context.APILock.attempt(1000);
                         APIStartTime = System.currentTimeMillis();
                         context.getApi().getInventories().getItemBag().removeItem(id, count - Config.getMinItemAmount());
                         APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                         if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                             sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                         }
-                        context.APILock.release();
 
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                        context.APILock.release();
                     }
                 } catch (RemoteServerException | LoginFailedException e) {
                     System.out.println("[DropItems] Hit Rate Limited");

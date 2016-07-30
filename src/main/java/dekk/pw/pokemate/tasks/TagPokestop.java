@@ -63,7 +63,7 @@ public class TagPokestop extends Task {
                 }
                 //build the rest of the string
                 for (Map.Entry<Integer, Integer> item : receivedItems.entrySet()) {
-                    retstr += " - " + StringConverter.convertItem(ItemIdOuterClass.ItemId.valueOf(item.getKey()).name()) + "(x" + item.getValue() + ")";
+                    retstr += " - " + StringConverter.convertItem(ItemId.valueOf(item.getKey()).name()) + "(x" + item.getValue() + ")";
                 }
                 return retstr;
             case INVENTORY_FULL:

@@ -5,6 +5,7 @@ import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
 
 import java.text.DecimalFormat;
@@ -56,7 +57,7 @@ public class Update extends Task implements Runnable {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
 
-
+                long runTime = System.currentTimeMillis() - PokeMate.startTime;
                 long curTotalXP = player.getStats().getExperience();
                 if (curTotalXP > lastExperience) {
                     if (lastExperience != 0) {
@@ -75,6 +76,7 @@ public class Update extends Task implements Runnable {
                     lastLevel = curLevel;
                 }
 
+                PokeMateUI.toast("XP Update: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "XP/H", "Progress Monitor", "icons/items/backpack.png");
             } catch (LoginFailedException e) {
                 //e.printStackTrace();
                 System.out.println("[Update] Login Failed, attempting to login again.");

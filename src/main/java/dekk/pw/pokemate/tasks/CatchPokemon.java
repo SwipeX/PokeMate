@@ -126,7 +126,7 @@ public class CatchPokemon extends Task  implements Runnable {
                 context.APILock.release();
             }
             System.out.println("[CatchPokemon] Ending Loop");
-                context.APILock.release();
+            context.APILock.release();
         }
     }
 

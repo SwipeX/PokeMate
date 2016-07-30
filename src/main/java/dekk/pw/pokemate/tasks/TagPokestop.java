@@ -13,6 +13,8 @@ import dekk.pw.pokemate.Walking;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 

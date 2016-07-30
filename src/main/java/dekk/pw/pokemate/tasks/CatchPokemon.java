@@ -21,11 +21,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS;
+import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon extends Task {
+public class CatchPokemon extends Task  implements Runnable {
 
     CatchPokemon(final Context context) {
         super(context);
@@ -33,51 +34,61 @@ public class CatchPokemon extends Task {
 
     @Override
     public void run() {
-        try {
-            Pokeball pokeball = null;
-            List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon().stream()
+        while(context.getRunStatus()) {
+            //System.out.println("[CatchPokemon] Active");
+            try {
+                Pokeball pokeball = null;
+                context.APILock.attempt(1000);
+                APIStartTime = System.currentTimeMillis();
+                List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon().stream()
                     .filter(this::shouldIgnore)
                     .collect(Collectors.toList());
 
-            if (pokemon.size() == 0) {
-                return;
-            }
+                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                }
+                context.APILock.release();
 
-            Item ball = itemBag().getItem(getItemForId(Config.getPreferredBall()));
-            if (ball != null && ball.getCount() > 0) {
-                pokeball = getBallForId(Config.getPreferredBall());
-            } else {
-                //find any pokeball we can.
-                for (Pokeball pb : Pokeball.values()) {
-                    ball = itemBag().getItem(pb.getBallType());
-                    if (ball != null && ball.getCount() > 0) {
-                        pokeball = pb;
-                        break;
+                if (pokemon.size() == 0) {
+                    continue;
+                }
+
+                Item ball = itemBag().getItem(getItemForId(Config.getPreferredBall()));
+                if (ball != null && ball.getCount() > 0) {
+                    pokeball = getBallForId(Config.getPreferredBall());
+                } else {
+                    //find any pokeball we can.
+                    for (Pokeball pb : Pokeball.values()) {
+                        ball = itemBag().getItem(pb.getBallType());
+                        if (ball != null && ball.getCount() > 0) {
+                            pokeball = pb;
+                            continue;
+                        }
                     }
                 }
-            }
 
-            CatchablePokemon target = pokemon.get(0);
-            if (target == null || pokeball == null) {
-                return;
-            }
+                CatchablePokemon target = pokemon.get(0);
+                if (target == null || pokeball == null) {
+                    continue;
+                }
 
-            Walking.setLocation(context);
-            EncounterResult encounterResult = target.encounterPokemon();
-            if (!encounterResult.wasSuccessful()) {
-                return;
-            }
+                Walking.setLocation(context);
+                EncounterResult encounterResult = target.encounterPokemon();
+                if (!encounterResult.wasSuccessful()) {
+                    continue;
+                }
 
-            CatchResult catchResult = target.catchPokemon(pokeball);
-            if (catchResult.getStatus() != CATCH_SUCCESS) {
-                log(target.getPokemonId() + " fled.");
-                return;
-            }
+                CatchResult catchResult = target.catchPokemon(pokeball);
+                if (catchResult.getStatus() != CATCH_SUCCESS) {
+                    log(target.getPokemonId() + " fled.");
+                    continue;
+                }
 
-            try {
-                final String targetId = target.getPokemonId().name();
+                try {
+                    final String targetId = target.getPokemonId().name();
 
-                pokemons().stream()
+                    pokemons().stream()
                         .filter(pkmn -> pkmn.getPokemonId().name().equals(targetId))
                         .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))
                         .findFirst()
@@ -90,11 +101,16 @@ public class CatchPokemon extends Task {
                                 log(output + " [IV: " + getIvRatio(p) + "%]");
                             }
                         });
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
+                }
+            } catch (LoginFailedException | RemoteServerException e) {
+                //e.printStackTrace();
+                System.out.println("[CatchPokemon] Hit Rate Limited");
+            } catch (InterruptedException e) {
+                System.out.println("[CatchPokemon] Error - TImed out waiting for API");
+                // e.printStackTrace();
             }
-        } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
         }
     }
 

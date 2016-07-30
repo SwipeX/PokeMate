@@ -15,11 +15,12 @@ import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/22/2016.
  */
-public class EvolvePokemon extends Task {
+public class EvolvePokemon extends Task implements Runnable {
     private static final ConcurrentHashMap<Integer, Integer> CANDY_AMOUNTS = new ConcurrentHashMap<>();
 
     static {
@@ -42,25 +43,39 @@ public class EvolvePokemon extends Task {
 
     @Override
     public void run() {
-        try {
-            CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
-            for (Pokemon pokemon : pokeList)
-                if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
-                    int number = pokemon.getPokemonId().getNumber();
-                    if (CANDY_AMOUNTS.containsKey(number)) {
-                        int required = CANDY_AMOUNTS.get(number);
-                        if (required < 1) continue;
-                        if (pokemon.getCandy() >= required) {
-                            EvolutionResult result = pokemon.evolve();
-                            if (result!=null && result.isSuccessful()) {
-                                String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
-                                PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
+        //System.out.println("[Evolve] Activating..");
+        while(context.getRunStatus()) {
+            try {
+                context.APILock.attempt(1000);
+                APIStartTime = System.currentTimeMillis();
+                CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
+                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                }
+                context.APILock.release();
+                for (Pokemon pokemon : pokeList)
+                    if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
+                        int number = pokemon.getPokemonId().getNumber();
+                        if (CANDY_AMOUNTS.containsKey(number)) {
+                            int required = CANDY_AMOUNTS.get(number);
+                            if (required < 1) continue;
+                            if (pokemon.getCandy() >= required) {
+                                EvolutionResult result = pokemon.evolve();
+                                if (result != null && result.isSuccessful()) {
+                                    String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
+                                    PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
+                                }
                             }
                         }
                     }
-                }
-        } catch (RemoteServerException | LoginFailedException e1) {
-            e1.printStackTrace();
+            } catch (RemoteServerException | LoginFailedException e1) {
+                System.out.println("[EvolvePokemon] Hit Rate Limited");
+                e1.printStackTrace();
+            } catch (InterruptedException e) {
+                System.out.println("[] Error - Timed out waiting for API");
+                // e.printStackTrace();
+            }
         }
     }
 }

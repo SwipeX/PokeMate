@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
-    public static final int UPDATE_TIME = 5000;
+    public static final int UPDATE_TIME = 1000;
     public static final double XVARIANCE = Config.getRange() * 1.5;
     public static final double VARIANCE = Config.getRange();
     private static final String NOTIFY = "$.notify({\n" +
@@ -201,7 +201,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         Navigate.getRoute().forEach(a -> locs.add(new LatLong(a.latDegrees(), a.lngDegrees())));
 
                         LatLong[] array = locs.toArray(new LatLong[0]);
-                        System.out.println(array.length);
+
                         MVCArray mvc = new MVCArray(array);
 
                         PolylineOptions polyOpts = new PolylineOptions()

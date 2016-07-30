@@ -7,6 +7,9 @@ import dekk.pw.pokemate.Context;
  */
 public abstract class Task {
 
+    protected static long APIStartTime;
+    protected static long APIElapsedTime;
+
     protected final Context context;
 
     Task(final Context context) {

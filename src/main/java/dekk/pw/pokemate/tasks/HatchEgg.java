@@ -63,9 +63,10 @@ class HatchEgg extends Task  implements Runnable{
                 e.printStackTrace();
             } catch (RemoteServerException e) {
                 System.out.println("[HatchEgg] Hit rate limit");
+                context.APILock.release();
                 //e.printStackTrace();
             } catch (InterruptedException e) {
-                System.out.println("[] Error - Timed out waiting for API");
+                System.out.println("[HatchEgg] Error - Timed out waiting for API");
                 // e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();

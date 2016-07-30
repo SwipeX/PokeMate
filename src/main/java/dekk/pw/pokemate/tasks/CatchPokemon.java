@@ -77,6 +77,7 @@ public class CatchPokemon extends Task  implements Runnable {
 
                 if (target == null || pokeball == null) {
                     System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
+                    context.APILock.release();
                     continue;
                 }
 
@@ -84,6 +85,7 @@ public class CatchPokemon extends Task  implements Runnable {
                 EncounterResult encounterResult = target.encounterPokemon();
                 if (!encounterResult.wasSuccessful()) {
                     System.out.println("[CatchPokemon] Ending Loop - Caught Pokemon");
+                    context.APILock.release();
                     continue;
                 }
 
@@ -91,6 +93,7 @@ public class CatchPokemon extends Task  implements Runnable {
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
                     log(target.getPokemonId() + " fled.");
                     System.out.println("[CatchPokemon] Ending Loop - Pokemon Ran Away");
+                    context.APILock.release();
                     continue;
                 }
 
@@ -123,7 +126,7 @@ public class CatchPokemon extends Task  implements Runnable {
                 context.APILock.release();
             }
             System.out.println("[CatchPokemon] Ending Loop");
-                context.APILock.release();
+            context.APILock.release();
         }
     }
 

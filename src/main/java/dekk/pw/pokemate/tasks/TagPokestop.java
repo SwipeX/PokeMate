@@ -1,6 +1,5 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Inventory.Item.ItemAwardOuterClass;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
@@ -10,13 +9,11 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
-import javafx.scene.image.Image;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import static POGOProtos.Inventory.Item.ItemIdOuterClass.*;
+import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
+
 /**
  * Created by TimD on 7/21/2016.
  */
@@ -55,16 +52,7 @@ public class TagPokestop extends Task {
         switch (result.getResult()) {
             case SUCCESS:
                 String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]";
-                Map<Integer, Integer> receivedItems = new HashMap<Integer, Integer>();
-
-                //check what items we got from the pokestop
-                for (ItemAwardOuterClass.ItemAward item : result.getItemsAwarded()) {
-                    receivedItems.put(item.getItemId().getNumber(), receivedItems.getOrDefault((item.getItemId().getNumber()),0) + 1);
-                }
-                //build the rest of the string
-                for (Map.Entry<Integer, Integer> item : receivedItems.entrySet()) {
-                    retstr += " - " + StringConverter.titleCase(ItemId.valueOf(item.getKey()).name()) + "(x" + item.getValue() + ")";
-                }
+                retstr += convertItemAwards(result.getItemsAwarded());
                 return retstr;
             case INVENTORY_FULL:
                 return "Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]";

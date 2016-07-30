@@ -28,6 +28,7 @@ public class TagPokestop extends Task implements Runnable {
     public void run() {
         while(context.getRunStatus()) {
             try {
+                System.out.println("[Tag Pokestop] Starting Loop");
                 context.APILock.attempt(1000);
                 APIStartTime = System.currentTimeMillis();
                 MapObjects map = context.getApi().getMap().getMapObjects();

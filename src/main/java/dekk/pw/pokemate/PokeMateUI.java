@@ -369,9 +369,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                                 return b.getCandy() - a.getCandy();
                             } catch (LoginFailedException e) {
                                 e.printStackTrace();
+                                return 0;
                             } catch (RemoteServerException e) {
                                 e.printStackTrace();
-                            } finally {
                                 return 0;
                             }
                         });
@@ -382,9 +382,9 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                                 return a.getCandy() - b.getCandy();
                             } catch (LoginFailedException e) {
                                 e.printStackTrace();
+                                return 0;
                             } catch (RemoteServerException e) {
                                 e.printStackTrace();
-                            } finally {
                                 return 0;
                             }
                         });

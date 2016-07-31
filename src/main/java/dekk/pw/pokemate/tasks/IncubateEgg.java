@@ -30,9 +30,9 @@ public class IncubateEgg extends Task {
                     return !i.isInUse();
                 } catch (LoginFailedException e) {
                     e.printStackTrace();
+                    return false;
                 } catch (RemoteServerException e) {
                     e.printStackTrace();
-                } finally {
                     return false;
                 }
             }).collect(Collectors.toList());

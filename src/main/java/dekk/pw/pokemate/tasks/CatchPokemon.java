@@ -114,9 +114,9 @@ public class CatchPokemon extends Task {
             return context.getApi().getInventories().getPokebank().getPokemons();
         } catch (LoginFailedException e) {
             e.printStackTrace();
+            return null;
         } catch (RemoteServerException e) {
             e.printStackTrace();
-        } finally {
             return null;
         }
     }
@@ -126,9 +126,9 @@ public class CatchPokemon extends Task {
             return context.getApi().getInventories().getItemBag();
         } catch (LoginFailedException e) {
             e.printStackTrace();
+            return null;
         } catch (RemoteServerException e) {
             e.printStackTrace();
-        } finally {
             return null;
         }
     }

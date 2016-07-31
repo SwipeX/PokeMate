@@ -9,6 +9,7 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,17 @@ public class IncubateEgg extends Task {
     @Override
     public void run() {
         try {
-            List<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> !i.isInUse()).collect(Collectors.toList());
+            List<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> {
+                try {
+                    return !i.isInUse();
+                } catch (LoginFailedException e) {
+                    e.printStackTrace();
+                } catch (RemoteServerException e) {
+                    e.printStackTrace();
+                } finally {
+                    return false;
+                }
+            }).collect(Collectors.toList());
             List<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
             if (incubators.size() > 0 && eggs.size() > 0) {
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));

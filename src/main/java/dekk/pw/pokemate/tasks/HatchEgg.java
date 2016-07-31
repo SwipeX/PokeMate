@@ -22,14 +22,21 @@ class HatchEgg extends Task {
             List<HatchedEgg> eggs = context.getApi().getInventories().getHatchery().queryHatchedEggs();
             Time.sleepRate();
             eggs.forEach(egg -> {
-                Pokemon hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
-                String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
-                if (hatchedPokemon == null) {
-                    PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details, "Hatched egg!","icons/items/egg.png");
-                } else {
-                    PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
-                            "Hatched egg!",
-                            "icons/items/egg.png");
+                Pokemon hatchedPokemon = null;
+                try {
+                    hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
+                    String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
+                    if (hatchedPokemon == null) {
+                        PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details, "Hatched egg!","icons/items/egg.png");
+                    } else {
+                        PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
+                                "Hatched egg!",
+                                "icons/items/egg.png");
+                    }
+                } catch (LoginFailedException e) {
+                    e.printStackTrace();
+                } catch (RemoteServerException e) {
+                    e.printStackTrace();
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {

@@ -12,5 +12,4 @@ public abstract class Task implements Runnable {
     Task(final Context context) {
         this.context = context;
     }
-
 }

@@ -82,7 +82,14 @@ public class CatchPokemon extends Task {
                         .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))
                         .findFirst()
                         .ifPresent(p -> {
-                            String output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
+                            String output = null;
+                            try {
+                                output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
+                            } catch (LoginFailedException e) {
+                                e.printStackTrace();
+                            } catch (RemoteServerException e) {
+                                e.printStackTrace();
+                            }
 
                             if (p.getCp() > Config.getMinimumCPForMessage()) {
                                 PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
@@ -103,11 +110,27 @@ public class CatchPokemon extends Task {
     }
 
     private List<Pokemon> pokemons() {
-        return context.getApi().getInventories().getPokebank().getPokemons();
+        try {
+            return context.getApi().getInventories().getPokebank().getPokemons();
+        } catch (LoginFailedException e) {
+            e.printStackTrace();
+        } catch (RemoteServerException e) {
+            e.printStackTrace();
+        } finally {
+            return null;
+        }
     }
 
     private ItemBag itemBag() {
-        return context.getApi().getInventories().getItemBag();
+        try {
+            return context.getApi().getInventories().getItemBag();
+        } catch (LoginFailedException e) {
+            e.printStackTrace();
+        } catch (RemoteServerException e) {
+            e.printStackTrace();
+        } finally {
+            return null;
+        }
     }
 
     private void log(final String message) {

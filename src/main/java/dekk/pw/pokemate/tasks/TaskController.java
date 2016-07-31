@@ -55,7 +55,7 @@ public class TaskController extends Thread {
                 for(Task t : tasks) {
                     executor.submit(t);
                 }
-                Thread.sleep(500);
+                TimeUnit.SECONDS.sleep(1);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

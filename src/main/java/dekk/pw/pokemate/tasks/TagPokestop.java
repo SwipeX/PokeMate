@@ -29,7 +29,6 @@ public class TagPokestop extends Task {
     @Override
     public void run() {
             try {
-                System.out.println("[Tag Pokestop] Starting Loop");
                 APIStartTime = System.currentTimeMillis();
                 map = context.getApi().getMap().getMapObjects();
                 APIElapsedTime = System.currentTimeMillis() - APIStartTime;
@@ -48,7 +47,6 @@ public class TagPokestop extends Task {
                 System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
                 return;
             }
-            System.out.println("[Tag PokeStop] " + pokestops.size() + " Pokestops Found.. Tagging");
             pokestops.stream()
                 .filter(Pokestop::canLoot)
                 .forEach(near -> {
@@ -64,14 +62,14 @@ public class TagPokestop extends Task {
                         }
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                     } catch (LoginFailedException e) {
-                        System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
+                        //System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
                         //e.printStackTrace();
                     } catch (RemoteServerException e) {
-                        System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
+                        //System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
                         //e.printStackTrace();
                     }
                 });
-            System.out.println("[Tag PokeStop] Ending Loop");
+            //System.out.println("[Tag PokeStop] Ending Loop");
 
     }
 

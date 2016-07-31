@@ -74,7 +74,7 @@ public class Navigate extends Task {
                     a.getLongitude() <= max.lng).collect(Collectors.toList());
 
             int count = stops.size();
-            System.out.println("Stops found: " + count);
+            // System.out.println("Stops found: " + count);
             last = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
             while (route.size() < count - 1) {
                 List<Pokestop> tempStops = stops.stream().filter(a -> !ids.contains(a.getId())).sorted((a, b) -> {

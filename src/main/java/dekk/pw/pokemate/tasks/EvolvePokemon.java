@@ -43,7 +43,7 @@ public class EvolvePokemon extends Task {
 
     @Override
     public void run() {
-        System.out.println("[Evolve] Activating..");
+        // System.out.println("[Evolve] Activating..");
             try {
                 CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
                 for (Pokemon pokemon : pokeList)

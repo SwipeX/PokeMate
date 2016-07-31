@@ -49,7 +49,7 @@ public class TaskController extends Thread {
      */
     public void run() {
         while (true) {
-            System.out.println("Running Task");
+            // System.out.println("Running Task");
             tasks.forEach(Task::run);
             Time.sleep(50);
         }

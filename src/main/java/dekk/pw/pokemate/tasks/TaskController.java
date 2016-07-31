@@ -3,6 +3,7 @@ package dekk.pw.pokemate.tasks;
 import com.google.maps.model.LatLng;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Config;
+import dekk.pw.pokemate.util.Time;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -47,13 +48,10 @@ public class TaskController extends Thread {
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
-        try {
-            while (true) {
-                tasks.forEach(Task::run);
-                TimeUnit.SECONDS.sleep(1);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            System.out.println("Running Task");
+            tasks.forEach(Task::run);
+            Time.sleep(50);
         }
     }
 }

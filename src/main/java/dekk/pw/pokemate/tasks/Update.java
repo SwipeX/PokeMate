@@ -7,6 +7,7 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.DecimalFormat;
 
@@ -17,7 +18,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class Update extends Task implements Runnable {
+public class Update extends Task {
 
     private static final int[] REQUIRED_EXPERIENCES = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
@@ -36,26 +37,14 @@ public class Update extends Task implements Runnable {
 
     @Override
     public void run() {
-        while (context.getRunStatus()) {
             try {
                 PlayerProfile player;
-                context.APILock.attempt(1000);
-                APIStartTime = System.currentTimeMillis();
                 context.setProfile(player = context.getApi().getPlayerProfile());
-                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                }
 
                 player.updateProfile();
 
-
-                APIStartTime = System.currentTimeMillis();
+                Time.sleepRate();
                 context.getApi().getInventories().updateInventories(true);
-                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                }
 
                 long runTime = System.currentTimeMillis() - PokeMate.startTime;
                 long curTotalXP = player.getStats().getExperience();
@@ -83,14 +72,8 @@ public class Update extends Task implements Runnable {
                 Context.Login(context.getHttp());
             } catch (RemoteServerException e) {
                 System.out.println("[Update] Error - Hit Rate limiter.");
-            } catch (InterruptedException e) {
-                System.out.println("[Navigate] Error - Timed out waiting for API");
-                // e.printStackTrace();
-            }finally   {
-                context.APILock.release();
             }
         }
-    }
 	
 	public static String getXpHr() {
 		return String.format("%.2f", xpHr);

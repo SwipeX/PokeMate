@@ -7,7 +7,6 @@ import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.*;
 
 import com.pokegoapi.util.SystemTimeImpl;
-import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 import okhttp3.OkHttpClient;
 
 import javax.swing.*;
@@ -36,7 +35,6 @@ public class Context {
     private CredentialProvider credentialProvider;
     private static SystemTimeImpl time = new SystemTimeImpl();
     private int MinimumAPIWaitTime = 300;
-    public Mutex APILock = new Mutex();
     private boolean runStatus;
 
     public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {

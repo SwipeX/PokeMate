@@ -21,7 +21,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
  * Created by TimD on 7/21/2016.
  * Credit: https://github.com/mjmfighter/pokemon-go-bot/blob/master/src/main/java/com/mjmfighter/pogobot/LocationWalker.java
  */
-public class Navigate extends Task implements Runnable {
+public class Navigate extends Task {
 
     private final LatLng min, max;
     private static List<DirectionsStep[]> routes = new ArrayList<>();
@@ -66,17 +66,12 @@ public class Navigate extends Task implements Runnable {
      */
     private void populateRoute(Context context) {
         try {
-
-            context.APILock.attempt(1000);
-            APIStartTime = System.currentTimeMillis();
             List<Pokestop> stops = context.getApi().getMap().getMapObjects().getPokestops().stream().filter(a ->
-                    //only pokestops in our region
-                    a.getLatitude() >= min.lat &&
-                            a.getLatitude() <= max.lat &&
-                            a.getLongitude() >= min.lng &&
-                            a.getLongitude() <= max.lng).collect(Collectors.toList());
-            APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-            if ( APIElapsedTime < context.getMinimumAPIWaitTime()) { sleep(context.getMinimumAPIWaitTime()-APIElapsedTime); }
+                //only pokestops in our region
+                a.getLatitude() >= min.lat &&
+                    a.getLatitude() <= max.lat &&
+                    a.getLongitude() >= min.lng &&
+                    a.getLongitude() <= max.lng).collect(Collectors.toList());
 
             int count = stops.size();
             System.out.println("Stops found: " + count);
@@ -105,34 +100,27 @@ public class Navigate extends Task implements Runnable {
         } catch (LoginFailedException e) {
             System.out.println("[Navigate] Login Failed.");
             //e.printStackTrace();
-        } catch (InterruptedException e) {
-            System.out.println("[Navigate] Error - TImed out waiting for API");
-                //e.printStackTrace();
-        }finally   {
-            context.APILock.release();
         }
     }
 
     @Override
     public void run() {
-        while(context.getRunStatus()) {
-            if (context.isWalking()) {
-                continue;
-            } else if (navigationType == (NavigationType.STREETS) && routesIndex >= getDirections().size()) {
-                routesIndex = 0;
-            } else if (navigationType == (NavigationType.POKESTOPS) && routesIndex >= route.size()) {
-                routesIndex = 0;
-            }
-            switch (navigationType) {
-                case POKESTOPS:
-                    Walking.walk(context, route.get(routesIndex++));
-                    break;
-                case POKEMON:
-                    //TODO: walk dynamically to nearest pokemon
-                    break;
-                default:
-                    Walking.walk(context, getDirections().get(routesIndex++));
-            }
+        if (context.isWalking()) {
+            return;
+        } else if (navigationType == (NavigationType.STREETS) && routesIndex >= getDirections().size()) {
+            routesIndex = 0;
+        } else if (navigationType == (NavigationType.POKESTOPS) && routesIndex >= route.size()) {
+            routesIndex = 0;
+        }
+        switch (navigationType) {
+            case POKESTOPS:
+                Walking.walk(context, route.get(routesIndex++));
+                break;
+            case POKEMON:
+                //TODO: walk dynamically to nearest pokemon
+                break;
+            default:
+                Walking.walk(context, getDirections().get(routesIndex++));
         }
     }
 

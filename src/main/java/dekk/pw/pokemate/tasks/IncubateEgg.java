@@ -14,7 +14,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by $ Tim Dekker on 7/23/2016.
  */
-public class IncubateEgg extends Task implements Runnable {
+public class IncubateEgg extends Task {
 
     IncubateEgg(final Context context) {
         super(context);

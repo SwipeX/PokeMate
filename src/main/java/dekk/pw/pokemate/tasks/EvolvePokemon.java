@@ -20,7 +20,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/22/2016.
  */
-public class EvolvePokemon extends Task implements Runnable {
+public class EvolvePokemon extends Task {
     private static final ConcurrentHashMap<Integer, Integer> CANDY_AMOUNTS = new ConcurrentHashMap<>();
 
     static {
@@ -43,16 +43,9 @@ public class EvolvePokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        //System.out.println("[Evolve] Activating..");
-        while(context.getRunStatus()) {
+        System.out.println("[Evolve] Activating..");
             try {
-                context.APILock.attempt(1000);
-                APIStartTime = System.currentTimeMillis();
                 CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
-                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                }
                 for (Pokemon pokemon : pokeList)
                     if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
                         int number = pokemon.getPokemonId().getNumber();
@@ -71,12 +64,6 @@ public class EvolvePokemon extends Task implements Runnable {
             } catch (RemoteServerException | LoginFailedException e1) {
                 System.out.println("[EvolvePokemon] Hit Rate Limited");
                 e1.printStackTrace();
-            } catch (InterruptedException e) {
-                System.out.println("[] Error - Timed out waiting for API");
-                // e.printStackTrace();
-            }finally   {
-                context.APILock.release();
             }
-        }
     }
 }

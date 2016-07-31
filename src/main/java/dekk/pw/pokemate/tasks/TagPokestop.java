@@ -18,7 +18,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class TagPokestop extends Task implements Runnable {
+public class TagPokestop extends Task {
 
     private MapObjects map;
     
@@ -28,10 +28,8 @@ public class TagPokestop extends Task implements Runnable {
 
     @Override
     public void run() {
-        while (context.getRunStatus()) {
             try {
                 System.out.println("[Tag Pokestop] Starting Loop");
-                context.APILock.attempt(1000);
                 APIStartTime = System.currentTimeMillis();
                 map = context.getApi().getMap().getMapObjects();
                 APIElapsedTime = System.currentTimeMillis() - APIStartTime;
@@ -40,21 +38,15 @@ public class TagPokestop extends Task implements Runnable {
                 }
             } catch (RemoteServerException e) {
                 System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
-                continue;
-            } catch (InterruptedException e) {
-                System.out.println("[Tag PokeStop] Ending Loop - Interrupted");
-                e.printStackTrace();
-                continue;
+                return;
             } catch (LoginFailedException e) {
                 //e.printStackTrace();
                 System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
-            } finally {
-                context.APILock.release();
             }
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
                 System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
-                continue;
+                return;
             }
             System.out.println("[Tag PokeStop] " + pokestops.size() + " Pokestops Found.. Tagging");
             pokestops.stream()
@@ -64,7 +56,6 @@ public class TagPokestop extends Task implements Runnable {
                     System.out.println("[Tag PokeStop] Tagging PokeStop in range");
                     String result = null;
                     try {
-                        context.APILock.attempt(1000);
                         APIStartTime = System.currentTimeMillis();
                         result = resultMessage(near.loot());
                         APIElapsedTime = System.currentTimeMillis() - APIStartTime;
@@ -78,15 +69,10 @@ public class TagPokestop extends Task implements Runnable {
                     } catch (RemoteServerException e) {
                         System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
                         //e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        System.out.println("[Tag PokeStop] Ending Loop - Interrupted");
-                        //e.printStackTrace();
-                    } finally {
-                        context.APILock.release();
                     }
                 });
             System.out.println("[Tag PokeStop] Ending Loop");
-        }
+
     }
 
     private String resultMessage(final PokestopLootResult result) {

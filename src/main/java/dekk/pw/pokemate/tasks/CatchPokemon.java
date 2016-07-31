@@ -26,7 +26,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon extends Task  implements Runnable {
+public class CatchPokemon extends Task{
 
     CatchPokemon(final Context context) {
         super(context);
@@ -34,11 +34,9 @@ public class CatchPokemon extends Task  implements Runnable {
 
     @Override
     public void run() {
-        while(context.getRunStatus()) {
             System.out.println("[CatchPokemon] Starting Loop");
             try {
                 Pokeball pokeball = null;
-                context.APILock.attempt(1000);
                 APIStartTime = System.currentTimeMillis();
                 List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon().stream()
                     .filter(this::shouldIgnore)
@@ -52,7 +50,7 @@ public class CatchPokemon extends Task  implements Runnable {
 
                 if (pokemon.size() == 0) {
                     System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
-                    continue;
+                    return;
                 }
 
                 Item ball = itemBag().getItem(getItemForId(Config.getPreferredBall()));
@@ -68,33 +66,25 @@ public class CatchPokemon extends Task  implements Runnable {
                         }
                     }
                 }
-                APIStartTime = System.currentTimeMillis();
                 CatchablePokemon target = pokemon.get(0);
-                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                }
 
                 if (target == null || pokeball == null) {
                     System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
-                    context.APILock.release();
-                    continue;
+                    return;
                 }
 
                 Walking.setLocation(context);
                 EncounterResult encounterResult = target.encounterPokemon();
                 if (!encounterResult.wasSuccessful()) {
                     System.out.println("[CatchPokemon] Ending Loop - Caught Pokemon");
-                    context.APILock.release();
-                    continue;
+                    return;
                 }
 
                 CatchResult catchResult = target.catchPokemon(pokeball);
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
                     log(target.getPokemonId() + " fled.");
                     System.out.println("[CatchPokemon] Ending Loop - Pokemon Ran Away");
-                    context.APILock.release();
-                    continue;
+                    return;
                 }
 
                 try {
@@ -126,16 +116,10 @@ public class CatchPokemon extends Task  implements Runnable {
             } catch (LoginFailedException | RemoteServerException e) {
                 //e.printStackTrace();
                 System.out.println("[CatchPokemon] Hit Rate Limited");
-            } catch (InterruptedException e) {
-                System.out.println("[CatchPokemon] Error - TImed out waiting for API");
-                // e.printStackTrace();
-            }finally {
-                context.APILock.release();
             }
             System.out.println("[CatchPokemon] Ending Loop");
-            context.APILock.release();
         }
-    }
+
 
     private boolean shouldIgnore(final CatchablePokemon p) {
         return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId().getNumber());

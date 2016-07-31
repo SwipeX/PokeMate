@@ -51,7 +51,7 @@ public class TaskController extends Thread {
             while (true) {
                 for(Task t : tasks)
                     t.run();
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(2);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

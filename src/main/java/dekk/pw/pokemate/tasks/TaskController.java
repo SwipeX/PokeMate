@@ -49,7 +49,8 @@ public class TaskController extends Thread {
     public void run() {
         try {
             while (true) {
-                tasks.forEach(Task::run);
+                for(Task t : tasks)
+                    t.run();
                 TimeUnit.SECONDS.sleep(5);
             }
         } catch (InterruptedException e) {

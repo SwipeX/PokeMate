@@ -7,9 +7,6 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
-import javafx.scene.image.Image;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

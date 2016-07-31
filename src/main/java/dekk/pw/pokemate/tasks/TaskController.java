@@ -42,6 +42,18 @@ public class TaskController extends Thread {
         if (Config.isEggsHatching()) executor.submit(new HatchEgg(context));
         if (Config.isDropItems()) executor.submit(new DropItems(context));
 
+    /**
+     * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
+     */
+    public void run() {
+        try {
+            while (true) {
+                tasks.forEach(Task::run);
+                TimeUnit.SECONDS.sleep(1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

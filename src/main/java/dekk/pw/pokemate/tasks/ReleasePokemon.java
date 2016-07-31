@@ -29,51 +29,35 @@ public class ReleasePokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        while(context.getRunStatus()) {
-            try {
-                context.APILock.attempt(1000);
-                APIStartTime = System.currentTimeMillis();
-                Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
-                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+        Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = null;
+        try {
+            groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
+            for (List<Pokemon> list : groups.values()) {
+                if (Config.isTransferPrefersIV()) {
+                    Collections.sort(list, (a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                } else {
+                    Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
                 }
-
-
-                for (List<Pokemon> list : groups.values()) {
-                    if (Config.isTransferPrefersIV()) {
-                        Collections.sort(list, (a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
-                    } else {
-                        Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
-                    }
-                    int minCP = Config.getMinCP();
-                    list.stream().filter(p -> (minCP <= 1 || p.getCp() < minCP) &&
+                int minCP = Config.getMinCP();
+                list.stream().filter(p -> (minCP <= 1 || p.getCp() < minCP) &&
                         list.indexOf(p) < list.size() - 1 &&
                         context.getIvRatio(p) < Config.getIvRatio() &&
                         !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
-                        //Passing this filter means they are not a 'perfect pokemon'
-                        try {
-                            APIStartTime = System.currentTimeMillis();
-                            p.transferPokemon();
-                            APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                            if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                                sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                            }
+                    //Passing this filter means they are not a 'perfect pokemon'
+                    try {
+                        p.transferPokemon();
+                        Time.sleepRate();
+                        PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+                    } catch (LoginFailedException | RemoteServerException e) {
+                        e.printStackTrace();
+                    }
 
-                            Time.sleepRate();
-                            PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
-                        } catch (LoginFailedException | RemoteServerException e) {
-                            System.out.println("[ReleasePokemon] Hit Max Limit");
-                            //e.printStackTrace();
-                        }
-                    });
-                }
-            } catch (InterruptedException e) {
-                System.out.println("[] Error - TImed out waiting for API");
-                // e.printStackTrace();
-            }finally   {
-                context.APILock.release();
+                });
             }
+        } catch (LoginFailedException e) {
+            e.printStackTrace();
+        } catch (RemoteServerException e) {
+            e.printStackTrace();
         }
     }
 

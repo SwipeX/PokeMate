@@ -36,7 +36,7 @@ public class TagPokestop extends Task {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
             } catch (RemoteServerException e) {
-                System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
+               System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
                 return;
             } catch (LoginFailedException e) {
                 //e.printStackTrace();
@@ -44,7 +44,7 @@ public class TagPokestop extends Task {
             }
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
-                System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
+               // System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
                 return;
             }
             pokestops.stream()

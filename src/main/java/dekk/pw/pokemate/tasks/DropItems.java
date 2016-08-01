@@ -34,6 +34,7 @@ public class DropItems extends Task {
                     PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                 }
             } catch (RemoteServerException | LoginFailedException e) {
+                System.out.println("Exceeded Rate Limit");
                 e.printStackTrace();
             }
         });

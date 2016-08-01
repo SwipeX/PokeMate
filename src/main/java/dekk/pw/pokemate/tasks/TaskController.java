@@ -6,6 +6,8 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.util.Time;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,7 +23,7 @@ public class TaskController extends Thread {
         tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
             new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
 
-        tasks.add(new Update(context));
+        //tasks.add(new Update(context));
         tasks.add(new CatchPokemon(context));
 
         if (Config.isAutoEvolving()) {
@@ -48,10 +50,18 @@ public class TaskController extends Thread {
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                new Update(context).run();
+
+            }
+        }, 0, 60000);
+
         while (true) {
-            // System.out.println("Running Task");
             tasks.forEach(Task::run);
-            Time.sleep(50);
+            Time.sleep(500);
         }
     }
 }

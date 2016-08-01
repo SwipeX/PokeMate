@@ -34,7 +34,7 @@ public class CatchPokemon extends Task{
 
     @Override
     public void run() {
-        System.out.println("[CatchPokemon] Starting Loop");
+        //System.out.println("[CatchPokemon] Starting Loop");
         try {
             Pokeball pokeball = null;
             APIStartTime = System.currentTimeMillis();
@@ -49,7 +49,7 @@ public class CatchPokemon extends Task{
 
 
             if (pokemon.size() == 0) {
-                System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
+               // System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
                 return;
             }
 
@@ -69,21 +69,21 @@ public class CatchPokemon extends Task{
             CatchablePokemon target = pokemon.get(0);
 
             if (target == null || pokeball == null) {
-                System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
+                //System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
                 return;
             }
 
             Walking.setLocation(context);
             EncounterResult encounterResult = target.encounterPokemon();
             if (!encounterResult.wasSuccessful()) {
-                System.out.println("[CatchPokemon] Ending Loop - Caught Pokemon");
+                //System.out.println("[CatchPokemon] Ending Loop - Caught Pokemon");
                 return;
             }
 
             CatchResult catchResult = target.catchPokemon(pokeball);
             if (catchResult.getStatus() != CATCH_SUCCESS) {
                 log(target.getPokemonId() + " fled.");
-                System.out.println("[CatchPokemon] Ending Loop - Pokemon Ran Away");
+                //System.out.println("[CatchPokemon] Ending Loop - Pokemon Ran Away");
                 return;
             }
 
@@ -115,9 +115,9 @@ public class CatchPokemon extends Task{
             }
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
-            System.out.println("[CatchPokemon] Hit Rate Limited");
+            System.out.println("[CatchPokemon] Exceeded Rate Limit");
         }
-        System.out.println("[CatchPokemon] Ending Loop");
+       // System.out.println("[CatchPokemon] Ending Loop");
     }
 
 

@@ -7,6 +7,7 @@ import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.*;
 
 import com.pokegoapi.util.SystemTimeImpl;
+import dekk.pw.pokemate.tasks.Task;
 import okhttp3.OkHttpClient;
 
 import javax.swing.*;
@@ -19,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.security.MessageDigest;
 
@@ -36,6 +39,8 @@ public class Context {
     private static SystemTimeImpl time = new SystemTimeImpl();
     private int MinimumAPIWaitTime = 300;
     private boolean runStatus;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private int routesIndex;
 
     public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {
         this.api = go;
@@ -44,6 +49,7 @@ public class Context {
         this.credentialProvider = credentialProvider;
         this.http = http;
         this.runStatus = true;
+        this.routesIndex = 0;
     }
 
     public static CredentialProvider Login(OkHttpClient httpClient) {
@@ -152,7 +158,14 @@ public class Context {
         return walking;
     }
 
-    public boolean getRunStatus() { return runStatus; }
+    public int getRoutesIndex() { return routesIndex; }
+
+    public void increaseRoutesIndex() { this.routesIndex++; }
+
+    public void resetRoutesIndex() { this.routesIndex = 0; }
+
+
+    public void addTask(Task task) { executor.submit(task); }
 
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;

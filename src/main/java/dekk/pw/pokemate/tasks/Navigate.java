@@ -21,13 +21,13 @@ import static dekk.pw.pokemate.util.Time.sleep;
  * Created by TimD on 7/21/2016.
  * Credit: https://github.com/mjmfighter/pokemon-go-bot/blob/master/src/main/java/com/mjmfighter/pogobot/LocationWalker.java
  */
-public class Navigate extends Task {
+public class Navigate extends Task implements Runnable {
 
     private final LatLng min, max;
+    public static final double VARIANCE = Config.getRange();
     private static List<DirectionsStep[]> routes = new ArrayList<>();
     private static List<S2LatLng> route = new ArrayList<>();
     public static boolean populated;
-    private int routesIndex = 0;
     private static final Object lock = new Object();
     static NavigationType navigationType = Config.getNavigationType();
 
@@ -106,22 +106,29 @@ public class Navigate extends Task {
     @Override
     public void run() {
         if (context.isWalking()) {
+            context.addTask(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+                new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
             return;
-        } else if (navigationType == (NavigationType.STREETS) && routesIndex >= getDirections().size()) {
-            routesIndex = 0;
-        } else if (navigationType == (NavigationType.POKESTOPS) && routesIndex >= route.size()) {
-            routesIndex = 0;
+        } else if (navigationType == (NavigationType.STREETS) && context.getRoutesIndex() >= getDirections().size()) {
+            context.resetRoutesIndex();
+        } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= route.size()) {
+            context.resetRoutesIndex();
         }
         switch (navigationType) {
             case POKESTOPS:
-                Walking.walk(context, route.get(routesIndex++));
+                context.increaseRoutesIndex();
+                Walking.walk(context, route.get(context.getRoutesIndex()));
+                System.out.println("Naviating to Index " + context.getRoutesIndex() + ", Size is " + route.size());
                 break;
             case POKEMON:
                 //TODO: walk dynamically to nearest pokemon
                 break;
             default:
-                Walking.walk(context, getDirections().get(routesIndex++));
+                context.increaseRoutesIndex();
+                Walking.walk(context, getDirections().get(context.getRoutesIndex()));
         }
+        context.addTask(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+            new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
     }
 
 

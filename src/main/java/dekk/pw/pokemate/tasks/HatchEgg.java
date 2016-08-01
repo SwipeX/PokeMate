@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
-class HatchEgg extends Task {
+class HatchEgg extends Task implements Runnable{
     HatchEgg(final Context context) {
         super(context);
     }
@@ -40,5 +40,6 @@ class HatchEgg extends Task {
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
+        context.addTask(new HatchEgg(context));
     }
 }

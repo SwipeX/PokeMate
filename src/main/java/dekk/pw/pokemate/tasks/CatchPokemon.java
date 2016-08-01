@@ -26,7 +26,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon extends Task{
+public class CatchPokemon extends Task implements Runnable {
 
     CatchPokemon(final Context context) {
         super(context);
@@ -118,6 +118,7 @@ public class CatchPokemon extends Task{
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
         }
        // System.out.println("[CatchPokemon] Ending Loop");
+        context.addTask(new CatchPokemon(context));
     }
 
 

@@ -8,6 +8,9 @@ import dekk.pw.pokemate.util.Time;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,18 +53,16 @@ public class TaskController extends Thread {
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
-
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                new Update(context).run();
+                context.addTask(new Update(context));
 
             }
         }, 0, 60000);
 
-        while (true) {
-            tasks.forEach(Task::run);
-            Time.sleep(500);
-        }
+        tasks.forEach(context::addTask);
+
     }
 }

@@ -18,7 +18,7 @@ import static dekk.pw.pokemate.util.Time.sleep;
 /**
  * Created by TimD on 7/21/2016.
  */
-public class TagPokestop extends Task {
+public class TagPokestop extends Task implements Runnable {
 
     private MapObjects map;
     
@@ -70,6 +70,7 @@ public class TagPokestop extends Task {
                     }
                 });
             //System.out.println("[Tag PokeStop] Ending Loop");
+        context.addTask(new TagPokestop(context));
 
     }
 

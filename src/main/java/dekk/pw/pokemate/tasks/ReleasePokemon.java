@@ -59,6 +59,8 @@ public class ReleasePokemon extends Task implements Runnable {
         } catch (RemoteServerException e) {
             e.printStackTrace();
         }
+
+        context.addTask(new ReleasePokemon(context));
     }
 
 }

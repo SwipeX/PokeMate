@@ -403,7 +403,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         String rows = "\"";
         for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
             if (pokemon.getPokemonFamily() != null) {
-                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+                rows += "<tr> <td><img width=\'80\' height=\'80\' src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
             }
         }
 

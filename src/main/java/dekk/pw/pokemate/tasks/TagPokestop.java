@@ -1,6 +1,5 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Inventory.Item.ItemAwardOuterClass;
 import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
@@ -10,108 +9,75 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
-import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+
+import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
+import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/21/2016.
  */
 public class TagPokestop extends Task {
 
+    private MapObjects map;
+    
     TagPokestop(final Context context) {
         super(context);
     }
 
     @Override
     public void run() {
-        try {
-            MapObjects map = context.getApi().getMap().getMapObjects();
+            try {
+                APIStartTime = System.currentTimeMillis();
+                map = context.getApi().getMap().getMapObjects();
+                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
+                }
+            } catch (RemoteServerException e) {
+               System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
+                return;
+            } catch (LoginFailedException e) {
+                //e.printStackTrace();
+                System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
+            }
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
+               // System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
                 return;
             }
-
             pokestops.stream()
-                    .filter(Pokestop::canLoot)
-                    .forEach(near -> {
-                        Walking.setLocation(context);
-                        try {
-                            String result = resultMessage(near.loot());
-                            PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
-                        } catch (LoginFailedException | RemoteServerException e) {
-                            e.printStackTrace();
+                .filter(Pokestop::canLoot)
+                .forEach(near -> {
+                    Walking.setLocation(context);
+                   
+                    String result = null;
+                    try {
+                        APIStartTime = System.currentTimeMillis();
+                        result = resultMessage(near.loot());
+                        APIElapsedTime = System.currentTimeMillis() - APIStartTime;
+                        if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
+                            sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                         }
-                    });
-        } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
-        }
+                        PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
+                    } catch (LoginFailedException e) {
+                        //System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
+                        //e.printStackTrace();
+                    } catch (RemoteServerException e) {
+                        //System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
+                        //e.printStackTrace();
+                    }
+                });
+            //System.out.println("[Tag PokeStop] Ending Loop");
+
     }
 
     private String resultMessage(final PokestopLootResult result) {
         switch (result.getResult()) {
             case SUCCESS:
                 String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]";
-                int pokeBall = 0, greatBall = 0, ultraBall = 0, masterBall = 0, potion = 0, superPotion = 0, hyperPotion = 0, maxPotion = 0, razzBerry = 0, revive = 0, maxRevive = 0;
-                for (ItemAwardOuterClass.ItemAward item : result.getItemsAwarded()) {
-                    switch (item.getItemId().name()) {
-                        case "ITEM_POKE_BALL":
-                            pokeBall++;
-                            break;
-                        case "ITEM_GREAT_BALL":
-                            greatBall++;
-                            break;
-                        case "ITEM_ULTRA_BALL":
-                            ultraBall++;
-                            break;
-                        case "ITEM_MASTER_BALL":
-                            masterBall++;
-                            break;
-                        case "ITEM_POTION":
-                            potion++;
-                            break;
-                        case "ITEM_SUPER_POTION":
-                            superPotion++;
-                            break;
-                        case "ITEM_HYPER_POTION":
-                            hyperPotion++;
-                            break;
-                        case "ITEM_MAX_POTION":
-                            maxPotion++;
-                            break;
-                        case "ITEM_REVIVE":
-                            revive++;
-                            break;
-                        case "ITEM_MAX_REVIVE":
-                            maxRevive++;
-                            break;
-                        case "ITEM_RAZZ_BERRY":
-                            razzBerry++;
-                            break;
-                    }
-                }
-                if (pokeBall > 0)
-                    retstr += " - Poke Ball (x" + pokeBall + ")";
-                if (greatBall > 0)
-                    retstr += " - Great Ball (x" + greatBall + ")";
-                if (masterBall > 0)
-                    retstr += " - Master Ball (x" + masterBall + ")";
-                if (ultraBall > 0)
-                    retstr += " - Ultra Ball (x" + ultraBall + ")";
-                if (potion > 0)
-                    retstr += " - Potion (x" + potion + ")";
-                if (superPotion > 0)
-                    retstr += " - Super Potion (x" + superPotion + ")";
-                if (hyperPotion > 0)
-                    retstr += " - Hyper Potion (x" + hyperPotion + ")";
-                if (maxPotion > 0)
-                    retstr += " - Max Potion (x" + maxPotion + ")";
-                if (revive > 0)
-                    retstr += " - Revive (x" + revive + ")";
-                if (maxRevive > 0)
-                    retstr += " - Max Revive Potion (x" + maxRevive + ")";
-                if (razzBerry > 0)
-                    retstr += " - Razz Berry (x" + razzBerry + ")";
+                retstr += convertItemAwards(result.getItemsAwarded());
                 return retstr;
             case INVENTORY_FULL:
                 return "Tagged pokestop, but bag is full [+" + result.getExperience() + "xp]";

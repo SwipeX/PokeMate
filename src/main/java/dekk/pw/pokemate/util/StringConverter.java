@@ -1,19 +1,42 @@
 package dekk.pw.pokemate.util;
 
+import POGOProtos.Inventory.Item.ItemAwardOuterClass;
+import POGOProtos.Inventory.Item.ItemIdOuterClass;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
- * created on 27.07.2016 by iDreamInBinary
+ * @author kylestev
  */
 public class StringConverter {
-
-    //return a pokemon name thats not all uppercase
-    public static String convertPokename(String pokeName){
-        return pokeName.substring(0, 1).toUpperCase() + pokeName.substring(1).toLowerCase();
+	public static String titleCase(final String sentence) {
+        return Arrays.asList(sentence.split("\\s|_")).stream()
+                .map(StringConverter::titlizeWord)
+                .collect(Collectors.joining(" "));
     }
 
-    //return an item name thats not all uppercase and doesn't have underscores
-    public static String convertItem(String itemName){
-        String[] result = (itemName.substring(5,6).toUpperCase() + itemName.substring(6).replaceAll("_", " ").toLowerCase()).split("\\s+");
-        return result[0] + " " + result[1].substring(0,1).toUpperCase() + result[1].substring(1);
+    private static String titlizeWord(final String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
     }
 
+    public static String convertItemAwards(List<ItemAwardOuterClass.ItemAward> itemAwards) {
+        String retStr = "";
+
+        Map<Integer, Integer> receivedItems = new HashMap<>();
+
+        //check what items we got from the pokestop
+        for (ItemAwardOuterClass.ItemAward item : itemAwards) {
+            receivedItems.put(item.getItemId().getNumber(), receivedItems.getOrDefault((item.getItemId().getNumber()),0) + 1);
+        }
+        //build the rest of the string
+        for (Map.Entry<Integer, Integer> item : receivedItems.entrySet()) {
+            retStr += " - " + StringConverter.titleCase(ItemIdOuterClass.ItemId.valueOf(item.getKey()).name()) + "(x" + item.getValue() + ")";
+        }
+
+        return retStr;
+    }
 }

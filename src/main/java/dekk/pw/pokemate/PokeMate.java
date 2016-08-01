@@ -26,6 +26,10 @@ public class PokeMate {
     private static File configProperties;
     private static Context context;
 
+    public double getSmallRandom() {
+        return Math.random() * 0.0003 - 0.0003;
+    }
+
     public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
@@ -48,12 +52,12 @@ public class PokeMate {
             System.out.println("Using Custom Location");
         } else { // Use given co-ordindates instead
             AtomicDouble alat = new AtomicDouble();
-            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude")));
+            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude"))+getSmallRandom());
             lat = alat;
 
             AtomicDouble alng = new AtomicDouble();
-            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude")));
-            lng = alng;
+            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude"))+getSmallRandom());
+            lng = alng ;
         }
 
         auth = Context.Login(http);

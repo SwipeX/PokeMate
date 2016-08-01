@@ -7,6 +7,8 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.Time;
+import dekk.pw.pokemate.util.Time;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +16,12 @@ import java.util.stream.Collectors;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import static dekk.pw.pokemate.util.Time.sleep;
+
 /**
  * Created by TimD on 7/21/2016.
  */
-public class ReleasePokemon extends Task {
+public class ReleasePokemon extends Task implements Runnable {
 
     ReleasePokemon(final Context context) {
         super(context);
@@ -25,23 +29,35 @@ public class ReleasePokemon extends Task {
 
     @Override
     public void run() {
-        Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
-        for (List<Pokemon> list : groups.values()) {
-            if(Config.isTransferPrefersIV()) {
-                Collections.sort(list, (a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
-            } else {
-                Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
-            }
-            list.stream().filter(p -> p.getCp() < Config.getMinCP() && list.indexOf(p) < list.size() - 1 && !p.isFavorite() && context.getIvRatio(p) < Config.getIvRatio() && !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
-                //Passing this filter means they are not a 'perfect pokemon'
-                try {
-                    p.transferPokemon();
-					PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
-                } catch (LoginFailedException | RemoteServerException e) {
-                    e.printStackTrace();
+        Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = null;
+        try {
+            groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
+            for (List<Pokemon> list : groups.values()) {
+                if (Config.isTransferPrefersIV()) {
+                    Collections.sort(list, (a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                } else {
+                    Collections.sort(list, (a, b) -> a.getCp() - b.getCp());
                 }
+                int minCP = Config.getMinCP();
+                list.stream().filter(p -> (minCP <= 1 || p.getCp() < minCP) &&
+                        list.indexOf(p) < list.size() - 1 &&
+                        context.getIvRatio(p) < Config.getIvRatio() &&
+                        !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
+                    //Passing this filter means they are not a 'perfect pokemon'
+                    try {
+                        p.transferPokemon();
+                        Time.sleepRate();
+                        PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+                    } catch (LoginFailedException | RemoteServerException e) {
+                        e.printStackTrace();
+                    }
 
-            });
+                });
+            }
+        } catch (LoginFailedException e) {
+            e.printStackTrace();
+        } catch (RemoteServerException e) {
+            e.printStackTrace();
         }
     }
 

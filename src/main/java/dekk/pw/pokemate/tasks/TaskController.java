@@ -3,8 +3,11 @@ package dekk.pw.pokemate.tasks;
 import com.google.maps.model.LatLng;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Config;
+import dekk.pw.pokemate.util.Time;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,9 +21,9 @@ public class TaskController extends Thread {
     public TaskController(final Context context) {
         this.context = context;
         tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
-                new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
+            new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
 
-        tasks.add(new Update(context));
+        //tasks.add(new Update(context));
         tasks.add(new CatchPokemon(context));
 
         if (Config.isAutoEvolving()) {
@@ -47,13 +50,18 @@ public class TaskController extends Thread {
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
-        try {
-            while (true) {
-                tasks.forEach(Task::run);
-                TimeUnit.SECONDS.sleep(5);
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                new Update(context).run();
+
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        }, 0, 60000);
+
+        while (true) {
+            tasks.forEach(Task::run);
+            Time.sleep(500);
         }
     }
 }

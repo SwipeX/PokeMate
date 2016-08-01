@@ -4,16 +4,23 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.auth.CredentialProvider;
-import com.pokegoapi.auth.GoogleAutoCredentialProvider;
-import com.pokegoapi.auth.PtcCredentialProvider;
+import com.pokegoapi.auth.*;
+
 import com.pokegoapi.util.SystemTimeImpl;
 import okhttp3.OkHttpClient;
 
+import javax.swing.*;
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.security.MessageDigest;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.net.URI;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.security.MessageDigest;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -26,6 +33,9 @@ public class Context {
     private PlayerProfile profile;
     private AtomicBoolean walking = new AtomicBoolean(false);
     private CredentialProvider credentialProvider;
+    private static SystemTimeImpl time = new SystemTimeImpl();
+    private int MinimumAPIWaitTime = 300;
+    private boolean runStatus;
 
     public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {
         this.api = go;
@@ -33,6 +43,7 @@ public class Context {
         this.walking.set(walking);
         this.credentialProvider = credentialProvider;
         this.http = http;
+        this.runStatus = true;
     }
 
     public static CredentialProvider Login(OkHttpClient httpClient) {
@@ -60,6 +71,7 @@ public class Context {
     public static CredentialProvider Login(Context context, OkHttpClient httpClient) {
         String token = null;
         try {
+            new File("tokens/").mkdir();
             if (Config.getUsername().contains("@")) {
                 File tokenFile = new File("tokens/" + Context.getUsernameHash() + ".txt");
                 if (tokenFile.exists()) {
@@ -67,13 +79,24 @@ public class Context {
                     token = scanner.nextLine();
                     scanner.close();
                     if (token != null) {
-                        return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
+                        return new GoogleUserCredentialProvider(httpClient, token, time);
                     }
                 } else {
-                    return new GoogleAutoCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
+                    GoogleUserCredentialProvider provider = new GoogleUserCredentialProvider(httpClient, time);
+                    System.out.println("-----------------------------------------");
+                    System.out.println("  Please go to the following URL");
+                    System.out.println(GoogleUserCredentialProvider.LOGIN_URL);
+                    Desktop.getDesktop().browse(URI.create(GoogleUserCredentialProvider.LOGIN_URL));
+
+                    String access = JOptionPane.showInputDialog("Enter authorization code: ");
+                    provider.login(access);
+                    try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
+                        p.println(provider.getRefreshToken());
+                    }
+                    return provider;
                 }
             } else {
-                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword(), new SystemTimeImpl());
+                return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,23 +104,16 @@ public class Context {
         return null;
     }
 
-    public static String millisToTimeString(long millis) {
-        long seconds = (millis / 1000) % 60;
-        long minutes = (millis / (1000 * 60)) % 60;
-        long hours = (millis / (1000 * 60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    }
-
     public AtomicDouble getLat() {
         return lat;
     }
 
-    public void setLat(AtomicDouble lat) {
-        this.lat = lat;
-    }
-
     public AtomicDouble getLng() {
         return lng;
+    }
+
+    public void setLat(AtomicDouble lat) {
+        this.lat = lat;
     }
 
     public void setLng(AtomicDouble lng) {
@@ -112,9 +128,9 @@ public class Context {
         this.http = http;
     }
 
-    public PokemonGo getApi() {
-        return api;
-    }
+    public PokemonGo getApi() { return api; }
+
+    public int getMinimumAPIWaitTime() { return MinimumAPIWaitTime; }
 
     public void setApi(PokemonGo api) {
         this.api = api;
@@ -136,6 +152,8 @@ public class Context {
         return walking;
     }
 
+    public boolean getRunStatus() { return runStatus; }
+
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;
     }
@@ -150,5 +168,12 @@ public class Context {
      */
     public int getIvRatio(Pokemon pokemon) {
         return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
+    }
+
+    public static String millisToTimeString(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = (millis / (1000 * 60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

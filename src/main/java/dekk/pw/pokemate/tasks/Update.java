@@ -1,13 +1,19 @@
 package dekk.pw.pokemate.tasks;
 
+import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.DecimalFormat;
+
+
+import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
+import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -20,8 +26,10 @@ public class Update extends Task {
 
     private static int experienceGained = 0;
     private static long lastExperience = 0;
-
+    private static int lastLevel;
+	private static double xpHr;
     private static DecimalFormat ratioFormat = new DecimalFormat("#0.00");
+
 
     Update(final Context context) {
         super(context);
@@ -29,26 +37,46 @@ public class Update extends Task {
 
     @Override
     public void run() {
-        try {
-            PlayerProfile player;
-            context.setProfile(player = context.getApi().getPlayerProfile());
-            player.updateProfile();
-            context.getApi().getInventories().updateInventories(true);
-//            long nextXP = REQUIRED_EXPERIENCES[player.getStats().getLevel()] - REQUIRED_EXPERIENCES[player.getStats().getLevel() - 1];
-            long curTotalXP = player.getStats().getExperience();
-            if (curTotalXP > lastExperience) {
-                if (lastExperience != 0) {
-                    experienceGained += curTotalXP - lastExperience;
+            try {
+                PlayerProfile player;
+                context.setProfile(player = context.getApi().getPlayerProfile());
+
+                player.updateProfile();
+
+                Time.sleepRate();
+                context.getApi().getInventories().updateInventories(true);
+
+                long runTime = System.currentTimeMillis() - PokeMate.startTime;
+                long curTotalXP = player.getStats().getExperience();
+                if (curTotalXP > lastExperience) {
+                    if (lastExperience != 0) {
+                        experienceGained += curTotalXP - lastExperience;
+                    }
+                    lastExperience = curTotalXP;
                 }
-                lastExperience = curTotalXP;
+                int curLevel = player.getStats().getLevel();
+                if (curLevel > lastLevel) {
+                    PlayerLevelUpRewards rewards = player.acceptLevelUpRewards(curLevel - 1);
+                    if (rewards.getStatus() == PlayerLevelUpRewards.Status.NEW) {
+                        String levelUp = "New level: " + curLevel;
+                        levelUp += convertItemAwards(rewards.getRewards());
+                        PokeMateUI.toast(levelUp, "Level Up", "icons/items/backpack.png");
+                    }
+                    lastLevel = curLevel;
+                }
+
+                PokeMateUI.toast("XP Update: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "XP/H", "Progress Monitor", "icons/items/backpack.png");
+            } catch (LoginFailedException e) {
+                //e.printStackTrace();
+                System.out.println("[Update] Login Failed, attempting to login again.");
+                Context.Login(context.getHttp());
+            } catch (RemoteServerException e) {
+                System.out.println("[Update] Error - Hit Rate limiter.");
             }
-            long runTime = System.currentTimeMillis() - PokeMate.startTime;
-			PokeMateUI.addMessageToLog("XP/HR - "  + (experienceGained / (runTime / 3.6E6)));
-        } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
-            System.out.println("Attempting to Login");
-            Context.Login(context.getHttp());
         }
-    }
+	
+	public static String getXpHr() {
+		return String.format("%.2f", xpHr);
+	}
 
 }

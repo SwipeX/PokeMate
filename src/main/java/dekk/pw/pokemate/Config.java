@@ -1,11 +1,13 @@
 package dekk.pw.pokemate;
 
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
+import dekk.pw.pokemate.tasks.Navigate;
 
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,6 +29,7 @@ public class Config {
     private static double range;
     private static int mapPoints;
     private static List<Integer> whiteListedPokemon;
+    private static List<Integer> ignoreCatchingPokemon;
     private static List<Integer> neverTransferPokemon;
 	private static List<String> droppedItems;
     private static boolean consoleNotification;
@@ -38,7 +41,9 @@ public class Config {
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
+    private static Navigate.NavigationType navigationType;
     private static Properties properties = new Properties();
+    private static int minItemAmount;
 
     public static void load(String configPath) {
         try {
@@ -56,7 +61,7 @@ public class Config {
             preferredBall = ItemIdOuterClass.ItemId.valueOf(properties.getProperty("preferred_ball", "ITEM_POKE_BALL")).getNumber();
             eggsIncubating = Boolean.parseBoolean(properties.getProperty("eggs_incubating", "true"));
             eggsHatching = Boolean.parseBoolean(properties.getProperty("eggs_hatching", "true"));
-            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer-prefers-iv", "false"));
+            transferPrefersIV = Boolean.parseBoolean(properties.getProperty("transfer_prefers_iv", "false"));
             //whitelist
             String whiteList = properties.getProperty("whitelisted_pokemon", null);
             whiteListedPokemon = new ArrayList<>();
@@ -64,6 +69,11 @@ public class Config {
             String neverTransferPokemonNames = properties.getProperty("never_transfer", null);
             neverTransferPokemon = new ArrayList<>();
             fillList(neverTransferPokemonNames, neverTransferPokemon);
+
+            //pokemon catching ignore
+            String ignoreCatch = properties.getProperty("ignore_catching_pokemon", null);
+            ignoreCatchingPokemon = new ArrayList<>();
+            fillList(ignoreCatch, ignoreCatchingPokemon);
             // named location
             useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use_location_name", "false"));
             customNamedLocation = properties.getProperty("location_by_name");
@@ -78,34 +88,38 @@ public class Config {
 			fillListString(droppedItemNames, droppedItems);
 			// minimum cp for message
 			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
+            navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
+            minItemAmount = Integer.parseInt(properties.getProperty("minimum_item_amount", "0"));
+
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-	
-	private static void fillListString(String propertiesString, List<String> target) {
-        if (propertiesString != null) {
-            String[] strings = propertiesString.split(",");
-            if (strings != null) {
-                for (String string : strings) {
-                    if (string.length() > 0)
-                        target.add(string);
-                }
-            }
+
+    public static Navigate.NavigationType getNavigationType() {
+        return navigationType;
+    }
+
+    private static void fillListString(String propertiesString, List<String> target) {
+        if (propertiesString == null) {
+            return;
         }
+
+        Arrays.asList(propertiesString.split(",")).stream()
+                .filter(s -> s.length() > 0)
+                .forEach(target::add);
     }
 
     private static void fillList(String propertiesString, List<Integer> target) {
-        if (propertiesString != null) {
-            String[] strings = propertiesString.split(",");
-            if (strings != null) {
-                for (String string : strings) {
-                    if (string.length() > 0)
-                        target.add(Integer.parseInt(string));
-                }
-            }
+        if (propertiesString == null) {
+            return;
         }
+
+        Arrays.asList(propertiesString.split(",")).stream()
+                .filter(s -> s.length() > 0)
+                .map(Integer::parseInt)
+                .forEach(target::add);
     }
 
 
@@ -173,6 +187,10 @@ public class Config {
     public static List<Integer> getNeverTransferPokemon() {
         return neverTransferPokemon;
     }
+    public static List<Integer> getIgnoreCatchingPokemon() {
+        return ignoreCatchingPokemon;
+    }
+
 
     public static boolean isUseCustomNamedLocation() {
         return useCustomNamedLocation;
@@ -216,5 +234,9 @@ public class Config {
 
     public static void setTransferPrefersIV(boolean transferPrefersIV) {
         Config.transferPrefersIV = transferPrefersIV;
+    }
+
+    public static int getMinItemAmount() {
+        return minItemAmount;
     }
 }

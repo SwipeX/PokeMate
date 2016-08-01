@@ -9,7 +9,7 @@
 + Traverses a set of nodes returned from Google's Directions API
 + Auto evolving when able.
 + Hatches eggs
-+ Egg 'cracking'
++ Egg 'cracking' - (hatching an egg? [look at our wiki](https://github.com/SwipeX/PokeMate/wiki/Eggs))
 + Notifications
 
 ###Release
@@ -29,7 +29,7 @@ You can download the release from the Releases tab, only requirement is Java 8. 
 ![Image of map](http://i.imgur.com/pCVLX6y.png)
 
 ##Slack
-Come join us on slack! [![Slack](http://i.imgur.com/XwQF3RR.png)](https://frozen-sea-68189.herokuapp.com/)
+Come join us on slack! [![Slack](http://i.imgur.com/XeDYkVL.png)](https://frozen-sea-68189.herokuapp.com/)
 
 ### Credits
 

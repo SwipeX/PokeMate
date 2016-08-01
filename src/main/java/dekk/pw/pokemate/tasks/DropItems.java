@@ -5,7 +5,9 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Config;
+import dekk.pw.pokemate.util.Time;
 import javafx.scene.image.Image;
+import dekk.pw.pokemate.util.StringConverter;
 
 import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 
@@ -20,18 +22,21 @@ public class DropItems extends Task {
 
     @Override
     public void run() {
-		Config.getDroppedItems().stream().forEach(itemToDrop -> {
-			ItemId id = ItemId.valueOf(itemToDrop);
-			try {
-				int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
-				context.getApi().getInventories().getItemBag().removeItem(id, count);
-				if (count > 0) {
-					String removedItem = "Removed " + count + " " + id.name();
-					PokeMateUI.toast(removedItem,"Items removed!", "icons/items/"+id.getNumber()+".png");
-				}
-			} catch (RemoteServerException | LoginFailedException e) {
-				e.printStackTrace();
-			}
-		});
-	}
+        Config.getDroppedItems().stream().forEach(itemToDrop -> {
+            ItemId id = ItemId.valueOf(itemToDrop);
+            try {
+                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                Time.sleepRate();
+                if (count > 25) {
+                    context.getApi().getInventories().getItemBag().removeItem(id, count - (count-25));
+                    Time.sleepRate();
+                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
+                    PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                }
+            } catch (RemoteServerException | LoginFailedException e) {
+                System.out.println("Exceeded Rate Limit");
+                e.printStackTrace();
+            }
+        });
+    }
 }

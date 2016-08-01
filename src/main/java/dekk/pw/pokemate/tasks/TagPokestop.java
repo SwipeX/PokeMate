@@ -51,7 +51,7 @@ public class TagPokestop extends Task {
                 .filter(Pokestop::canLoot)
                 .forEach(near -> {
                     Walking.setLocation(context);
-                    System.out.println("[Tag PokeStop] Tagging PokeStop in range");
+                   
                     String result = null;
                     try {
                         APIStartTime = System.currentTimeMillis();

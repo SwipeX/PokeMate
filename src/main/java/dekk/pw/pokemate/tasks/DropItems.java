@@ -27,7 +27,7 @@ public class DropItems extends Task {
             try {
                 int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
                 Time.sleepRate();
-                if (count > 0) {
+                if (count > 25) {
                     context.getApi().getInventories().getItemBag().removeItem(id, count - (count-25));
                     Time.sleepRate();
                     String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";

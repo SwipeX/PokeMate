@@ -25,12 +25,12 @@ public class DropItems extends Task implements Runnable {
         Config.getDroppedItems().stream().forEach(itemToDrop -> {
             ItemId id = ItemId.valueOf(itemToDrop);
             try {
+                Time.sleepRate();
                 int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
                 Time.sleepRate();
-                if (count > 25) {
-                    context.getApi().getInventories().getItemBag().removeItem(id, count - (count-25));
-                    Time.sleepRate();
-                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
+                if (count > Config.getMinItemAmount()) {
+                    context.getApi().getInventories().getItemBag().removeItem(id, count - (count-Config.getMinItemAmount()));
+                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + (count - (count-Config.getMinItemAmount())) + ")";
                     PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                 }
             } catch (RemoteServerException | LoginFailedException e) {

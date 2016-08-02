@@ -19,6 +19,7 @@ import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
+import dekk.pw.pokemate.util.Time;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -161,15 +162,17 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
-
+        Time.sleep(5000);
         try {
             for(FortData gym : context.getMap().getMapObjects().getGyms()) {
+
                 LatLong position = new LatLong(gym.getLatitude(), gym.getLongitude());
                 Marker gymMap = new Marker(new MarkerOptions().position(position).title(gym.getId()).icon("icons/gym.png"));
                 map.addMarker(gymMap);
             }
 
             for(Pokestop pokestop : context.getMap().getMapObjects().getPokestops()) {
+
                 LatLong position = new LatLong(pokestop.getLatitude(), pokestop.getLongitude());
                 Marker pokestopMap = new Marker(new MarkerOptions().position(position).title(pokestop.getId()).icon("icons/pokestop_small.png"));
                 map.addMarker(pokestopMap);

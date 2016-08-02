@@ -71,7 +71,7 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 lastLevel = curLevel;
             }
 
-            return String.format("Name: %-15s [%s] Level %d - %,.2fXP/H - Next Level in %,fXP - Runtime: %s",
+            return String.format("Name: %-15s [%s] Level %d - %,.2fXP/H - Next Level in %,.0fXP - Runtime: %s",
                                     context.getProfile().getPlayerData().getUsername(),
                                     new SimpleDateFormat("HH:mm:ss").format(new Date()),
                                     curLevel,

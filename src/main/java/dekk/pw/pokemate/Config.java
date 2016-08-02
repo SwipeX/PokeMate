@@ -42,6 +42,7 @@ public class Config {
     private static boolean transferPrefersIV;
 	private static int cpMinimumForMessage;
     private static Navigate.NavigationType navigationType;
+    private static int minItemAmount;
     private static Properties properties = new Properties();
 
     public static void load(String configPath) {
@@ -88,6 +89,7 @@ public class Config {
 			// minimum cp for message
 			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
             navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
+            minItemAmount = Integer.parseInt(properties.getProperty("minimum_item_amount", "0"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -232,4 +234,6 @@ public class Config {
     public static void setTransferPrefersIV(boolean transferPrefersIV) {
         Config.transferPrefersIV = transferPrefersIV;
     }
+
+    public static int getMinItemAmount() { return minItemAmount; }
 }

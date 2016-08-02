@@ -25,11 +25,10 @@ public class DropItems extends Task {
         Config.getDroppedItems().stream().forEach(itemToDrop -> {
             ItemId id = ItemId.valueOf(itemToDrop);
             try {
-                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount() - Config.getMinItemAmount();
                 Time.sleepRate();
                 if (count > 0) {
                     context.getApi().getInventories().getItemBag().removeItem(id, count);
-                    Time.sleepRate();
                     String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                     PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                 }

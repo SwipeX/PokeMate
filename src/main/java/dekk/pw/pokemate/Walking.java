@@ -3,17 +3,19 @@ package dekk.pw.pokemate;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.maps.model.DirectionsStep;
-import com.pokegoapi.util.Log;
+import com.google.maps.model.LatLng;
+import dekk.pw.pokemate.tasks.Navigate;
+import dekk.pw.pokemate.tasks.TagPokestop;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.*;
 /**
  * Created by TimD on 7/21/2016.
  */
 public class Walking {
 
-    public static double getSmallRandom() {
+    private static final double VARIANCE = Config.getRange();
+    private static double getSmallRandom() {
         return Math.random() * 0.0001 - 0.00005;
     }
 
@@ -21,7 +23,7 @@ public class Walking {
         setLocation(false, context);
     }
 
-    public static void setLocation(boolean random, Context context) {
+    private static void setLocation(boolean random, Context context) {
         if (random) {
             context.getApi().setLocation(context.getLat().get() + getSmallRandom(), context.getLng().get() + getSmallRandom(), 0);
         } else {
@@ -50,9 +52,11 @@ public class Walking {
                 stepsRequired.getAndAdd(-1);
                 if (stepsRequired.get() <= 0) {
                     context.getWalking().set(false);
+                    context.addTask(new TagPokestop(context));
+                    context.addTask(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+                        new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
                     cancel();
                 }
-                //System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
             }
         }, 0, timeout);
     }
@@ -68,7 +72,7 @@ public class Walking {
                 S2LatLng start = S2LatLng.fromDegrees(step.startLocation.lat, step.startLocation.lng);
                 S2LatLng end = S2LatLng.fromDegrees(step.endLocation.lat, step.endLocation.lng);
                 S2LatLng diff = end.sub(start);
-                double distance = step.distance.inMeters;
+                double distance;
                 distance = start.getEarthDistance(end);
                 long timeout = 350L;
                 double timeRequired = distance / Config.getSpeed();

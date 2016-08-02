@@ -5,17 +5,16 @@ import dekk.pw.pokemate.Context;
 /**
  * Created by TimD on 7/21/2016.
  */
-public abstract class Task {
+public abstract class Task implements Runnable {
 
-    protected static long APIStartTime;
-    protected static long APIElapsedTime;
+    static long APIStartTime;
+    static long APIElapsedTime;
 
-    protected final Context context;
+    final Context context;
 
     Task(final Context context) {
         this.context = context;
     }
 
-    abstract void run();
 
 }

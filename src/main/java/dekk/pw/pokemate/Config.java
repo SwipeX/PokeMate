@@ -1,5 +1,6 @@
 package dekk.pw.pokemate;
 
+import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import dekk.pw.pokemate.tasks.Navigate;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Created by $ Tim Dekker on 7/23/2016.
@@ -28,10 +30,10 @@ public class Config {
     private static boolean autoEvolving;
     private static double range;
     private static int mapPoints;
-    private static List<Integer> whiteListedPokemon;
-    private static List<Integer> ignoreCatchingPokemon;
-    private static List<Integer> neverTransferPokemon;
-	private static List<String> droppedItems;
+    private static List<String> whiteListedPokemon;
+    private static List<String> ignoreCatchingPokemon;
+    private static List<String> neverTransferPokemon;
+    private static List<String> droppedItems;
     private static boolean consoleNotification;
     private static boolean userInterfaceNotification;
     private static boolean uiSystemNotification;
@@ -40,9 +42,9 @@ public class Config {
     private static boolean eggsIncubating;
     private static boolean eggsHatching;
     private static boolean transferPrefersIV;
-	private static int cpMinimumForMessage;
+    private static int cpMinimumForMessage;
     private static Navigate.NavigationType navigationType;
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
     private static int minItemAmount;
 
     public static void load(String configPath) {
@@ -65,15 +67,15 @@ public class Config {
             //whitelist
             String whiteList = properties.getProperty("whitelisted_pokemon", null);
             whiteListedPokemon = new ArrayList<>();
-            fillList(whiteList, whiteListedPokemon);
+            fillListString(whiteList, whiteListedPokemon);
             String neverTransferPokemonNames = properties.getProperty("never_transfer", null);
             neverTransferPokemon = new ArrayList<>();
-            fillList(neverTransferPokemonNames, neverTransferPokemon);
+            fillListString(neverTransferPokemonNames, neverTransferPokemon);
 
             //pokemon catching ignore
             String ignoreCatch = properties.getProperty("ignore_catching_pokemon", null);
             ignoreCatchingPokemon = new ArrayList<>();
-            fillList(ignoreCatch, ignoreCatchingPokemon);
+            fillListString(ignoreCatch, ignoreCatchingPokemon);
             // named location
             useCustomNamedLocation = Boolean.parseBoolean(properties.getProperty("use_location_name", "false"));
             customNamedLocation = properties.getProperty("location_by_name");
@@ -81,13 +83,13 @@ public class Config {
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
             uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
-			// dropped items
-			dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
-			String droppedItemNames = properties.getProperty("drop_item_list", "ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE");
-			droppedItems = new ArrayList<>();
-			fillListString(droppedItemNames, droppedItems);
-			// minimum cp for message
-			cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
+            // dropped items
+            dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
+            String droppedItemNames = properties.getProperty("drop_item_list", "ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE");
+            droppedItems = new ArrayList<>();
+            fillListString(droppedItemNames, droppedItems);
+            // minimum cp for message
+            cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
             navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
             minItemAmount = Integer.parseInt(properties.getProperty("minimum_item_amount", "0"));
 
@@ -106,20 +108,9 @@ public class Config {
             return;
         }
 
-        Arrays.asList(propertiesString.split(",")).stream()
-                .filter(s -> s.length() > 0)
-                .forEach(target::add);
-    }
-
-    private static void fillList(String propertiesString, List<Integer> target) {
-        if (propertiesString == null) {
-            return;
-        }
-
-        Arrays.asList(propertiesString.split(",")).stream()
-                .filter(s -> s.length() > 0)
-                .map(Integer::parseInt)
-                .forEach(target::add);
+        Arrays.stream(propertiesString.split(","))
+            .filter(s -> s.length() > 0)
+            .forEach(target::add);
     }
 
 
@@ -176,19 +167,19 @@ public class Config {
     }
 
     public static boolean isWhitelistEnabled() {
-        List<Integer> poke = getWhitelistedPokemon();
+        List<PokemonIdOuterClass.PokemonId> poke = getWhitelistedPokemon();
         return poke != null && poke.size() > 0;
     }
 
-    public static List<Integer> getWhitelistedPokemon() {
-        return whiteListedPokemon;
+    public static List<PokemonIdOuterClass.PokemonId> getWhitelistedPokemon() {
+        return(whiteListedPokemon.stream().map(PokemonIdOuterClass.PokemonId::valueOf).collect(Collectors.toList()));
     }
 
-    public static List<Integer> getNeverTransferPokemon() {
-        return neverTransferPokemon;
+    public static List<PokemonIdOuterClass.PokemonId> getNeverTransferPokemon() {
+        return(neverTransferPokemon.stream().map(PokemonIdOuterClass.PokemonId::valueOf).collect(Collectors.toList()));
     }
-    public static List<Integer> getIgnoreCatchingPokemon() {
-        return ignoreCatchingPokemon;
+    public static List<PokemonIdOuterClass.PokemonId> getIgnoreCatchingPokemon() {
+        return(ignoreCatchingPokemon.stream().map(PokemonIdOuterClass.PokemonId::valueOf).collect(Collectors.toList()));
     }
 
 
@@ -219,14 +210,14 @@ public class Config {
     public static boolean isEggsHatching() {
         return eggsHatching;
     }
-	
-	public static List<String> getDroppedItems() {
-		return droppedItems;
-	}
-	
-	public static int getMinimumCPForMessage() {
-		return cpMinimumForMessage;
-	}
+
+    public static List<String> getDroppedItems() {
+        return droppedItems;
+    }
+
+    public static int getMinimumCPForMessage() {
+        return cpMinimumForMessage;
+    }
 
     public static boolean isTransferPrefersIV() {
         return transferPrefersIV;

@@ -1,6 +1,7 @@
 package dekk.pw.pokemate.tasks;
 
 import com.google.maps.model.LatLng;
+import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
@@ -53,7 +54,11 @@ public class TaskController extends Thread {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                try {
                     new ConsoleGUIUpdate(context).run();
+                } catch (Exception e) {
+                    System.out.println("Rate Limit Exceeded");
+                }
             }
         }, 0, 1000);
         tasks.forEach(context::addTask);

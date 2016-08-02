@@ -43,7 +43,6 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 System.out.printf("%-15.15s %-30s\n", "\t" + key, value);
             }
         });
-        context.addTask(new ConsoleGUIUpdate(context));
     }
 
     private String header() {

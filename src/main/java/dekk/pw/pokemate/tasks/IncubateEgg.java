@@ -5,6 +5,7 @@ import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,8 +33,10 @@ class IncubateEgg extends Task implements Runnable{
                 }
             }).collect(Collectors.toList());
 
-            List<EggPokemon> eggs = context.getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
+            List<EggPokemon> eggs = context.getInventories().getHatchery().getEggs().stream().filter(egg ->
+                egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
             if (incubators.size() > 0 && eggs.size() > 0) {
+                Time.sleepRate();
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
                     String eggresult = "Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget() + "km)";

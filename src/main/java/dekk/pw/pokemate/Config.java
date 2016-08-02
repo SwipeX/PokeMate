@@ -46,6 +46,7 @@ public class Config {
     private static Navigate.NavigationType navigationType;
     private static final Properties properties = new Properties();
     private static int minItemAmount;
+    private static boolean useOrdinaryIncense;
 
     public static void load(String configPath) {
         try {
@@ -92,6 +93,8 @@ public class Config {
             cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
             navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
             minItemAmount = Integer.parseInt(properties.getProperty("minimum_item_amount", "0"));
+
+            useOrdinaryIncense = Boolean.parseBoolean(properties.getProperty("use_normal_incense", "false"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -230,4 +233,6 @@ public class Config {
     public static int getMinItemAmount() {
         return minItemAmount;
     }
+
+    public static boolean isUsingOrdinaryIncense() { return useOrdinaryIncense; }
 }

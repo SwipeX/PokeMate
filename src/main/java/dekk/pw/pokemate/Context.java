@@ -69,6 +69,7 @@ public class Context {
         this.consoleStrings.put("IncubateEgg", "No Eggs Incubated");
         this.consoleStrings.put("Item Management", "");
         this.consoleStrings.put("DropItems", "No Items Dropped");
+        this.consoleStrings.put("IncenseItems", "No Incense Active");
     }
 
     public static CredentialProvider Login(OkHttpClient httpClient) {

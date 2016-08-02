@@ -1,7 +1,6 @@
 package dekk.pw.pokemate.tasks;
 
 import com.google.maps.model.LatLng;
-import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
@@ -42,6 +41,10 @@ public class TaskController extends Thread {
 
         if (Config.isDropItems()) {
             tasks.add(new DropItems(context));
+        }
+
+        if(Config.isUsingOrdinaryIncense()) {
+            tasks.add(new IncenseItems(context));
         }
     }
 

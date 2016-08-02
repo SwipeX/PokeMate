@@ -7,7 +7,6 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.Time;
-import javafx.scene.image.Image;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

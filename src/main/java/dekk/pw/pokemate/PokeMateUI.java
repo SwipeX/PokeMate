@@ -1,6 +1,6 @@
 package dekk.pw.pokemate;
 
-import com.google.common.geometry.S2LatLng;
+import POGOProtos.Map.Fort.FortDataOuterClass.FortData;
 import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
@@ -12,15 +12,13 @@ import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.inventory.Item;
+import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.api.map.fort.Pokestop;
-import POGOProtos.Map.Fort.FortDataOuterClass.FortData;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
-import dekk.pw.pokemate.tasks.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -35,7 +33,6 @@ import org.controlsfx.control.Notifications;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
 
@@ -44,9 +41,9 @@ import java.util.List;
  */
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
-    public static final int UPDATE_TIME = 1000;
-    public static final double XVARIANCE = Config.getRange() * 1.5;
-    public static final double VARIANCE = Config.getRange();
+    private static final int UPDATE_TIME = 1000;
+    private static final double XVARIANCE = Config.getRange() * 1.5;
+    private static final double VARIANCE = Config.getRange();
     private static final String NOTIFY = "$.notify({\n" +
             "icon: '%s',\n" +
             "message: '%s',\n" +
@@ -58,15 +55,15 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             "exit: 'animated bounceOutUp'\n" +
             "},\n" +
             "});";
-    public static Marker marker;
-    protected static GoogleMapView mapComponent;
-    protected static PokeMate poke;
-    protected static String messagesForLog = "";
+    private static Marker marker;
+    private static GoogleMapView mapComponent;
+    private static PokeMate poke;
+    private static String messagesForLog = "";
     private static int experienceGained = 0;
     private static long lastExperience = 0;
-    protected GoogleMap map;
-    boolean directions;
-    int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
+    private GoogleMap map;
+    private boolean directions;
+    private final int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
 
@@ -83,9 +80,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
         messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
         */
-        if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
-            mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message));
-        });
+        if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message)));
         if (Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
                 .graphic(new ImageView(new Image(image, 64, 64, false, false)))
                 .title(title)
@@ -191,9 +186,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .position(center);
 
         InfoWindow window = new InfoWindow(infoOptions);
-        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> {
-            window.open(map, marker);
-        });
+        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> window.open(map, marker));
         window.open(map, marker);
         new Thread(() -> {
             while (true) {
@@ -270,7 +263,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 String imgSrc = "icons/items/egg.png";
                 String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
                 String percent = new DecimalFormat("#0.#").format(((egg.getEggKmWalked() * 100) / (egg.getEggKmWalkedTarget() * 100)) * 100);
-                String percentClass = "";
+                String percentClass;
                 double percentTmp = Double.valueOf(percent.replace(",", "."));
 
                 if (percentTmp >= 66) {
@@ -286,9 +279,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km<br/>" +
                         "<div class='progress'><div class='progress-bar active progress-bar-striped" + percentClass + "' role='progressbar' aria-valuenow='" + percent + "' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: " + percent.replace(",", ".") + "%;'>" + percent + "%</div></div></td></tr>";
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
         eggsList += "\"";
@@ -307,9 +298,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "\u221e") +
                         "<br/>Km walked : " + walked + "</td></tr>";
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
         incubatorsList += "\"";
@@ -334,9 +323,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             window.setContent("<h4>" + player.getPlayerData().getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() + " - Progress: " + ratio +
                 "%</h5><h5>XP/Hour: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "</h5><h5>XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +
                 "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
-        }  catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        }  catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
     }
@@ -351,9 +338,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                 }
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
         itemsList += "\"";
@@ -431,9 +416,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         rows += "\"";
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
 
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
     }

@@ -11,13 +11,13 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
-import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
-
-import static dekk.pw.pokemate.util.Time.sleep;
 
 
 /**
@@ -28,11 +28,11 @@ public class Navigate extends Task implements Runnable {
 
     private final LatLng min, max;
     public static final double VARIANCE = Config.getRange();
-    private static List<DirectionsStep[]> routes = new ArrayList<>();
-    private static List<S2LatLng> route = new ArrayList<>();
+    private static final List<DirectionsStep[]> routes = new ArrayList<>();
+    private static final List<S2LatLng> route = new ArrayList<>();
     public static boolean populated;
     private static final Object lock = new Object();
-    static NavigationType navigationType = Config.getNavigationType();
+    static final NavigationType navigationType = Config.getNavigationType();
 
 
     public Navigate(final Context context, LatLng min, LatLng max) {
@@ -59,8 +59,8 @@ public class Navigate extends Task implements Runnable {
         return route;
     }
 
-    S2LatLng last;
-    List<String> ids = new ArrayList<>();
+    private S2LatLng last;
+    private final List<String> ids = new ArrayList<>();
 
     /**
      * Attempts to generate a route to all found pokestops...

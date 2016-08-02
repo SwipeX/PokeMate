@@ -1,52 +1,47 @@
 package dekk.pw.pokemate;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import com.google.maps.model.LatLng;
 import com.pokegoapi.api.PokemonGo;
 import com.pokegoapi.api.inventory.Inventories;
 import com.pokegoapi.api.map.Map;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.auth.*;
-
+import com.pokegoapi.auth.CredentialProvider;
+import com.pokegoapi.auth.GoogleUserCredentialProvider;
+import com.pokegoapi.auth.PtcCredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.util.SystemTimeImpl;
-import dekk.pw.pokemate.tasks.Navigate;
 import dekk.pw.pokemate.tasks.Task;
-import dekk.pw.pokemate.tasks.Update;
 import okhttp3.OkHttpClient;
 
 import javax.swing.*;
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.File;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.security.MessageDigest;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.security.MessageDigest;
 
 /**
  * Created by TimD on 7/21/2016.
  */
 public class Context {
-    public static final double VARIANCE = Config.getRange();
     private OkHttpClient http;
     private PokemonGo api;
     private AtomicDouble lat = new AtomicDouble();
     private AtomicDouble lng = new AtomicDouble();
     private PlayerProfile profile;
-    private AtomicBoolean walking = new AtomicBoolean(false);
+    private final AtomicBoolean walking = new AtomicBoolean(false);
     private CredentialProvider credentialProvider;
-    private static SystemTimeImpl time = new SystemTimeImpl();
-    private int MinimumAPIWaitTime = 300;
-    private boolean runStatus;
-    private ExecutorService executor = Executors.newFixedThreadPool(1);
+    private static final SystemTimeImpl time = new SystemTimeImpl();
+    private final ExecutorService executor = Executors.newFixedThreadPool(1);
     private int routesIndex;
-    private LinkedHashMap<String,String> consoleStrings = new LinkedHashMap<>();
+    private final LinkedHashMap<String,String> consoleStrings = new LinkedHashMap<>();
     private Map pokeMap;
     private Inventories pokeInventories;
 
@@ -58,7 +53,6 @@ public class Context {
         this.walking.set(walking);
         this.credentialProvider = credentialProvider;
         this.http = http;
-        this.runStatus = true;
         this.routesIndex = 0;
 
         //This just sets up a standardized order of outputs for the GUI HashMap
@@ -81,12 +75,12 @@ public class Context {
         return Login(null, httpClient);
     }
 
-    public static String getUsernameHash() {
+    private static String getUsernameHash() {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(Config.getUsername().getBytes());
             byte[] digest = md.digest();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
                 sb.append(String.format("%02x", b & 0xff));
             }
@@ -99,8 +93,8 @@ public class Context {
         return Config.getUsername();
     }
 
-    public static CredentialProvider Login(Context context, OkHttpClient httpClient) {
-        String token = null;
+    private static CredentialProvider Login(Context context, OkHttpClient httpClient) {
+        String token;
         try {
             new File("tokens/").mkdir();
             if (Config.getUsername().contains("@")) {
@@ -162,8 +156,6 @@ public class Context {
 
     public PokemonGo getApi() { return api; }
 
-    public int getMinimumAPIWaitTime() { return MinimumAPIWaitTime; }
-
     public void setApi(PokemonGo api) {
         this.api = api;
     }
@@ -186,7 +178,7 @@ public class Context {
 
     public Map getMap() {return this.pokeMap; }
 
-    public void refreshMap() throws LoginFailedException, RemoteServerException { this.pokeMap = this.api.getMap(); }
+    public void refreshMap() { this.pokeMap = this.api.getMap(); }
 
     public Inventories getInventories() {return this.pokeInventories; }
 

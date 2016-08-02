@@ -1,25 +1,18 @@
 package dekk.pw.pokemate.tasks;
 
 import com.google.maps.model.LatLng;
-import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Config;
-import dekk.pw.pokemate.util.Time;
+import dekk.pw.pokemate.Context;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by TimD on 7/21/2016.
  */
 public class TaskController extends Thread {
-    public static final double VARIANCE = Config.getRange();
+    private static final double VARIANCE = Config.getRange();
     private final Context context;
-    private static ArrayList<Task> tasks = new ArrayList<>();
+    private static final ArrayList<Task> tasks = new ArrayList<>();
 
     public TaskController(final Context context) {
         this.context = context;

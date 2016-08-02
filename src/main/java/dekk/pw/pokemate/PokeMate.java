@@ -24,20 +24,19 @@ import java.util.concurrent.TimeUnit;
 public class PokeMate {
     public static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
     public static long startTime;
-    private static File configProperties;
     private static Context context;
 
-    public double getSmallRandom() {
+    private double getSmallRandom() {
         return Math.random() * 0.0003 - 0.0003;
     }
 
-    public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
+    private PokeMate() throws LoginFailedException, RemoteServerException {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
-        CredentialProvider auth = null;
+        CredentialProvider auth;
 
         AtomicDouble lat;
         AtomicDouble lng;
@@ -81,6 +80,7 @@ public class PokeMate {
     }
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
+        File configProperties;
         if (args.length == 0) {
             configProperties = new File("config.properties");
             System.out.println("Using default config.properties location");

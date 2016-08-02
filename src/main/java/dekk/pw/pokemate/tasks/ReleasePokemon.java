@@ -8,20 +8,18 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.Time;
-import dekk.pw.pokemate.util.Time;
+
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
-import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/21/2016.
  */
-public class ReleasePokemon extends Task implements Runnable {
+class ReleasePokemon extends Task implements Runnable {
 
     ReleasePokemon(final Context context) {
         super(context);
@@ -29,7 +27,7 @@ public class ReleasePokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = null;
+        Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups;
         try {
             groups = context.getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
             for (List<Pokemon> list : groups.values()) {

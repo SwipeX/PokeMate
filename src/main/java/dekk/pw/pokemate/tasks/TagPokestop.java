@@ -9,16 +9,14 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static dekk.pw.pokemate.tasks.Navigate.NavigationType.POKEMON;
-import static dekk.pw.pokemate.tasks.Navigate.NavigationType.POKESTOPS;
 import static dekk.pw.pokemate.tasks.Navigate.navigationType;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
-import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -35,13 +33,9 @@ public class TagPokestop extends Task implements Runnable {
     public void run() {
         try {
             try {
-                APIStartTime = System.currentTimeMillis();
-
+                Time.sleepRate();
                 map = context.getMap().getMapObjects();
-                APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                    sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                }
+
             } catch (RemoteServerException e) {
                 System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
                 return;
@@ -61,12 +55,8 @@ public class TagPokestop extends Task implements Runnable {
                     Walking.setLocation(context);
                     String result = null;
                     try {
-                        APIStartTime = System.currentTimeMillis();
+                        Time.sleepRate();
                         result = resultMessage(near.loot());
-                        APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-                        if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                            sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-                        }
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + result);
                     } catch (LoginFailedException e) {

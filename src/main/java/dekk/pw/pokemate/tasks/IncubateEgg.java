@@ -3,8 +3,6 @@ package dekk.pw.pokemate.tasks;
 import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass;
 import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.pokemon.EggPokemon;
-import com.pokegoapi.exceptions.LoginFailedException;
-import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 
@@ -12,12 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by $ Tim Dekker on 7/23/2016.
  */
-public class IncubateEgg extends Task implements Runnable{
+class IncubateEgg extends Task implements Runnable{
 
     IncubateEgg(final Context context) {
         super(context);

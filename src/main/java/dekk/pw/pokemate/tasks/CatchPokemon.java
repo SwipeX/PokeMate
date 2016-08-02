@@ -22,12 +22,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS;
-import static dekk.pw.pokemate.util.Time.sleep;
 
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon extends Task implements Runnable {
+class CatchPokemon extends Task implements Runnable {
 
     CatchPokemon(final Context context) {
         super(context);
@@ -38,16 +37,9 @@ public class CatchPokemon extends Task implements Runnable {
         //System.out.println("[CatchPokemon] Starting Loop");
         try {
             Pokeball pokeball = null;
-            APIStartTime = System.currentTimeMillis();
             List<CatchablePokemon> pokemon = context.getMap().getCatchablePokemon().stream()
                 .filter(this::shouldIgnore)
                 .collect(Collectors.toList());
-
-            APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-            if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-            }
-
 
             if (pokemon.size() == 0) {
                // System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
@@ -97,9 +89,7 @@ public class CatchPokemon extends Task implements Runnable {
                             String output = null;
                             try {
                                 output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
-                            } catch (LoginFailedException e) {
-                                e.printStackTrace();
-                            } catch (RemoteServerException e) {
+                            } catch (LoginFailedException | RemoteServerException e) {
                                 e.printStackTrace();
                             }
 

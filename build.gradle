@@ -1,5 +1,5 @@
 group 'pw.tdekk'
-version '0.3.2.0'
+version '0.3.2.1'
 
 buildscript {
 

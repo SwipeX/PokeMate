@@ -108,8 +108,6 @@ public class Navigate extends Task implements Runnable {
     public void run() {
         try {
             if (context.isWalking()) {
-                context.addTask(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
-                    new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
                 return;
             } else if (navigationType == (NavigationType.STREETS) && context.getRoutesIndex() >= getDirections().size()) {
                 context.resetRoutesIndex();

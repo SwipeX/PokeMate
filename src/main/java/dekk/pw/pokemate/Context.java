@@ -64,6 +64,7 @@ public class Context {
         this.consoleStrings.put("Pokemon Management", "");
         this.consoleStrings.put("EvolvePokemon", "No Pokemon Evolved");
         this.consoleStrings.put("ReleasePokemon", "No Pokemon Released");
+        this.consoleStrings.put("RenamePokemon", "No Pokemon Renamed");
         this.consoleStrings.put("Egg Management", "");
         this.consoleStrings.put("HatchEgg", "No Eggs Hatched");
         this.consoleStrings.put("IncubateEgg", "No Eggs Incubated");

@@ -46,6 +46,10 @@ public class TaskController extends Thread {
         if(Config.isUsingOrdinaryIncense()) {
             tasks.add(new IncenseItems(context));
         }
+
+        if(Config.isRenamingPokemonIV()) {
+            tasks.add(new RenamePokemon(context));
+        }
     }
 
     /**

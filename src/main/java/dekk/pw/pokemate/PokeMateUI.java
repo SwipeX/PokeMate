@@ -306,7 +306,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     private void updatePlayer(Context context, InfoWindow window) {
-        PlayerProfile player = context.getPlayerProfile();
+        PlayerProfile player = context.getProfile();
         long runTime = System.currentTimeMillis() - PokeMate.startTime;
         try {
             double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
@@ -330,7 +330,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
     private void updateItems(Context context) {
         String itemsList = "\"";
-        try {
+
             for (Item item : context.getInventories().getItemBag().getItems()) {
                 if (item.getCount() > 0) {
                     String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
@@ -338,9 +338,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                             "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                 }
             }
-        } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
-        }
+
         itemsList += "\"";
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
     }

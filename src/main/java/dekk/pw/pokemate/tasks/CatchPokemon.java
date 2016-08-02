@@ -38,17 +38,10 @@ public class CatchPokemon extends Task implements Runnable {
         //System.out.println("[CatchPokemon] Starting Loop");
         try {
             Pokeball pokeball = null;
-            APIStartTime = System.currentTimeMillis();
             List<CatchablePokemon> pokemon = context.getMap().getCatchablePokemon().stream()
                 .filter(this::shouldIgnore)
                 .collect(Collectors.toList());
-
-            APIElapsedTime = System.currentTimeMillis() - APIStartTime;
-            if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
-                sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
-            }
-
-
+            
             if (pokemon.size() == 0) {
                // System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
                 return;

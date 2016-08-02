@@ -56,7 +56,6 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 System.out.printf("%-15.15s %-30s\n", "\t" + key, value);
             }
         });
-        Time.sleep(3000);
         context.addTask(new ConsoleGUIUpdate(context));
     }
 

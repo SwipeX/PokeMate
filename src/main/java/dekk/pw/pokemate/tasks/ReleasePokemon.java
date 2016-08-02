@@ -42,7 +42,7 @@ public class ReleasePokemon extends Task implements Runnable {
                 list.stream().filter(p -> (minCP <= 1 || p.getCp() < minCP) &&
                     list.indexOf(p) < list.size() - 1 &&
                     context.getIvRatio(p) < Config.getIvRatio() &&
-                    !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
+                    !Config.getNeverTransferPokemon().contains(p.getPokemonId())).forEach(p -> {
                     //Passing this filter means they are not a 'perfect pokemon'
                     try {
                         p.transferPokemon();

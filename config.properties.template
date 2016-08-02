@@ -53,3 +53,11 @@ transfer_prefers_iv=false
 navigation_type = STREETS
 # Ignore catching certain pokemons
 ignore_catching_pokemon=
+# Use incense or not
+use_normal_incense=
+# Method of evolution to use OPTIMAL or WHITELIST
+evolve_method=OPTIMAL
+# Enables Renaming pokemon by their IV
+pokemon_iv_rename=
+# Set to false to rename only pokemon over the set iv_ratio
+pokemon_iv_rename_all=

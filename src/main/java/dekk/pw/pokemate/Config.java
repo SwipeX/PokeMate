@@ -2,6 +2,7 @@ package dekk.pw.pokemate;
 
 import POGOProtos.Enums.PokemonIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass;
+import dekk.pw.pokemate.tasks.EvolvePokemon;
 import dekk.pw.pokemate.tasks.Navigate;
 
 import javax.swing.*;
@@ -46,6 +47,10 @@ public class Config {
     private static Navigate.NavigationType navigationType;
     private static final Properties properties = new Properties();
     private static int minItemAmount;
+    private static boolean useOrdinaryIncense;
+    private static EvolvePokemon.EvolveMethod evolveMethod;
+    private static boolean renamePokemonIV;
+    private static boolean renamePokemonIVAll;
 
     public static void load(String configPath) {
         try {
@@ -92,6 +97,14 @@ public class Config {
             cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
             navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
             minItemAmount = Integer.parseInt(properties.getProperty("minimum_item_amount", "0"));
+
+            useOrdinaryIncense = Boolean.parseBoolean(properties.getProperty("use_normal_incense", "false"));
+
+            // Evolve method
+            evolveMethod = EvolvePokemon.EvolveMethod.valueOf(properties.getProperty("evolve_method", "WHITELIST"));
+
+            renamePokemonIV = Boolean.parseBoolean(properties.getProperty("pokemon_iv_rename", "false"));
+            renamePokemonIVAll = Boolean.parseBoolean(properties.getProperty("pokemon_iv_rename_all", "false"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -230,4 +243,12 @@ public class Config {
     public static int getMinItemAmount() {
         return minItemAmount;
     }
+
+    public static boolean isUsingOrdinaryIncense() { return useOrdinaryIncense; }
+
+    public static EvolvePokemon.EvolveMethod getEvolveMethod() { return evolveMethod; }
+
+    public static boolean isRenamingPokemonIV() { return renamePokemonIV; }
+
+    public static boolean isRenamingPokemonAll() { return renamePokemonIV; }
 }

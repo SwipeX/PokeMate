@@ -6,7 +6,7 @@ import com.pokegoapi.api.inventory.ItemBag;
 import com.pokegoapi.api.inventory.Pokeball;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
-import com.pokegoapi.api.map.pokemon.EncounterResult;
+import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
@@ -61,6 +61,8 @@ public class CatchPokemon extends Task implements Runnable {
 	                    }
 	                }
 	            }
+	            
+	            CatchablePokemon target = pokemon.get(0);
 	
 	            if (pokeball == null) {
 	                //System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
@@ -103,6 +105,7 @@ public class CatchPokemon extends Task implements Runnable {
 	                        } else {
 	                            log(output + " [IV: " + getIvRatio(p) + "%]");
 	                        }
+	                        context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output + " [IV: " + getIvRatio(p) + "%]");	                       
 	                    });
 	            } catch (NullPointerException ex) {
 	                ex.printStackTrace();
@@ -111,14 +114,14 @@ public class CatchPokemon extends Task implements Runnable {
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
+        } finally {
+            context.addTask(new CatchPokemon(context));
         }
-       // System.out.println("[CatchPokemon] Ending Loop");
-        context.addTask(new CatchPokemon(context));
     }
 
 
     private boolean shouldIgnore(final CatchablePokemon p) {
-        return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId().getNumber());
+        return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId());
     }
 
     private List<Pokemon> pokemons() {

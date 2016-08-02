@@ -9,6 +9,9 @@ import dekk.pw.pokemate.util.Time;
 import javafx.scene.image.Image;
 import dekk.pw.pokemate.util.StringConverter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 
 /**
@@ -22,22 +25,26 @@ public class DropItems extends Task implements Runnable {
 
     @Override
     public void run() {
-        Config.getDroppedItems().stream().forEach(itemToDrop -> {
-            ItemId id = ItemId.valueOf(itemToDrop);
-            try {
-                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
-                Time.sleepRate();
-                if (count > 25) {
-                    context.getApi().getInventories().getItemBag().removeItem(id, count - (count-25));
+        try {
+            Config.getDroppedItems().stream().forEach(itemToDrop -> {
+                ItemId id = ItemId.valueOf(itemToDrop);
+                try {
                     Time.sleepRate();
-                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
-                    PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                    int count = context.getApi().getInventories().getItemBag().getItem(id).getCount();
+                    Time.sleepRate();
+                    if (count > Config.getMinItemAmount()) {
+                        context.getApi().getInventories().getItemBag().removeItem(id, count - (count - Config.getMinItemAmount()));
+                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + (count - (count - Config.getMinItemAmount())) + ")";
+                        PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                        context.setConsoleString("DropItems", removedItem);
+                    }
+                } catch (RemoteServerException | LoginFailedException e) {
+                    context.setConsoleString("Debug", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + context.getConsoleStrings().get("Debug") + "    [DropItems] Exceeded Rate Limit\n");
+                    e.printStackTrace();
                 }
-            } catch (RemoteServerException | LoginFailedException e) {
-                System.out.println("Exceeded Rate Limit");
-                e.printStackTrace();
-            }
-        });
-        context.addTask(new DropItems(context));
+            });
+        } finally {
+            context.addTask(new DropItems(context));
+        }
     }
 }

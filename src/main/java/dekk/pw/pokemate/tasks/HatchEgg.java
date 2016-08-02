@@ -9,6 +9,8 @@ import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.Time;
 import javafx.scene.image.Image;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 class HatchEgg extends Task implements Runnable{
@@ -28,18 +30,23 @@ class HatchEgg extends Task implements Runnable{
                     String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
                     if (hatchedPokemon == null) {
                         PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details, "Hatched egg!", "icons/items/egg.png");
+                        context.setConsoleString("HatchEgg", "Hatched egg " + egg.getId() + " " + details);
                     } else {
                         PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
                             "Hatched egg!",
                             "icons/items/egg.png");
+                        context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
                     }
-                }catch (LoginFailedException | RemoteServerException e) {
-                    e.printStackTrace();
+                } catch (LoginFailedException | RemoteServerException e) {
+                    context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
+                    //e.printStackTrace();
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
+            context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
+            //e.printStackTrace();
+        } finally {
+            context.addTask(new HatchEgg(context));
         }
-        context.addTask(new HatchEgg(context));
     }
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class StringConverter {
 	public static String titleCase(final String sentence) {
-        return Arrays.asList(sentence.split("\\s|_")).stream()
+        return Arrays.stream(sentence.split("\\s|_"))
                 .map(StringConverter::titlizeWord)
                 .collect(Collectors.joining(" "));
     }
@@ -34,9 +34,8 @@ public class StringConverter {
         }
         //build the rest of the string
         for (Map.Entry<Integer, Integer> item : receivedItems.entrySet()) {
-            retStr += " - " + StringConverter.titleCase(ItemIdOuterClass.ItemId.valueOf(item.getKey()).name()) + "(x" + item.getValue() + ")";
+            retStr += " - " + StringConverter.titleCase(ItemIdOuterClass.ItemId.forNumber(item.getKey()).name()) + "(x" + item.getValue() + ")";
         }
-
         return retStr;
     }
 }

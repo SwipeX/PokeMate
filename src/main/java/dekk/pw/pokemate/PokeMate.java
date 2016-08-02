@@ -7,6 +7,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.util.SystemTimeImpl;
 import dekk.pw.pokemate.tasks.TaskController;
+import dekk.pw.pokemate.tasks.Update;
 import dekk.pw.pokemate.util.LatLongFromLocation;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
@@ -23,16 +24,19 @@ import java.util.concurrent.TimeUnit;
 public class PokeMate {
     public static final Path CONFIG_PROPERTIES = Paths.get("config.properties");
     public static long startTime;
-    private static File configProperties;
     private static Context context;
 
-    public PokeMate() throws IOException, LoginFailedException, RemoteServerException {
+    private double getSmallRandom() {
+        return Math.random() * 0.0003 - 0.0003;
+    }
+
+    private PokeMate() throws LoginFailedException, RemoteServerException {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.writeTimeout(60, TimeUnit.SECONDS);
         OkHttpClient http = builder.build();
-        CredentialProvider auth = null;
+        CredentialProvider auth;
 
         AtomicDouble lat;
         AtomicDouble lng;
@@ -48,12 +52,12 @@ public class PokeMate {
             System.out.println("Using Custom Location");
         } else { // Use given co-ordindates instead
             AtomicDouble alat = new AtomicDouble();
-            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude")));
+            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude"))+getSmallRandom());
             lat = alat;
 
             AtomicDouble alng = new AtomicDouble();
-            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude")));
-            lng = alng;
+            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude"))+getSmallRandom());
+            lng = alng ;
         }
 
         auth = Context.Login(http);
@@ -64,18 +68,19 @@ public class PokeMate {
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
         context.setLat(lat);
         context.setLng(lng);
-
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);
             new Thread(() -> Application.launch(PokeMateUI.class, "")).start();
         }
+        new Update(context).runOnce();
         TaskController controller = new TaskController(context);
         controller.start();
         startTime = System.currentTimeMillis();
     }
 
     public static void main(String[] args) throws RemoteServerException, IOException, LoginFailedException {
+        File configProperties;
         if (args.length == 0) {
             configProperties = new File("config.properties");
             System.out.println("Using default config.properties location");

@@ -1,5 +1,5 @@
 group 'pw.tdekk'
-version '0.2.3.5'
+version '0.3.2.4'
 
 buildscript {
 
@@ -29,7 +29,7 @@ dependencies {
 
     compile 'com.google.maps:google-maps-services:0.1.15'
 
-    compile 'com.github.ashgh:PokeGOAPI-Java:aa6c5d9'
+    compile 'com.github.Grover-c13:PokeGOAPI-Java:d1cd3f9'
 
     compile 'com.squareup.okhttp3:okhttp:3.4.0-RC1'
 

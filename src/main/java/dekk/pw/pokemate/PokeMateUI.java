@@ -1,6 +1,6 @@
 package dekk.pw.pokemate;
 
-import com.google.common.geometry.S2LatLng;
+import POGOProtos.Map.Fort.FortDataOuterClass.FortData;
 import com.google.maps.model.DirectionsStep;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
@@ -12,13 +12,14 @@ import com.lynden.gmapsfx.shapes.Polyline;
 import com.lynden.gmapsfx.shapes.PolylineOptions;
 import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.inventory.Item;
+import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
-import dekk.pw.pokemate.tasks.Update;
+import dekk.pw.pokemate.util.Time;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -41,9 +42,9 @@ import java.util.List;
  */
 public class PokeMateUI extends Application implements MapComponentInitializedListener {
 
-    public static final int UPDATE_TIME = 5000;
-    public static final double XVARIANCE = Config.getRange() * 1.5;
-    public static final double VARIANCE = Config.getRange();
+    private static final int UPDATE_TIME = 1000;
+    private static final double XVARIANCE = Config.getRange() * 1.5;
+    private static final double VARIANCE = Config.getRange();
     private static final String NOTIFY = "$.notify({\n" +
             "icon: '%s',\n" +
             "message: '%s',\n" +
@@ -55,15 +56,15 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             "exit: 'animated bounceOutUp'\n" +
             "},\n" +
             "});";
-    public static Marker marker;
-    protected static GoogleMapView mapComponent;
-    protected static PokeMate poke;
-    protected static String messagesForLog = "";
+    private static Marker marker;
+    private static GoogleMapView mapComponent;
+    private static PokeMate poke;
+    private static String messagesForLog = "";
     private static int experienceGained = 0;
     private static long lastExperience = 0;
-    protected GoogleMap map;
-    boolean directions;
-    int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
+    private GoogleMap map;
+    private boolean directions;
+    private final int[] requiredXp = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
             85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
             1350000, 1650000, 2000000, 2500000, 3000000, 3750000, 4750000, 6000000, 7500000, 9500000, 12000000, 15000000, 20000000};
 
@@ -75,12 +76,12 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     public static void toast(String message, String title, String image) {
+        /*
         if (Config.isConsoleNotification())
             System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
         messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
-        if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> {
-            mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message));
-        });
+        */
+        if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message)));
         if (Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
                 .graphic(new ImageView(new Image(image, 64, 64, false, false)))
                 .title(title)
@@ -161,6 +162,25 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
+        Time.sleep(5000);
+        try {
+            for(FortData gym : context.getMap().getMapObjects().getGyms()) {
+
+                LatLong position = new LatLong(gym.getLatitude(), gym.getLongitude());
+                Marker gymMap = new Marker(new MarkerOptions().position(position).title(gym.getId()).icon("icons/gym.png"));
+                map.addMarker(gymMap);
+            }
+
+            for(Pokestop pokestop : context.getMap().getMapObjects().getPokestops()) {
+
+                LatLong position = new LatLong(pokestop.getLatitude(), pokestop.getLongitude());
+                Marker pokestopMap = new Marker(new MarkerOptions().position(position).title(pokestop.getId()).icon("icons/pokestop_small.png"));
+                map.addMarker(pokestopMap);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         //Marker of current player, thread to update a 'hack refresh'
         marker = new Marker(new MarkerOptions().position(center).title("Player").icon("icons/trainer.gif"));
         map.addMarker(marker);
@@ -169,9 +189,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                 .position(center);
 
         InfoWindow window = new InfoWindow(infoOptions);
-        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> {
-            window.open(map, marker);
-        });
+        map.addUIEventHandler(marker, UIEventType.click, (JSObject obj) -> window.open(map, marker));
         window.open(map, marker);
         new Thread(() -> {
             while (true) {
@@ -203,7 +221,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         Navigate.getRoute().forEach(a -> locs.add(new LatLong(a.latDegrees(), a.lngDegrees())));
 
                         LatLong[] array = locs.toArray(new LatLong[0]);
-                        System.out.println(array.length);
+
                         MVCArray mvc = new MVCArray(array);
 
                         PolylineOptions polyOpts = new PolylineOptions()
@@ -244,11 +262,11 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     private void updateEggs(Context context) {
         String eggsList = "\"";
         try {
-            for (EggPokemon egg : context.getApi().getInventories().getHatchery().getEggs()) {
+            for (EggPokemon egg : context.getInventories().getHatchery().getEggs()) {
                 String imgSrc = "icons/items/egg.png";
                 String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
                 String percent = new DecimalFormat("#0.#").format(((egg.getEggKmWalked() * 100) / (egg.getEggKmWalkedTarget() * 100)) * 100);
-                String percentClass = "";
+                String percentClass;
                 double percentTmp = Double.valueOf(percent.replace(",", "."));
 
                 if (percentTmp >= 66) {
@@ -264,9 +282,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "<td>Incubated : " + (egg.isIncubate() ? "<b style='color:#00ff00;'>yes</b>" : "<b style='color:#ff0000;'>no</b>") + "<br/>State : " + walked + "/" + egg.getEggKmWalkedTarget() + "km<br/>" +
                         "<div class='progress'><div class='progress-bar active progress-bar-striped" + percentClass + "' role='progressbar' aria-valuenow='" + percent + "' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em; width: " + percent.replace(",", ".") + "%;'>" + percent + "%</div></div></td></tr>";
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
         eggsList += "\"";
@@ -276,8 +292,8 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     private void updateIncubators(Context context) {
         String incubatorsList = "\"";
         try {
-            for (EggIncubator incubator : context.getApi().getInventories().getIncubators()) {
-                String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "901" : "902") + ".png";
+            for (EggIncubator incubator : context.getInventories().getIncubators()) {
+                String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "902" : "901") + ".png";
                 String walked = new DecimalFormat("#0.#").format(incubator.getKmWalked());
                 incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +
@@ -285,9 +301,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         "<br/>Remaining use : " + (incubator.getUsesRemaining() > 0 ? incubator.getUsesRemaining() : "\u221e") +
                         "<br/>Km walked : " + walked + "</td></tr>";
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
         incubatorsList += "\"";
@@ -295,7 +309,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     private void updatePlayer(Context context, InfoWindow window) {
-        PlayerProfile player = context.getApi().getPlayerProfile();
+        PlayerProfile player = context.getProfile();
         long runTime = System.currentTimeMillis() - PokeMate.startTime;
         try {
             double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
@@ -312,28 +326,22 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
             window.setContent("<h4>" + player.getPlayerData().getUsername() + "</h4><h5>Current Level: " + player.getStats().getLevel() + " - Progress: " + ratio +
                 "%</h5><h5>XP/Hour: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "</h5><h5>XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +
                 "</h5><h5>Runtime: " + millisToTimeString(runTime) + "</h5>");
-        }  catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        }  catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
     }
 
     private void updateItems(Context context) {
         String itemsList = "\"";
-        try {
-            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+
+            for (Item item : context.getInventories().getItemBag().getItems()) {
                 if (item.getCount() > 0) {
                     String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
                     itemsList += "<tr><td><img style=\'width: 70px; height: 70px;\' " +
                             "src=\'" + imgSrc + "\'" + "></td><td>" + item.getCount() + "</td></tr>";
                 }
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
-            e.printStackTrace();
-        }
+
         itemsList += "\"";
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-items').innerHTML = " + itemsList);
     }
@@ -346,25 +354,25 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         try {
                 switch (pokeSort) {
                     case "pokedex-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
                         break;
                     case "pokedex-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
                         break;
                     case "cp-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         break;
                     case "cp-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
                         break;
                     case "recent-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
                         break;
                     case "recent-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                         break;
                     case "candy-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> {
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> {
                             try {
                                 return b.getCandy() - a.getCandy();
                             } catch (LoginFailedException e) {
@@ -377,7 +385,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         });
                         break;
                     case "candy-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> {
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> {
                             try {
                                 return a.getCandy() - b.getCandy();
                             } catch (LoginFailedException e) {
@@ -390,28 +398,26 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         });
                         break;
                     case "iv-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
                         break;
                     case "iv-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
                         break;
                     default:
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         break;
                 }
         String rows = "\"";
-        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+        for (Pokemon pokemon : context.getInventories().getPokebank().getPokemons()) {
             if (pokemon.getPokemonFamily() != null) {
-                rows += "<tr> <td><img src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+                rows += "<tr> <td><img width=\'80\' height=\'80\' src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
             }
         }
 
         rows += "\"";
         mapComponent.getWebview().getEngine().executeScript("document.getElementById('info-body').innerHTML = " + rows);
 
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
     }

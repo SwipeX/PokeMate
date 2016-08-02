@@ -15,6 +15,7 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.StringConverter;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,7 +26,7 @@ import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.Cat
 /**
  * Created by TimD on 7/21/2016.
  */
-public class CatchPokemon extends Task {
+class CatchPokemon extends Task implements Runnable {
 
     CatchPokemon(final Context context) {
         super(context);
@@ -33,13 +34,15 @@ public class CatchPokemon extends Task {
 
     @Override
     public void run() {
+        //System.out.println("[CatchPokemon] Starting Loop");
         try {
             Pokeball pokeball = null;
-            List<CatchablePokemon> pokemon = context.getApi().getMap().getCatchablePokemon().stream()
-                    .filter(this::shouldIgnore)
-                    .collect(Collectors.toList());
+            List<CatchablePokemon> pokemon = context.getMap().getCatchablePokemon().stream()
+                .filter(this::shouldIgnore)
+                .collect(Collectors.toList());
 
             if (pokemon.size() == 0) {
+               // System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
                 return;
             }
 
@@ -56,23 +59,23 @@ public class CatchPokemon extends Task {
                     }
                 }
             }
+            for (CatchablePokemon target : pokemon) {
 
-            if(pokeball == null) {
-                return;
-            }
-
-            for(CatchablePokemon target : pokemon) {
-
+                if (pokeball == null) {
+                    //System.out.println("[CatchPokemon] No Pokeballs");
+                    return;
+                }
+                Time.sleepRate();
                 Walking.setLocation(context);
                 EncounterResult encounterResult = target.encounterPokemon();
                 if (!encounterResult.wasSuccessful()) {
-                    return;
+                    continue;
                 }
 
                 CatchResult catchResult = target.catchPokemon(pokeball);
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
-                    log(target.getPokemonId() + " fled.");
-                    return;
+                    context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
+                    continue;
                 }
 
                 try {
@@ -86,9 +89,7 @@ public class CatchPokemon extends Task {
                             String output = null;
                             try {
                                 output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
-                            } catch (LoginFailedException e) {
-                                e.printStackTrace();
-                            } catch (RemoteServerException e) {
+                            } catch (LoginFailedException | RemoteServerException e) {
                                 e.printStackTrace();
                             }
 
@@ -97,42 +98,31 @@ public class CatchPokemon extends Task {
                             } else {
                                 log(output + " [IV: " + getIvRatio(p) + "%]");
                             }
+                            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output + " [IV: " + getIvRatio(p) + "%]");
                         });
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
             }
         } catch (LoginFailedException | RemoteServerException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("[CatchPokemon] Exceeded Rate Limit");
+        } finally {
+            context.addTask(new CatchPokemon(context));
         }
     }
 
+
     private boolean shouldIgnore(final CatchablePokemon p) {
-        return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId().getNumber());
+        return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId());
     }
 
     private List<Pokemon> pokemons() {
-        try {
-            return context.getApi().getInventories().getPokebank().getPokemons();
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-            return null;
-        } catch (RemoteServerException e) {
-            e.printStackTrace();
-            return null;
-        }
+            return context.getInventories().getPokebank().getPokemons();
     }
 
     private ItemBag itemBag() {
-        try {
-            return context.getApi().getInventories().getItemBag();
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-            return null;
-        } catch (RemoteServerException e) {
-            e.printStackTrace();
-            return null;
-        }
+            return context.getInventories().getItemBag();
     }
 
     private void log(final String message) {

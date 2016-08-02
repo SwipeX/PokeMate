@@ -163,13 +163,13 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         map.addMapShape(pg);
 
         try {
-            for(FortData gym : context.getApi().getMap().getMapObjects().getGyms()) {
+            for(FortData gym : context.getMap().getMapObjects().getGyms()) {
                 LatLong position = new LatLong(gym.getLatitude(), gym.getLongitude());
                 Marker gymMap = new Marker(new MarkerOptions().position(position).title(gym.getId()).icon("icons/gym.png"));
                 map.addMarker(gymMap);
             }
 
-            for(Pokestop pokestop : context.getApi().getMap().getMapObjects().getPokestops()) {
+            for(Pokestop pokestop : context.getMap().getMapObjects().getPokestops()) {
                 LatLong position = new LatLong(pokestop.getLatitude(), pokestop.getLongitude());
                 Marker pokestopMap = new Marker(new MarkerOptions().position(position).title(pokestop.getId()).icon("icons/pokestop_small.png"));
                 map.addMarker(pokestopMap);
@@ -259,7 +259,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     private void updateEggs(Context context) {
         String eggsList = "\"";
         try {
-            for (EggPokemon egg : context.getApi().getInventories().getHatchery().getEggs()) {
+            for (EggPokemon egg : context.getInventories().getHatchery().getEggs()) {
                 String imgSrc = "icons/items/egg.png";
                 String walked = new DecimalFormat("#0.#").format(egg.getEggKmWalked());
                 String percent = new DecimalFormat("#0.#").format(((egg.getEggKmWalked() * 100) / (egg.getEggKmWalkedTarget() * 100)) * 100);
@@ -289,7 +289,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     private void updateIncubators(Context context) {
         String incubatorsList = "\"";
         try {
-            for (EggIncubator incubator : context.getApi().getInventories().getIncubators()) {
+            for (EggIncubator incubator : context.getInventories().getIncubators()) {
                 String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "902" : "901") + ".png";
                 String walked = new DecimalFormat("#0.#").format(incubator.getKmWalked());
                 incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
@@ -306,7 +306,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     private void updatePlayer(Context context, InfoWindow window) {
-        PlayerProfile player = context.getApi().getPlayerProfile();
+        PlayerProfile player = context.getPlayerProfile();
         long runTime = System.currentTimeMillis() - PokeMate.startTime;
         try {
             double nextXP = requiredXp[player.getStats().getLevel()] - requiredXp[player.getStats().getLevel() - 1];
@@ -331,7 +331,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     private void updateItems(Context context) {
         String itemsList = "\"";
         try {
-            for (Item item : context.getApi().getInventories().getItemBag().getItems()) {
+            for (Item item : context.getInventories().getItemBag().getItems()) {
                 if (item.getCount() > 0) {
                     String imgSrc = "icons/items/" + item.getItemId().getNumber() + ".png";
                     itemsList += "<tr><td><img style=\'width: 70px; height: 70px;\' " +
@@ -353,25 +353,25 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         try {
                 switch (pokeSort) {
                     case "pokedex-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> b.getPokemonId().getNumber() - a.getPokemonId().getNumber());
                         break;
                     case "pokedex-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> a.getPokemonId().getNumber() - b.getPokemonId().getNumber());
                         break;
                     case "cp-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         break;
                     case "cp-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> a.getCp() - b.getCp());
                         break;
                     case "recent-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()));
                         break;
                     case "recent-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> Long.compare(a.getCreationTimeMs(), b.getCreationTimeMs()));
                         break;
                     case "candy-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> {
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> {
                             try {
                                 return b.getCandy() - a.getCandy();
                             } catch (LoginFailedException e) {
@@ -384,7 +384,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         });
                         break;
                     case "candy-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> {
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> {
                             try {
                                 return a.getCandy() - b.getCandy();
                             } catch (LoginFailedException e) {
@@ -397,17 +397,17 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
                         });
                         break;
                     case "iv-des":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(b) - context.getIvRatio(a));
                         break;
                     case "iv-asc":
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
                         break;
                     default:
-                        context.getApi().getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
+                        context.getInventories().getPokebank().getPokemons().sort((a, b) -> b.getCp() - a.getCp());
                         break;
                 }
         String rows = "\"";
-        for (Pokemon pokemon : context.getApi().getInventories().getPokebank().getPokemons()) {
+        for (Pokemon pokemon : context.getInventories().getPokebank().getPokemons()) {
             if (pokemon.getPokemonFamily() != null) {
                 rows += "<tr> <td><img width=\'80\' height=\'80\' src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
             }

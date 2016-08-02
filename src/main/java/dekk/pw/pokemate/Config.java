@@ -50,6 +50,7 @@ public class Config {
     private static boolean useOrdinaryIncense;
     private static EvolvePokemon.EvolveMethod evolveMethod;
     private static boolean renamePokemonIV;
+    private static boolean renamePokemonIVAll;
 
     public static void load(String configPath) {
         try {
@@ -103,6 +104,7 @@ public class Config {
             evolveMethod = EvolvePokemon.EvolveMethod.valueOf(properties.getProperty("evolve_method", "WHITELIST"));
 
             renamePokemonIV = Boolean.parseBoolean(properties.getProperty("pokemon_iv_rename", "false"));
+            renamePokemonIVAll = Boolean.parseBoolean(properties.getProperty("pokemon_iv_rename_all", "false"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -247,4 +249,6 @@ public class Config {
     public static EvolvePokemon.EvolveMethod getEvolveMethod() { return evolveMethod; }
 
     public static boolean isRenamingPokemonIV() { return renamePokemonIV; }
+
+    public static boolean isRenamingPokemonAll() { return renamePokemonIV; }
 }

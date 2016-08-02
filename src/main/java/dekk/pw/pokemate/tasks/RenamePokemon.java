@@ -35,6 +35,9 @@ public class RenamePokemon extends Task implements Runnable {
                 if (name.equals(newName) ||
                         !name.equalsIgnoreCase(pokemon.getDefaultInstanceForType().getNickname())) continue;
 
+                // check if the pokemon should be renamed
+                if (!Config.isRenamingPokemonAll() && pokeIVInt <= Config.getIvRatio()) continue;
+
                 NicknamePokemonResponseOuterClass.NicknamePokemonResponse.Result result = pokemon.renamePokemon(newName);
                 if(result == NicknamePokemonResponseOuterClass.NicknamePokemonResponse.Result.SUCCESS) {
                     PokeMateUI.toast("Renamed " + name + " to " + newName, Config.POKE + "mon renamed", "icons/" + pokemon.getPokemonId().getNumber() + ".png");

@@ -47,6 +47,7 @@ class IncubateEgg extends Task implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            Time.sleepRate();
             context.addTask(new IncubateEgg(context));
         }
     }

@@ -108,6 +108,7 @@ class CatchPokemon extends Task implements Runnable {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
         } finally {
+            Time.sleepRate();
             context.addTask(new CatchPokemon(context));
         }
     }

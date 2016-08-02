@@ -41,6 +41,7 @@ class HatchEgg extends Task implements Runnable{
             context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
             //e.printStackTrace();
         } finally {
+            Time.sleepRate();
             context.addTask(new HatchEgg(context));
         }
     }

@@ -8,6 +8,7 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.StringConverter;
+import dekk.pw.pokemate.util.Time;
 
 import java.io.DataInputStream;
 import java.text.SimpleDateFormat;
@@ -64,6 +65,7 @@ class EvolvePokemon extends Task implements Runnable {
             System.out.println("[EvolvePokemon] Hit Rate Limited");
             e1.printStackTrace();
         } finally {
+            Time.sleepRate();
             context.addTask(new EvolvePokemon(context));
         }
     }

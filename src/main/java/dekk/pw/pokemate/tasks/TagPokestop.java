@@ -76,6 +76,7 @@ public class TagPokestop extends Task implements Runnable {
                     //TODO: walk dynamically to nearest pokemon
                     break;
                 default:
+                    Time.sleepRate();
                     context.addTask(new TagPokestop(context));
             }
         }

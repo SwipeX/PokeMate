@@ -3,7 +3,10 @@ package dekk.pw.pokemate;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.LatLng;
 import com.pokegoapi.util.Log;
+import dekk.pw.pokemate.tasks.Navigate;
+import dekk.pw.pokemate.tasks.TagPokestop;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,6 +16,7 @@ import java.util.*;
  */
 public class Walking {
 
+    public static final double VARIANCE = Config.getRange();
     public static double getSmallRandom() {
         return Math.random() * 0.0001 - 0.00005;
     }
@@ -50,9 +54,11 @@ public class Walking {
                 stepsRequired.getAndAdd(-1);
                 if (stepsRequired.get() <= 0) {
                     context.getWalking().set(false);
+                    context.addTask(new TagPokestop(context));
+                    context.addTask(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
+                        new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
                     cancel();
                 }
-                //System.out.println(context.getLat().get() + " " + context.getLng().get() + " " + stepsRequired);
             }
         }, 0, timeout);
     }

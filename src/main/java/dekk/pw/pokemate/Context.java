@@ -1,13 +1,20 @@
 package dekk.pw.pokemate;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.maps.model.LatLng;
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.inventory.Inventories;
+import com.pokegoapi.api.map.Map;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.auth.*;
 
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.util.SystemTimeImpl;
+import dekk.pw.pokemate.tasks.Navigate;
 import dekk.pw.pokemate.tasks.Task;
+import dekk.pw.pokemate.tasks.Update;
 import okhttp3.OkHttpClient;
 
 import javax.swing.*;
@@ -26,6 +33,7 @@ import java.security.MessageDigest;
  * Created by TimD on 7/21/2016.
  */
 public class Context {
+    public static final double VARIANCE = Config.getRange();
     private OkHttpClient http;
     private PokemonGo api;
     private AtomicDouble lat = new AtomicDouble();
@@ -36,12 +44,15 @@ public class Context {
     private static SystemTimeImpl time = new SystemTimeImpl();
     private int MinimumAPIWaitTime = 300;
     private boolean runStatus;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
     private int routesIndex;
     private LinkedHashMap<String,String> consoleStrings = new LinkedHashMap<>();
+    private Map pokeMap;
+    private Inventories pokeInventories;
 
 
     public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {
+
         this.api = go;
         this.profile = profile;
         this.walking.set(walking);
@@ -50,9 +61,9 @@ public class Context {
         this.runStatus = true;
         this.routesIndex = 0;
 
-        //This just sets up a standardized order of outputs for the HashMap
+        //This just sets up a standardized order of outputs for the GUI HashMap
         this.consoleStrings.put("Bot Actions", "");
-        this.consoleStrings.put("Update", "");
+        this.consoleStrings.put("Update", "0XP/H");
         this.consoleStrings.put("TagPokestop", "No PokeStops Tagged");
         this.consoleStrings.put("CatchPokemon", "No Pokemon Caught");
         this.consoleStrings.put("Navigate", "");
@@ -114,6 +125,7 @@ public class Context {
                         p.println(provider.getRefreshToken());
                     }
                     return provider;
+
                 }
             } else {
                 return new PtcCredentialProvider(httpClient, Config.getUsername(), Config.getPassword());
@@ -156,9 +168,7 @@ public class Context {
         this.api = api;
     }
 
-    public PlayerProfile getProfile() {
-        return profile;
-    }
+    public PlayerProfile getProfile() {return profile; }
 
     public void setProfile(PlayerProfile profile) {
         this.profile = profile;
@@ -174,6 +184,17 @@ public class Context {
 
     public int getRoutesIndex() { return routesIndex; }
 
+    public Map getMap() {return this.pokeMap; }
+
+    public void refreshMap() throws LoginFailedException, RemoteServerException { this.pokeMap = this.api.getMap(); }
+
+    public Inventories getInventories() {return this.pokeInventories; }
+
+    public void refreshInventories() throws LoginFailedException, RemoteServerException {
+        this.api.getInventories().updateInventories(true);
+        this.pokeInventories = this.api.getInventories();
+    }
+
     public void increaseRoutesIndex() { this.routesIndex++; }
 
     public void resetRoutesIndex() { this.routesIndex = 0; }
@@ -181,6 +202,7 @@ public class Context {
     public LinkedHashMap<String, String> getConsoleStrings() { return consoleStrings; }
 
     public void addTask(Task task) { executor.submit(task); }
+
     public void setConsoleString(String key, String text) { this.consoleStrings.put(key, text); }
 
     public CredentialProvider getCredentialProvider() {

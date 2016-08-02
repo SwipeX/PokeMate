@@ -26,7 +26,7 @@ public class IncubateEgg extends Task implements Runnable{
     @Override
     public void run() {
         try {
-            List<EggIncubator> incubators = context.getApi().getInventories().getIncubators().stream().filter(i -> {
+            List<EggIncubator> incubators = context.getInventories().getIncubators().stream().filter(i -> {
                 try {
                     return !i.isInUse();
                 } catch (Exception e) {
@@ -35,7 +35,7 @@ public class IncubateEgg extends Task implements Runnable{
                 }
             }).collect(Collectors.toList());
 
-            List<EggPokemon> eggs = context.getApi().getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
+            List<EggPokemon> eggs = context.getInventories().getHatchery().getEggs().stream().filter(egg -> egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
             if (incubators.size() > 0 && eggs.size() > 0) {
                 UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {

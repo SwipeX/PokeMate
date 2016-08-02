@@ -7,6 +7,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.util.SystemTimeImpl;
 import dekk.pw.pokemate.tasks.TaskController;
+import dekk.pw.pokemate.tasks.Update;
 import dekk.pw.pokemate.util.LatLongFromLocation;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
@@ -68,12 +69,12 @@ public class PokeMate {
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
         context.setLat(lat);
         context.setLng(lng);
-
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);
             new Thread(() -> Application.launch(PokeMateUI.class, "")).start();
         }
+        new Update(context).runOnce();
         TaskController controller = new TaskController(context);
         controller.start();
         startTime = System.currentTimeMillis();

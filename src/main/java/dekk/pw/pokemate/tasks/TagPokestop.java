@@ -14,6 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static dekk.pw.pokemate.tasks.Navigate.NavigationType.POKEMON;
+import static dekk.pw.pokemate.tasks.Navigate.NavigationType.POKESTOPS;
+import static dekk.pw.pokemate.tasks.Navigate.navigationType;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 import static dekk.pw.pokemate.util.Time.sleep;
 
@@ -24,7 +27,7 @@ public class TagPokestop extends Task implements Runnable {
 
     private MapObjects map;
     
-    TagPokestop(final Context context) {
+    public TagPokestop(final Context context) {
         super(context);
     }
 
@@ -34,7 +37,7 @@ public class TagPokestop extends Task implements Runnable {
             try {
                 APIStartTime = System.currentTimeMillis();
 
-                map = context.getApi().getMap().getMapObjects();
+                map = context.getMap().getMapObjects();
                 APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
@@ -77,7 +80,15 @@ public class TagPokestop extends Task implements Runnable {
                 });
             //System.out.println("[Tag PokeStop] Ending Loop");
         } finally {
-            context.addTask(new TagPokestop(context));
+            switch (navigationType) {
+                case POKESTOPS:
+                    break;
+                case POKEMON:
+                    //TODO: walk dynamically to nearest pokemon
+                    break;
+                default:
+                    context.addTask(new TagPokestop(context));
+            }
         }
     }
 

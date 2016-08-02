@@ -11,6 +11,8 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.util.Time;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,17 +69,17 @@ public class Navigate extends Task implements Runnable {
      */
     private void populateRoute(Context context) {
         try {
-            List<Pokestop> stops = context.getApi().getMap().getMapObjects().getPokestops().stream().filter(a ->
+            List<Pokestop> stops = context.getMap().getMapObjects().getPokestops().stream().filter(a ->
                 //only pokestops in our region
                 a.getLatitude() >= min.lat &&
-                    a.getLatitude() <= max.lat &&
-                    a.getLongitude() >= min.lng &&
-                    a.getLongitude() <= max.lng).collect(Collectors.toList());
+                a.getLatitude() <= max.lat &&
+                a.getLongitude() >= min.lng &&
+                a.getLongitude() <= max.lng).collect(Collectors.toList());
 
             int count = stops.size();
-            // System.out.println("Stops found: " + count);
-            last = S2LatLng.fromDegrees(context.getApi().getLatitude(), context.getApi().getLongitude());
-            while (route.size() < count - 1 && route.size() < 50) {
+            //System.out.println("Stops found: " + count);
+            last = S2LatLng.fromDegrees(context.getLat().doubleValue(), context.getLng().doubleValue());
+            while (route.size() < count - 1) {
                 List<Pokestop> tempStops = stops.stream().filter(a -> !ids.contains(a.getId())).sorted((a, b) -> {
                     S2LatLng locationA = S2LatLng.fromDegrees(a.getLatitude(), a.getLongitude());
                     S2LatLng locationB = S2LatLng.fromDegrees(b.getLatitude(), b.getLongitude());
@@ -87,7 +89,7 @@ public class Navigate extends Task implements Runnable {
                 }).collect(Collectors.toList());
 
                 if (tempStops.size() == 0) {
-                    System.out.println("CRTICAL POKESTOP LOCATION ERROR BREAKING!");
+                    //System.out.println("CRTICAL POKESTOP LOCATION ERROR BREAKING!");
                     break;
                 }
                 Pokestop first = tempStops.get(0);
@@ -101,35 +103,34 @@ public class Navigate extends Task implements Runnable {
         } catch (LoginFailedException e) {
             System.out.println("[Navigate] Login Failed.");
             //e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println("[Navigate] Null Pointer Exception.");
+            e.printStackTrace();
         }
     }
 
     @Override
     public void run() {
-        try {
-            if (context.isWalking()) {
-                return;
-            } else if (navigationType == (NavigationType.STREETS) && context.getRoutesIndex() >= getDirections().size()) {
-                context.resetRoutesIndex();
-            } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= route.size()) {
-                context.resetRoutesIndex();
-            }
-            switch (navigationType) {
-                case POKESTOPS:
-                    context.increaseRoutesIndex();
-                    Walking.walk(context, route.get(context.getRoutesIndex()));
-                    context.setConsoleString("Navigate", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Naviating to waypoint  " + context.getRoutesIndex() + ", Size is " + route.size());
-                    break;
-                case POKEMON:
-                    //TODO: walk dynamically to nearest pokemon
-                    break;
-                default:
-                    context.increaseRoutesIndex();
-                    Walking.walk(context, getDirections().get(context.getRoutesIndex()));
-            }
-        } finally {
-            context.addTask(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
-                new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
+
+        if (context.isWalking()) {
+            return;
+        } else if (navigationType == (NavigationType.STREETS) && context.getRoutesIndex() >= getDirections().size()) {
+            context.resetRoutesIndex();
+        } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= route.size()) {
+            context.resetRoutesIndex();
+        }
+        switch (navigationType) {
+            case POKESTOPS:
+                context.increaseRoutesIndex();
+                Walking.walk(context, route.get(context.getRoutesIndex()));
+                context.setConsoleString("Navigate", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Naviating to waypoint  " + context.getRoutesIndex() + ", Size is " + route.size());
+                break;
+            case POKEMON:
+                //TODO: walk dynamically to nearest pokemon
+                break;
+            default:
+                context.increaseRoutesIndex();
+                Walking.walk(context, getDirections().get(context.getRoutesIndex()));
         }
     }
 

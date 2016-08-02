@@ -47,7 +47,7 @@ public class EvolvePokemon extends Task implements Runnable {
     public void run() {
         // System.out.println("[Evolve] Activating..");
         try {
-            CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
+            CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getInventories().getPokebank().getPokemons());
             for (Pokemon pokemon : pokeList)
                 if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId())) {
                     int number = pokemon.getPokemonId().getNumber();

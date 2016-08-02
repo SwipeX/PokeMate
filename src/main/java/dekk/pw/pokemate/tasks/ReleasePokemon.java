@@ -31,7 +31,7 @@ public class ReleasePokemon extends Task implements Runnable {
     public void run() {
         Map<PokemonIdOuterClass.PokemonId, List<Pokemon>> groups = null;
         try {
-            groups = context.getApi().getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
+            groups = context.getInventories().getPokebank().getPokemons().stream().collect(Collectors.groupingBy(Pokemon::getPokemonId));
             for (List<Pokemon> list : groups.values()) {
                 if (Config.isTransferPrefersIV()) {
                     Collections.sort(list, (a, b) -> context.getIvRatio(a) - context.getIvRatio(b));
@@ -55,10 +55,6 @@ public class ReleasePokemon extends Task implements Runnable {
 
                 });
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
-            e.printStackTrace();
         } finally {
             context.addTask(new ReleasePokemon(context));
         }

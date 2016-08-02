@@ -21,12 +21,12 @@ class HatchEgg extends Task implements Runnable{
     @Override
     public void run() {
         try {
-            List<HatchedEgg> eggs = context.getApi().getInventories().getHatchery().queryHatchedEggs();
+            List<HatchedEgg> eggs = context.getInventories().getHatchery().queryHatchedEggs();
             Time.sleepRate();
             eggs.forEach(egg -> {
                 Pokemon hatchedPokemon = null;
-                try {
-                    hatchedPokemon = context.getApi().getInventories().getPokebank().getPokemonById(egg.getId());
+
+                    hatchedPokemon = context.getInventories().getPokebank().getPokemonById(egg.getId());
                     String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
                     if (hatchedPokemon == null) {
                         PokeMateUI.toast("Hatched egg " + egg.getId() + " " + details, "Hatched egg!", "icons/items/egg.png");
@@ -37,10 +37,6 @@ class HatchEgg extends Task implements Runnable{
                             "icons/items/egg.png");
                         context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
                     }
-                } catch (LoginFailedException | RemoteServerException e) {
-                    context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
-                    //e.printStackTrace();
-                }
             });
         } catch (LoginFailedException | RemoteServerException e) {
             context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");

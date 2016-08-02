@@ -23,10 +23,12 @@ public class TaskController extends Thread {
 
     public TaskController(final Context context) {
         this.context = context;
+        tasks.add(new Update(context));
+
         tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
             new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
 
-        tasks.add(new Update(context));
+
         tasks.add(new CatchPokemon(context));
 
         if (Config.isAutoEvolving()) {
@@ -34,7 +36,7 @@ public class TaskController extends Thread {
         }
 
         tasks.add(new ReleasePokemon(context));
-        tasks.add(new TagPokestop(context));
+        //tasks.add(new TagPokestop(context));
 
         if(Config.isEggsIncubating()) {
             tasks.add(new IncubateEgg(context));
@@ -57,14 +59,6 @@ public class TaskController extends Thread {
      * This will execute all Tasks, then proceed to wait up to 5 seconds has passed.
      */
     public void run() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                context.addTask(new Update(context));
-
-            }
-        }, 0, 60000);
 
         tasks.forEach(context::addTask);
 

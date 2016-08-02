@@ -15,6 +15,8 @@ import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.Pokemon;
+import com.pokegoapi.api.map.fort.Pokestop;
+import POGOProtos.Map.Fort.FortDataOuterClass.FortData;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
@@ -164,6 +166,23 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
 
         Polygon pg = new Polygon(polygOpts);
         map.addMapShape(pg);
+
+        try {
+            for(FortData gym : context.getApi().getMap().getMapObjects().getGyms()) {
+                LatLong position = new LatLong(gym.getLatitude(), gym.getLongitude());
+                Marker gymMap = new Marker(new MarkerOptions().position(position).title(gym.getId()).icon("icons/gym.png"));
+                map.addMarker(gymMap);
+            }
+
+            for(Pokestop pokestop : context.getApi().getMap().getMapObjects().getPokestops()) {
+                LatLong position = new LatLong(pokestop.getLatitude(), pokestop.getLongitude());
+                Marker pokestopMap = new Marker(new MarkerOptions().position(position).title(pokestop.getId()).icon("icons/pokestop_small.png"));
+                map.addMarker(pokestopMap);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         //Marker of current player, thread to update a 'hack refresh'
         marker = new Marker(new MarkerOptions().position(center).title("Player").icon("icons/trainer.gif"));
         map.addMarker(marker);

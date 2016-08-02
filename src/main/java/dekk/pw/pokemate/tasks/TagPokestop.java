@@ -33,7 +33,7 @@ public class TagPokestop extends Task implements Runnable {
         try {
             try {
                 APIStartTime = System.currentTimeMillis();
-                context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Checking for PokeStops");
+
                 map = context.getApi().getMap().getMapObjects();
                 APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
@@ -49,15 +49,13 @@ public class TagPokestop extends Task implements Runnable {
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
                 // System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
-                context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "No PokeStops found");
                 return;
             }
-            context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Found " + pokestops.size() + " PokeStops");
+            //context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Found " + pokestops.size() + " PokeStops ");
             pokestops.stream()
                 .filter(Pokestop::canLoot)
                 .forEach(near -> {
                     Walking.setLocation(context);
-                    context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Looting PokeStop..");
                     String result = null;
                     try {
                         APIStartTime = System.currentTimeMillis();

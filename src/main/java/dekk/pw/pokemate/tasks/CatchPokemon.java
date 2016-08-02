@@ -57,27 +57,28 @@ public class CatchPokemon extends Task {
                 }
             }
 
-            CatchablePokemon target = pokemon.get(0);
-            if (target == null || pokeball == null) {
+            if(pokeball == null) {
                 return;
             }
 
-            Walking.setLocation(context);
-            EncounterResult encounterResult = target.encounterPokemon();
-            if (!encounterResult.wasSuccessful()) {
-                return;
-            }
+            for(CatchablePokemon target : pokemon) {
 
-            CatchResult catchResult = target.catchPokemon(pokeball);
-            if (catchResult.getStatus() != CATCH_SUCCESS) {
-                log(target.getPokemonId() + " fled.");
-                return;
-            }
+                Walking.setLocation(context);
+                EncounterResult encounterResult = target.encounterPokemon();
+                if (!encounterResult.wasSuccessful()) {
+                    return;
+                }
 
-            try {
-                final String targetId = target.getPokemonId().name();
+                CatchResult catchResult = target.catchPokemon(pokeball);
+                if (catchResult.getStatus() != CATCH_SUCCESS) {
+                    log(target.getPokemonId() + " fled.");
+                    return;
+                }
 
-                pokemons().stream()
+                try {
+                    final String targetId = target.getPokemonId().name();
+
+                    pokemons().stream()
                         .filter(pkmn -> pkmn.getPokemonId().name().equals(targetId))
                         .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))
                         .findFirst()
@@ -97,8 +98,9 @@ public class CatchPokemon extends Task {
                                 log(output + " [IV: " + getIvRatio(p) + "%]");
                             }
                         });
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
+                }
             }
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();

@@ -52,7 +52,7 @@ class CatchPokemon extends Task implements Runnable {
 
 
             for (CatchablePokemon target : pokemon) {
-
+                CatchResult catchResult;
                 Time.sleepRate();
                 Walking.setLocation(context);
                 EncounterResult encounterResult = target.encounterPokemon();
@@ -61,9 +61,9 @@ class CatchPokemon extends Task implements Runnable {
                 }
 
 
+                //get pokedex entry.
                 PokedexEntryOuterClass.PokedexEntry entry = context.getApi().getInventories().getPokedex().getPokedexEntry(target.getPokemonId());
 
-                CatchResult catchResult;
                 //if pokemon exist is registered in pokedex
                 if (entry != null) {
                     //need to get pokeball for each target in case there are no balls left of the last pokeball we used.
@@ -74,7 +74,7 @@ class CatchPokemon extends Task implements Runnable {
                         pokeball = target.getItemBall();
                     }
                     catchResult = target.catchPokemon(pokeball);
-                }else{
+                } else {
                     catchResult = target.catchPokemonWithBestBall();
                 }
 

@@ -38,7 +38,7 @@ public class Context {
     private boolean runStatus;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private int routesIndex;
-    LinkedHashMap<String,String> ConsoleStrings = new LinkedHashMap<>();
+    private LinkedHashMap<String,String> consoleStrings = new LinkedHashMap<>();
 
 
     public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {
@@ -51,19 +51,19 @@ public class Context {
         this.routesIndex = 0;
 
         //This just sets up a standardized order of outputs for the HashMap
-        this.ConsoleStrings.put("Bot Actions", "");
-        this.ConsoleStrings.put("Update", "");
-        this.ConsoleStrings.put("TagPokestop", "No PokeStops Tagged");
-        this.ConsoleStrings.put("CatchPokemon", "No Pokemon Caught");
-        this.ConsoleStrings.put("Navigate", "");
-        this.ConsoleStrings.put("Pokemon Management", "");
-        this.ConsoleStrings.put("EvolvePokemon", "No Pokemon Evolved");
-        this.ConsoleStrings.put("ReleasePokemon", "No Pokemon Released");
-        this.ConsoleStrings.put("Egg Management", "");
-        this.ConsoleStrings.put("HatchEgg", "No Eggs Hatched");
-        this.ConsoleStrings.put("IncubateEgg", "No Eggs Incubated");
-        this.ConsoleStrings.put("Item Management", "");
-        this.ConsoleStrings.put("DropItems", "No Items Dropped");
+        this.consoleStrings.put("Bot Actions", "");
+        this.consoleStrings.put("Update", "");
+        this.consoleStrings.put("TagPokestop", "No PokeStops Tagged");
+        this.consoleStrings.put("CatchPokemon", "No Pokemon Caught");
+        this.consoleStrings.put("Navigate", "");
+        this.consoleStrings.put("Pokemon Management", "");
+        this.consoleStrings.put("EvolvePokemon", "No Pokemon Evolved");
+        this.consoleStrings.put("ReleasePokemon", "No Pokemon Released");
+        this.consoleStrings.put("Egg Management", "");
+        this.consoleStrings.put("HatchEgg", "No Eggs Hatched");
+        this.consoleStrings.put("IncubateEgg", "No Eggs Incubated");
+        this.consoleStrings.put("Item Management", "");
+        this.consoleStrings.put("DropItems", "No Items Dropped");
     }
 
     public static CredentialProvider Login(OkHttpClient httpClient) {
@@ -178,10 +178,10 @@ public class Context {
 
     public void resetRoutesIndex() { this.routesIndex = 0; }
 
-    public LinkedHashMap<String, String> getConsoleStrings() { return ConsoleStrings; }
+    public LinkedHashMap<String, String> getConsoleStrings() { return consoleStrings; }
 
     public void addTask(Task task) { executor.submit(task); }
-    public void setConsoleString(String key, String text) { this.ConsoleStrings.put(key, text); }
+    public void setConsoleString(String key, String text) { this.consoleStrings.put(key, text); }
 
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;

@@ -299,7 +299,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         String incubatorsList = "\"";
         try {
             for (EggIncubator incubator : context.getApi().getInventories().getIncubators()) {
-                String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "901" : "902") + ".png";
+                String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "902" : "901") + ".png";
                 String walked = new DecimalFormat("#0.#").format(incubator.getKmWalked());
                 incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +

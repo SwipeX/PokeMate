@@ -11,6 +11,8 @@ import dekk.pw.pokemate.util.StringConverter;
 import javafx.scene.image.Image;
 
 import java.io.DataInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,27 +46,29 @@ public class EvolvePokemon extends Task implements Runnable {
     @Override
     public void run() {
         // System.out.println("[Evolve] Activating..");
-            try {
-                CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
-                for (Pokemon pokemon : pokeList)
-                    if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
-                        int number = pokemon.getPokemonId().getNumber();
-                        if (CANDY_AMOUNTS.containsKey(number)) {
-                            int required = CANDY_AMOUNTS.get(number);
-                            if (required < 1) continue;
-                            if (pokemon.getCandy() >= required) {
-                                EvolutionResult result = pokemon.evolve();
-                                if (result != null && result.isSuccessful()) {
-                                    String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
-                                    PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
-                                }
+        try {
+            CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getApi().getInventories().getPokebank().getPokemons());
+            for (Pokemon pokemon : pokeList)
+                if (!Config.isWhitelistEnabled() || Config.getWhitelistedPokemon().contains(pokemon.getPokemonId().getNumber())) {
+                    int number = pokemon.getPokemonId().getNumber();
+                    if (CANDY_AMOUNTS.containsKey(number)) {
+                        int required = CANDY_AMOUNTS.get(number);
+                        if (required < 1) continue;
+                        if (pokemon.getCandy() >= required) {
+                            EvolutionResult result = pokemon.evolve();
+                            if (result != null && result.isSuccessful()) {
+                                String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies";
+                                PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
+                                context.setConsoleString("EvolvePokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + evolutionresult);
                             }
                         }
                     }
-            } catch (RemoteServerException | LoginFailedException e1) {
-                System.out.println("[EvolvePokemon] Hit Rate Limited");
-                e1.printStackTrace();
-            }
-        context.addTask(new EvolvePokemon(context));
+                }
+        } catch (RemoteServerException | LoginFailedException e1) {
+            System.out.println("[EvolvePokemon] Hit Rate Limited");
+            e1.printStackTrace();
+        } finally {
+            context.addTask(new EvolvePokemon(context));
+        }
     }
 }

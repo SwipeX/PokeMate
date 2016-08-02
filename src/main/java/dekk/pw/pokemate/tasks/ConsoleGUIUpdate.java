@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static dekk.pw.pokemate.Context.millisToTimeString;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 
 /**
@@ -32,12 +33,9 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
 
     @Override
     public void run() {
-        calcXPH();
-
         // Clears old console output. (Probably won't work on windows)
         System.out.print("\033[H\033[2J");
-        System.out.print("Console GUI: [" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "]\n");
-
+        System.out.println(header());
         context.getConsoleStrings().forEach( (key,value) -> {
             if (value.isEmpty()) {
                 System.out.println(key + ":");
@@ -48,7 +46,7 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
         context.addTask(new ConsoleGUIUpdate(context));
     }
 
-    private void calcXPH() {
+    private String header() {
         try {
             long runTime = System.currentTimeMillis() - PokeMate.startTime;
             long curTotalXP = context.getProfile().getStats().getExperience();
@@ -56,11 +54,14 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
             if (curTotalXP > lastExperience) {
                 if (lastExperience != 0) {
                     experienceGained += curTotalXP - lastExperience;
-                    context.setConsoleString("Update", String.format("[%s] %5sXP/H", new SimpleDateFormat("HH:mm:ss").format(new Date()), new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6)))));
+                    context.setConsoleString("Update", String.format("[%s] %5sXP/H", new SimpleDateFormat("HH:mm:ss").format(new Date()), new DecimalFormat("#,###,###").format((experienceGained / (runTime / 3.6E6)))));
                 }
                 lastExperience = curTotalXP;
             }
             int curLevel = context.getProfile().getStats().getLevel();
+            double nextXP = REQUIRED_EXPERIENCES[context.getProfile().getStats().getLevel()] - REQUIRED_EXPERIENCES[context.getProfile().getStats().getLevel() - 1];
+            double curLevelXP = context.getProfile().getStats().getExperience() - REQUIRED_EXPERIENCES[context.getProfile().getStats().getLevel() - 1];
+
             if (curLevel > lastLevel) {
                 PlayerLevelUpRewards rewards = context.getProfile().acceptLevelUpRewards(curLevel - 1);
                 if (rewards.getStatus() == PlayerLevelUpRewards.Status.NEW) {
@@ -70,8 +71,12 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 }
                 lastLevel = curLevel;
             }
+
+            return "Name: " + context.getProfile().getPlayerData().getUsername() + "\tCurrent Level: " + context.getProfile().getStats().getLevel() + " - "+ new DecimalFormat("#,###,###").format((experienceGained / (runTime / 3.6E6))) +
+                "XP/Hour - XP to next level: " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +  " Runtime: " + millisToTimeString(runTime);
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
+            return "Error Updating Header";
         }
     }
 }

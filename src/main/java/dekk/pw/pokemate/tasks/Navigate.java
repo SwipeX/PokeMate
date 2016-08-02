@@ -11,6 +11,7 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class Navigate extends Task implements Runnable {
      */
     private void populateRoute(Context context) {
         try {
+            Time.sleepRate();
             List<Pokestop> stops = context.getMap().getMapObjects().getPokestops().stream().filter(a ->
                 //only pokestops in our region
                 a.getLatitude() >= min.lat &&

@@ -1,12 +1,10 @@
 package dekk.pw.pokemate.tasks;
 
 import POGOProtos.Data.PokedexEntryOuterClass;
-import POGOProtos.Inventory.Item.ItemIdOuterClass;
 import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.inventory.ItemBag;
 import com.pokegoapi.api.inventory.Pokeball;
-import com.pokegoapi.api.inventory.Pokedex;
 import com.pokegoapi.api.map.pokemon.CatchResult;
 import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;

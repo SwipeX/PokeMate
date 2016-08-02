@@ -38,17 +38,16 @@ public class TagPokestop extends Task implements Runnable {
 
             } catch (RemoteServerException e) {
                 System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
+                e.printStackTrace();
                 return;
             } catch (LoginFailedException e) {
-                //e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
             }
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
-                // System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
                 return;
             }
-            //context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Found " + pokestops.size() + " PokeStops ");
             pokestops.stream()
                 .filter(Pokestop::canLoot)
                 .forEach(near -> {
@@ -61,11 +60,11 @@ public class TagPokestop extends Task implements Runnable {
                         context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + result);
                     } catch (LoginFailedException e) {
                         //System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
-                        //e.printStackTrace();
+                        e.printStackTrace();
                     } catch (RemoteServerException e) {
                         //System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
                         context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Exceeded Rate Limit While looting");
-                        //e.printStackTrace();
+                        e.printStackTrace();
                     }
                 });
             //System.out.println("[Tag PokeStop] Ending Loop");

@@ -10,6 +10,7 @@ import dekk.pw.pokemate.PokeMateUI;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 
 import static dekk.pw.pokemate.Context.millisToTimeString;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
@@ -70,8 +71,13 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 lastLevel = curLevel;
             }
 
-            return "Name: " + context.getProfile().getPlayerData().getUsername() + "\t Level: " + context.getProfile().getStats().getLevel() + " - "+ new DecimalFormat("#,###,###").format((experienceGained / (runTime / 3.6E6))) +
-                "XP/Hour - Next level in " + new DecimalFormat("###,###,###").format(nextXP - curLevelXP) +  "XP - Runtime: " + millisToTimeString(runTime);
+            return String.format("Name: %-15s [%s] Level %d - %,.2fXP/H - Next Level in %,.2fXP - Runtime: %s",
+                                    context.getProfile().getPlayerData().getUsername(),
+                                    new SimpleDateFormat("HH:mm:ss").format(new Date()),
+                                    curLevel,
+                                   experienceGained / (runTime / 3.6E6),
+                                    nextXP-curLevelXP,
+                                    millisToTimeString(runTime));
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
             return "Error Updating Header";

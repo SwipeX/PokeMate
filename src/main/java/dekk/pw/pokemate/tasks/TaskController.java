@@ -30,7 +30,7 @@ public class TaskController extends Thread {
             tasks.add(new EvolvePokemon(context));
         }
 
-        //tasks.add(new TagPokestop(context));
+        tasks.add(new TagPokestop(context));
 
         if(Config.isEggsIncubating()) {
             tasks.add(new IncubateEgg(context));
@@ -57,6 +57,7 @@ public class TaskController extends Thread {
                     new ConsoleGUIUpdate(context).run();
                 } catch (Exception e) {
                     System.out.println("Rate Limit Exceeded");
+                    e.printStackTrace();
                 }
             }
         }, 0, 1000);

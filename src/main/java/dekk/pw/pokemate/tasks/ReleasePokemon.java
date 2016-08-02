@@ -40,14 +40,15 @@ public class ReleasePokemon extends Task implements Runnable {
                 }
                 int minCP = Config.getMinCP();
                 list.stream().filter(p -> (minCP <= 1 || p.getCp() < minCP) &&
-                        list.indexOf(p) < list.size() - 1 &&
-                        context.getIvRatio(p) < Config.getIvRatio() &&
-                        !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
+                    list.indexOf(p) < list.size() - 1 &&
+                    context.getIvRatio(p) < Config.getIvRatio() &&
+                    !Config.getNeverTransferPokemon().contains(p.getPokemonId().getNumber())).forEach(p -> {
                     //Passing this filter means they are not a 'perfect pokemon'
                     try {
                         p.transferPokemon();
                         Time.sleepRate();
                         PokeMateUI.addMessageToLog("Transferring " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]");
+                        context.setConsoleString("ReleasePokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + ("Transferred " + (list.indexOf(p) + 1) + "/" + list.size() + " " + p.getPokemonId() + " CP " + p.getCp() + " [" + p.getIndividualAttack() + "/" + p.getIndividualDefense() + "/" + p.getIndividualStamina() + "]"));
                     } catch (LoginFailedException | RemoteServerException e) {
                         e.printStackTrace();
                     }
@@ -58,9 +59,8 @@ public class ReleasePokemon extends Task implements Runnable {
             e.printStackTrace();
         } catch (RemoteServerException e) {
             e.printStackTrace();
+        } finally {
+            context.addTask(new ReleasePokemon(context));
         }
-
-        context.addTask(new ReleasePokemon(context));
     }
-
 }

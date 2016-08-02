@@ -10,7 +10,9 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 import static dekk.pw.pokemate.util.Time.sleep;
@@ -28,15 +30,17 @@ public class TagPokestop extends Task implements Runnable {
 
     @Override
     public void run() {
+        try {
             try {
                 APIStartTime = System.currentTimeMillis();
+                context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Checking for PokeStops");
                 map = context.getApi().getMap().getMapObjects();
                 APIElapsedTime = System.currentTimeMillis() - APIStartTime;
                 if (APIElapsedTime < context.getMinimumAPIWaitTime()) {
                     sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                 }
             } catch (RemoteServerException e) {
-               System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
+                System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
                 return;
             } catch (LoginFailedException e) {
                 //e.printStackTrace();
@@ -44,14 +48,16 @@ public class TagPokestop extends Task implements Runnable {
             }
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
-               // System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
+                // System.out.println("[Tag PokeStop] Ending Loop - No Stops Found");
+                context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "No PokeStops found");
                 return;
             }
+            context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Found " + pokestops.size() + " PokeStops");
             pokestops.stream()
                 .filter(Pokestop::canLoot)
                 .forEach(near -> {
                     Walking.setLocation(context);
-                   
+                    context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Looting PokeStop..");
                     String result = null;
                     try {
                         APIStartTime = System.currentTimeMillis();
@@ -61,23 +67,26 @@ public class TagPokestop extends Task implements Runnable {
                             sleep(context.getMinimumAPIWaitTime() - APIElapsedTime);
                         }
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
+                        context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + result);
                     } catch (LoginFailedException e) {
                         //System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
                         //e.printStackTrace();
                     } catch (RemoteServerException e) {
                         //System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
+                        context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Exceeded Rate Limit While looting");
                         //e.printStackTrace();
                     }
                 });
             //System.out.println("[Tag PokeStop] Ending Loop");
-        context.addTask(new TagPokestop(context));
-
+        } finally {
+            context.addTask(new TagPokestop(context));
+        }
     }
 
     private String resultMessage(final PokestopLootResult result) {
         switch (result.getResult()) {
             case SUCCESS:
-                String retstr = "Tagged pokestop [+" + result.getExperience() + "xp]";
+                String retstr = "Tagged pokestop [" + result.getExperience() + "xp]";
                 retstr += convertItemAwards(result.getItemsAwarded());
                 return retstr;
             case INVENTORY_FULL:

@@ -10,6 +10,9 @@ import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.Time;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Formatter;
 
 
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
@@ -37,43 +40,48 @@ public class Update extends Task implements Runnable{
 
     @Override
     public void run() {
-            try {
-                PlayerProfile player;
-                context.setProfile(player = context.getApi().getPlayerProfile());
+        try {
+            PlayerProfile player;
+            Time.sleepRate();
+            context.setProfile(player = context.getApi().getPlayerProfile());
 
-                player.updateProfile();
+            player.updateProfile();
 
-                Time.sleepRate();
-                context.getApi().getInventories().updateInventories(true);
+            Time.sleepRate();
+            context.getApi().getInventories().updateInventories(true);
 
-                long runTime = System.currentTimeMillis() - PokeMate.startTime;
-                long curTotalXP = player.getStats().getExperience();
-                if (curTotalXP > lastExperience) {
-                    if (lastExperience != 0) {
-                        experienceGained += curTotalXP - lastExperience;
-                    }
-                    lastExperience = curTotalXP;
+            long runTime = System.currentTimeMillis() - PokeMate.startTime;
+            long curTotalXP = player.getStats().getExperience();
+            if (curTotalXP > lastExperience) {
+                if (lastExperience != 0) {
+                    experienceGained += curTotalXP - lastExperience;
                 }
-                int curLevel = player.getStats().getLevel();
-                if (curLevel > lastLevel) {
-                    PlayerLevelUpRewards rewards = player.acceptLevelUpRewards(curLevel - 1);
-                    if (rewards.getStatus() == PlayerLevelUpRewards.Status.NEW) {
-                        String levelUp = "New level: " + curLevel;
-                        levelUp += convertItemAwards(rewards.getRewards());
-                        PokeMateUI.toast(levelUp, "Level Up", "icons/items/backpack.png");
-                    }
-                    lastLevel = curLevel;
-                }
-
-                PokeMateUI.toast("XP Update: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "XP/H", "Progress Monitor", "icons/items/backpack.png");
-            } catch (LoginFailedException e) {
-                //e.printStackTrace();
-                System.out.println("[Update] Login Failed, attempting to login again.");
-                Context.Login(context.getHttp());
-            } catch (RemoteServerException e) {
-                System.out.println("[Update] Error - Hit Rate limiter.");
+                lastExperience = curTotalXP;
             }
+            int curLevel = player.getStats().getLevel();
+            if (curLevel > lastLevel) {
+                PlayerLevelUpRewards rewards = player.acceptLevelUpRewards(curLevel - 1);
+                if (rewards.getStatus() == PlayerLevelUpRewards.Status.NEW) {
+                    String levelUp = "New level: " + curLevel;
+                    levelUp += convertItemAwards(rewards.getRewards());
+                    PokeMateUI.toast(levelUp, "Level Up", "icons/items/backpack.png");
+                }
+                lastLevel = curLevel;
+            }
+
+            PokeMateUI.toast("XP Update: " + new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6))) + "XP/H", "Progress Monitor", "icons/items/backpack.png");
+            context.setConsoleString("Update", String.format("[%s] %5sXP/H", new SimpleDateFormat("HH:mm:ss").format(new Date()), new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6)))));
+
+        } catch (LoginFailedException e) {
+            //e.printStackTrace();
+            System.out.println("[Update] Login Failed, attempting to login again.");
+            Context.Login(context.getHttp());
+        } catch (RemoteServerException e) {
+            context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + " Exceeded Rate Limit");
+        } finally {
+            context.addTask(new Update(context));
         }
+    }
 	
 	public static String getXpHr() {
 		return String.format("%.2f", xpHr);

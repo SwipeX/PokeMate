@@ -26,7 +26,7 @@ public class TaskController extends Thread {
         tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
             new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
 
-        //tasks.add(new Update(context));
+        tasks.add(new Update(context));
         tasks.add(new CatchPokemon(context));
 
         if (Config.isAutoEvolving()) {
@@ -46,6 +46,10 @@ public class TaskController extends Thread {
 
         if (Config.isDropItems()) {
             tasks.add(new DropItems(context));
+        }
+
+        if (Config.isConsoleNotification()) {
+            tasks.add(new ConsoleGUIUpdate(context));
         }
     }
 

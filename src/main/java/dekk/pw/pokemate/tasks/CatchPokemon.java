@@ -109,6 +109,7 @@ public class CatchPokemon extends Task implements Runnable {
                         } else {
                             log(output + " [IV: " + getIvRatio(p) + "%]");
                         }
+                        context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output + " [IV: " + getIvRatio(p) + "%]");
                     });
             } catch (NullPointerException ex) {
                 ex.printStackTrace();
@@ -116,9 +117,9 @@ public class CatchPokemon extends Task implements Runnable {
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
+        } finally {
+            context.addTask(new CatchPokemon(context));
         }
-       // System.out.println("[CatchPokemon] Ending Loop");
-        context.addTask(new CatchPokemon(context));
     }
 
 

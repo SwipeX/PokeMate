@@ -7,6 +7,9 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import static dekk.pw.pokemate.util.Time.sleep;
@@ -38,11 +41,13 @@ public class IncubateEgg extends Task implements Runnable{
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
                     String eggresult = "Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget() + "km)";
                     PokeMateUI.toast(eggresult, "Egg Incubated!", "icons/items/egg.png");
+                    context.setConsoleString("IncubateEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + eggresult);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            context.addTask(new IncubateEgg(context));
         }
-        context.addTask(new IncubateEgg(context));
     }
 }

@@ -12,13 +12,10 @@ import okhttp3.OkHttpClient;
 
 import javax.swing.*;
 import java.awt.Desktop;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,6 +38,8 @@ public class Context {
     private boolean runStatus;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private int routesIndex;
+    LinkedHashMap<String,String> ConsoleStrings = new LinkedHashMap<>();
+
 
     public Context(PokemonGo go, PlayerProfile profile, boolean walking, CredentialProvider credentialProvider, OkHttpClient http) {
         this.api = go;
@@ -50,6 +49,21 @@ public class Context {
         this.http = http;
         this.runStatus = true;
         this.routesIndex = 0;
+
+        //This just sets up a standardized order of outputs for the HashMap
+        this.ConsoleStrings.put("Bot Actions", "");
+        this.ConsoleStrings.put("Update", "");
+        this.ConsoleStrings.put("TagPokestop", "No PokeStops Tagged");
+        this.ConsoleStrings.put("CatchPokemon", "No Pokemon Caught");
+        this.ConsoleStrings.put("Navigate", "");
+        this.ConsoleStrings.put("Pokemon Management", "");
+        this.ConsoleStrings.put("EvolvePokemon", "No Pokemon Evolved");
+        this.ConsoleStrings.put("ReleasePokemon", "No Pokemon Released");
+        this.ConsoleStrings.put("Egg Management", "");
+        this.ConsoleStrings.put("HatchEgg", "No Eggs Hatched");
+        this.ConsoleStrings.put("IncubateEgg", "No Eggs Incubated");
+        this.ConsoleStrings.put("Item Management", "");
+        this.ConsoleStrings.put("DropItems", "No Items Dropped");
     }
 
     public static CredentialProvider Login(OkHttpClient httpClient) {
@@ -164,8 +178,10 @@ public class Context {
 
     public void resetRoutesIndex() { this.routesIndex = 0; }
 
+    public LinkedHashMap<String, String> getConsoleStrings() { return ConsoleStrings; }
 
     public void addTask(Task task) { executor.submit(task); }
+    public void setConsoleString(String key, String text) { this.ConsoleStrings.put(key, text); }
 
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;

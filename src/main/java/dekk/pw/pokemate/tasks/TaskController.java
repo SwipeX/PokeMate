@@ -5,6 +5,8 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by TimD on 7/21/2016.
@@ -16,13 +18,12 @@ public class TaskController extends Thread {
 
     public TaskController(final Context context) {
         this.context = context;
-        tasks.add(new Update(context));
 
+        tasks.add(new Update(context));
         tasks.add(new Navigate(context, new LatLng(context.getLat().get() - VARIANCE, context.getLng().get() - VARIANCE),
             new LatLng(context.getLat().get() + VARIANCE, context.getLng().get() + VARIANCE)));
-
-
         tasks.add(new CatchPokemon(context));
+        tasks.add(new ReleasePokemon(context));
 
         if (Config.isAutoEvolving()) {
             tasks.add(new EvolvePokemon(context));
@@ -42,10 +43,6 @@ public class TaskController extends Thread {
         if (Config.isDropItems()) {
             tasks.add(new DropItems(context));
         }
-
-        if (Config.isConsoleNotification()) {
-            tasks.add(new ConsoleGUIUpdate(context));
-        }
     }
 
     /**
@@ -53,6 +50,12 @@ public class TaskController extends Thread {
      */
     public void run() {
 
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                    new ConsoleGUIUpdate(context).run();
+            }
+        }, 0, 1000);
         tasks.forEach(context::addTask);
 
     }

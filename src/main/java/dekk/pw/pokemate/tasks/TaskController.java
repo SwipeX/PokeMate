@@ -30,7 +30,6 @@ public class TaskController extends Thread {
             tasks.add(new EvolvePokemon(context));
         }
 
-        tasks.add(new ReleasePokemon(context));
         //tasks.add(new TagPokestop(context));
 
         if(Config.isEggsIncubating()) {

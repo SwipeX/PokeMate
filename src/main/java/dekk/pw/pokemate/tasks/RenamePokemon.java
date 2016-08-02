@@ -32,7 +32,8 @@ public class RenamePokemon extends Task implements Runnable {
                 final double pokeIV = pokemon.getIvRatio() * 100.0;
                 final int pokeIVInt = (int) pokeIV;
                 final String newName = String.format("%d_%s", pokeIVInt, pokemon.getPokemonId());
-                if (name.equals(newName)) continue;
+                if (name.equals(newName) ||
+                        !name.equalsIgnoreCase(pokemon.getDefaultInstanceForType().getNickname())) continue;
 
                 NicknamePokemonResponseOuterClass.NicknamePokemonResponse.Result result = pokemon.renamePokemon(newName);
                 if(result == NicknamePokemonResponseOuterClass.NicknamePokemonResponse.Result.SUCCESS) {

@@ -81,7 +81,7 @@ crashlytics-build.properties
 fabric.properties
 
 # PTC Login credentials
-config.properties
+*.properties
 *.txt
 /tokens
 

@@ -16,6 +16,7 @@ import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.api.pokemon.EggPokemon;
 import com.pokegoapi.api.pokemon.Pokemon;
+import com.pokegoapi.api.pokemon.PokemonMeta;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.tasks.Navigate;
@@ -410,7 +411,10 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         String rows = "\"";
         for (Pokemon pokemon : context.getInventories().getPokebank().getPokemons()) {
             if (pokemon.getPokemonFamily() != null) {
-                rows += "<tr> <td><img width=\'80\' height=\'80\' src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'></td> <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> </tr>";
+
+                final PokemonMeta meta = pokemon.getMeta();
+                rows += "<tr> <td><img width=\'40\' height=\'40\' src=\'icons/" + pokemon.getPokemonId().getNumber() + ".png\'><br />" + meta.getType1().name() + "/" + meta.getType2().name() + "<br/>" + meta.getPokemonClass().name() + "</td>" +
+                        " <td>" + pokemon.getCp() + "</td> <td>" + pokemon.getCandy() + "</td> <td>" + context.getIvRatio(pokemon) + "</td> <td>" + pokemon.getMove1().name() + "<br />" + pokemon.getMove2().name() + "</td> </tr>";
             }
         }
 

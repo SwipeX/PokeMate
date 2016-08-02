@@ -62,8 +62,6 @@ public class CatchPokemon extends Task implements Runnable {
 	                }
 	            }
 	            
-	            CatchablePokemon target = pokemon.get(0);
-	
 	            if (pokeball == null) {
 	                //System.out.println("[CatchPokemon] Ending Loop No Pokemon or No Pokeballs");
 	                return;

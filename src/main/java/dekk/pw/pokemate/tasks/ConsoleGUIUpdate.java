@@ -1,21 +1,15 @@
 package dekk.pw.pokemate.tasks;
 
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
-import com.pokegoapi.api.player.PlayerProfile;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
-import dekk.pw.pokemate.util.Time;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 
@@ -31,7 +25,6 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
     private static int experienceGained = 0;
     private static long lastExperience = 0;
     private static int lastLevel;
-    private static DecimalFormat ratioFormat = new DecimalFormat("#0.00");
 
     ConsoleGUIUpdate(final Context context) {
         super(context);
@@ -39,11 +32,7 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
 
     @Override
     public void run() {
-
-
         calcXPH();
-        Set set = context.getConsoleStrings().entrySet();
-        Iterator i = set.iterator();
 
         // Clears old console output. (Probably won't work on windows)
         System.out.print("\033[H\033[2J");
@@ -81,9 +70,7 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 }
                 lastLevel = curLevel;
             }
-        } catch (LoginFailedException e) {
-            e.printStackTrace();
-        } catch (RemoteServerException e) {
+        } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
         }
     }

@@ -12,10 +12,8 @@ import com.google.maps.model.LatLng;
 public class LatLongFromLocation {
 
     private String GoogleApiKey = "";
-    private LatLng location;
     private double latitude;
     private double longitude;
-    private final String ERROR_MESSAGE = "Couldn't find specified custom location, falling back to co-ordinates";
 
     public LatLongFromLocation(String GoogleApiKey) {
         this.GoogleApiKey = GoogleApiKey;
@@ -23,6 +21,7 @@ public class LatLongFromLocation {
 
     public boolean parseLocation(String locationName){
 
+        String ERROR_MESSAGE = "Couldn't find specified custom location, falling back to co-ordinates";
         if (locationName == null || locationName.equals("")) {
             System.out.println(ERROR_MESSAGE);
             return false;
@@ -31,7 +30,7 @@ public class LatLongFromLocation {
         GeoApiContext context = new GeoApiContext().setApiKey(GoogleApiKey);
         try {
             GeocodingResult[] request = GeocodingApi.newRequest(context).address(locationName).await();
-            location = request[0].geometry.location;
+            LatLng location = request[0].geometry.location;
             latitude = location.lat;
             longitude = location.lng;
             System.out.println("Found custom location to be: " + request[0].formattedAddress);

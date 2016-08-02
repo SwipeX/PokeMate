@@ -44,7 +44,7 @@ public class Config {
     private static boolean transferPrefersIV;
     private static int cpMinimumForMessage;
     private static Navigate.NavigationType navigationType;
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
     private static int minItemAmount;
 
     public static void load(String configPath) {
@@ -108,19 +108,8 @@ public class Config {
             return;
         }
 
-        Arrays.asList(propertiesString.split(",")).stream()
+        Arrays.stream(propertiesString.split(","))
             .filter(s -> s.length() > 0)
-            .forEach(target::add);
-    }
-
-    private static void fillList(String propertiesString, List<Integer> target) {
-        if (propertiesString == null) {
-            return;
-        }
-
-        Arrays.asList(propertiesString.split(",")).stream()
-            .filter(s -> s.length() > 0)
-            .map(Integer::parseInt)
             .forEach(target::add);
     }
 
@@ -183,14 +172,14 @@ public class Config {
     }
 
     public static List<PokemonIdOuterClass.PokemonId> getWhitelistedPokemon() {
-        return(whiteListedPokemon.stream().map(pokeId -> PokemonIdOuterClass.PokemonId.valueOf(pokeId)).collect(Collectors.toList()));
+        return(whiteListedPokemon.stream().map(PokemonIdOuterClass.PokemonId::valueOf).collect(Collectors.toList()));
     }
 
     public static List<PokemonIdOuterClass.PokemonId> getNeverTransferPokemon() {
-        return(neverTransferPokemon.stream().map(pokeId -> PokemonIdOuterClass.PokemonId.valueOf(pokeId)).collect(Collectors.toList()));
+        return(neverTransferPokemon.stream().map(PokemonIdOuterClass.PokemonId::valueOf).collect(Collectors.toList()));
     }
     public static List<PokemonIdOuterClass.PokemonId> getIgnoreCatchingPokemon() {
-        return(ignoreCatchingPokemon.stream().map(pokeId -> PokemonIdOuterClass.PokemonId.valueOf(pokeId)).collect(Collectors.toList()));
+        return(ignoreCatchingPokemon.stream().map(PokemonIdOuterClass.PokemonId::valueOf).collect(Collectors.toList()));
     }
 
 

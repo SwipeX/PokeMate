@@ -29,11 +29,11 @@ class DropItems extends Task implements Runnable {
                 ItemId id = ItemId.valueOf(itemToDrop);
                 try {
                     Time.sleepRate();
-                    int count = context.getInventories().getItemBag().getItem(id).getCount();
+                    int count = context.getApi().getInventories().getItemBag().getItem(id).getCount() - Config.getMinItemAmount();
                     Time.sleepRate();
-                    if (count > Config.getMinItemAmount()) {
-                        context.getInventories().getItemBag().removeItem(id, count - (count - Config.getMinItemAmount()));
-                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + (count - (count - Config.getMinItemAmount())) + ")";
+                    if (count > 0) {
+                        context.getApi().getInventories().getItemBag().removeItem(id, count);
+                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                         context.setConsoleString("DropItems", removedItem);
                     }

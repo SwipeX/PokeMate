@@ -39,7 +39,7 @@ public class Context {
     private final AtomicBoolean walking = new AtomicBoolean(false);
     private CredentialProvider credentialProvider;
     private static final SystemTimeImpl time = new SystemTimeImpl();
-    private final ExecutorService executor = Executors.newFixedThreadPool(1);
+    private final ExecutorService executor = Executors.newFixedThreadPool(3);
     private int routesIndex;
     private final LinkedHashMap<String,String> consoleStrings = new LinkedHashMap<>();
     private Map pokeMap;

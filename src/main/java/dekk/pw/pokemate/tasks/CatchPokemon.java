@@ -50,6 +50,8 @@ class CatchPokemon extends Task implements Runnable {
 
 
             for (CatchablePokemon target : pokemon) {
+                if(target == null)
+                    continue;
                 CatchResult catchResult;
                 Time.sleepRate();
                 Walking.setLocation(context);

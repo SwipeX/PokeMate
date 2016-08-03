@@ -80,7 +80,6 @@ class CatchPokemon extends Task implements Runnable {
                     context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
                     continue;
                 }
-                System.out.println(catchResult.getStatus());
 
                 try {
                     final String targetId = target.getPokemonId().name();

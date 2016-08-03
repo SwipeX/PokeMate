@@ -36,6 +36,7 @@ class CatchPokemon extends Task implements Runnable {
 
     @Override
     public void run() {
+        context.addTask(new CatchPokemon(context));
         //System.out.println("[CatchPokemon] Starting Loop");
         try {
             Pokeball pokeball = null;
@@ -51,11 +52,11 @@ class CatchPokemon extends Task implements Runnable {
             CatchResult catchResult;
             for (CatchablePokemon target : pokemon) {
                 context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + target.getPokemonId() + " Stuck in catch?");
-  
+
                 Time.sleepRate();
                 if(target == null)
                     continue;
-                
+
                 Time.sleepRate();
                 Walking.setLocation(context);
                 EncounterResult encounterResult = target.encounterPokemon();

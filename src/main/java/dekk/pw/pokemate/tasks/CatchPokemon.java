@@ -79,7 +79,6 @@ class CatchPokemon extends Task implements Runnable {
                     context.setConsoleString("CatchPokemon", target.getPokemonId() + " fled.");
                     continue;
                 }
-                System.out.println(catchResult.getStatus());
 
                 try {
                     final String targetId = target.getPokemonId().name();

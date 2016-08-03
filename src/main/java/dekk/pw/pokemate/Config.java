@@ -46,6 +46,7 @@ public class Config {
     private static Navigate.NavigationType navigationType;
     private static final Properties properties = new Properties();
     private static int minItemAmount;
+    private static boolean consoleUI;
 
     public static void load(String configPath) {
         try {
@@ -83,6 +84,7 @@ public class Config {
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
             uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
+            consoleUI = Boolean.parseBoolean(properties.getProperty("console_ui", "false"));
             // dropped items
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
             String droppedItemNames = properties.getProperty("drop_item_list", "ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE");
@@ -145,6 +147,8 @@ public class Config {
     public static boolean isShowUI() {
         return showUI;
     }
+
+    public static boolean isConsoleUI() { return consoleUI; }
 
     public static boolean isDropItems() {
         return dropItems;

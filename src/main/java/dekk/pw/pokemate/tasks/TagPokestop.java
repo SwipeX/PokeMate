@@ -31,19 +31,9 @@ public class TagPokestop extends Task implements Runnable {
 
     @Override
     public void run() {
-        try {
-            try {
-                Time.sleepRate();
-                map = context.getMap().getMapObjects();
 
-            } catch (RemoteServerException e) {
-                System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
-                e.printStackTrace();
-                return;
-            } catch (LoginFailedException e) {
-                e.printStackTrace();
-                System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
-            }
+        try {
+            map = context.getMap().getMapObjects();
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
                 return;
@@ -67,18 +57,24 @@ public class TagPokestop extends Task implements Runnable {
                         e.printStackTrace();
                     }
                 });
-            //System.out.println("[Tag PokeStop] Ending Loop");
+        } catch (RemoteServerException e) {
+        System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
+        e.printStackTrace();
+        return;
+        } catch (LoginFailedException e) {
+            e.printStackTrace();
+            System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
         } finally {
-            switch (navigationType) {
-                case POKESTOPS:
-                    break;
-                case POKEMON:
-                    //TODO: walk dynamically to nearest pokemon
-                    break;
-                default:
-                    Time.sleepRate();
-                    context.addTask(new TagPokestop(context));
-            }
+                switch (navigationType) {
+                    case POKESTOPS:
+                        break;
+                    case POKEMON:
+                        //TODO: walk dynamically to nearest pokemon
+                        break;
+                    default:
+                        Time.sleepRate();
+                        context.addTask(new TagPokestop(context));
+                }
         }
     }
 

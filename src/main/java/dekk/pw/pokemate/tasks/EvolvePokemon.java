@@ -8,7 +8,6 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.StringConverter;
-import dekk.pw.pokemate.util.Time;
 
 import java.io.DataInputStream;
 import java.text.SimpleDateFormat;
@@ -42,7 +41,7 @@ class EvolvePokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        // System.out.println("[Evolve] Activating..");
+        context.addTask(new EvolvePokemon(context));
         try {
             CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getInventories().getPokebank().getPokemons());
             for (Pokemon pokemon : pokeList)
@@ -54,7 +53,7 @@ class EvolvePokemon extends Task implements Runnable {
                         if (pokemon.getCandy() >= required) {
                             EvolutionResult result = pokemon.evolve();
                             if (result != null && result.isSuccessful()) {
-                                String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies. (+" + result.getCandyAwarded() + (result.getCandyAwarded() > 1 ? " candies " : "candy") + " , " + result.getExpAwarded() + "xp)";
+                                String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies. (+ " + result.getCandyAwarded() + (result.getCandyAwarded() > 1 ? " candies " : " candy") + " , " + result.getExpAwarded() + "xp)";
                                 PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
                                 context.setConsoleString("EvolvePokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + evolutionresult);
                             }
@@ -64,9 +63,6 @@ class EvolvePokemon extends Task implements Runnable {
         } catch (RemoteServerException | LoginFailedException e1) {
             System.out.println("[EvolvePokemon] Hit Rate Limited");
             e1.printStackTrace();
-        } finally {
-            Time.sleepRate();
-            context.addTask(new EvolvePokemon(context));
         }
     }
 }

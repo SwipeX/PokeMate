@@ -3,6 +3,8 @@ package dekk.pw.pokemate.tasks;
 import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass;
 import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.Time;
@@ -23,32 +25,31 @@ class IncubateEgg extends Task implements Runnable{
 
     @Override
     public void run() {
-        try {
-            List<EggIncubator> incubators = context.getInventories().getIncubators().stream().filter(i -> {
-                try {
-                    return !i.isInUse();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }).collect(Collectors.toList());
+        context.addTask(new IncubateEgg(context));
+        List<EggIncubator> incubators = context.getInventories().getIncubators().stream().filter(i -> {
+            try {
+                return !i.isInUse();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }).collect(Collectors.toList());
 
-            List<EggPokemon> eggs = context.getInventories().getHatchery().getEggs().stream().filter(egg ->
-                egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
-            if (incubators.size() > 0 && eggs.size() > 0) {
-                Time.sleepRate();
-                UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = incubators.get(0).hatchEgg(eggs.get(0));
+        List<EggPokemon> eggs = context.getInventories().getHatchery().getEggs().stream().filter(egg ->
+            egg.getEggIncubatorId() == null || egg.getEggIncubatorId().isEmpty()).collect(Collectors.toList());
+        if (incubators.size() > 0 && eggs.size() > 0) {
+            Time.sleepRate();
+            UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result result = null;
+            try {
+                result = incubators.get(0).hatchEgg(eggs.get(0));
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
                     String eggresult = "Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget() + "km)";
                     PokeMateUI.toast(eggresult, "Egg Incubated!", "icons/items/egg.png");
                     context.setConsoleString("IncubateEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + eggresult);
                 }
+            } catch (LoginFailedException | RemoteServerException e ) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Time.sleepRate();
-            context.addTask(new IncubateEgg(context));
         }
     }
 }

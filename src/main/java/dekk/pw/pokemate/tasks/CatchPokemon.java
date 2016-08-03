@@ -1,6 +1,7 @@
 package dekk.pw.pokemate.tasks;
 
-import POGOProtos.Inventory.Item.ItemIdOuterClass;
+import POGOProtos.Data.PokedexEntryOuterClass;
+import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId;
 import com.pokegoapi.api.inventory.Item;
 import com.pokegoapi.api.inventory.ItemBag;
 import com.pokegoapi.api.inventory.Pokeball;
@@ -9,6 +10,7 @@ import com.pokegoapi.api.map.pokemon.CatchablePokemon;
 import com.pokegoapi.api.map.pokemon.encounter.EncounterResult;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.NoSuchItemException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
@@ -34,37 +36,23 @@ class CatchPokemon extends Task implements Runnable {
 
     @Override
     public void run() {
+        context.addTask(new CatchPokemon(context));
         //System.out.println("[CatchPokemon] Starting Loop");
         try {
-            Pokeball pokeball = null;
+            Pokeball pokeball;
             List<CatchablePokemon> pokemon = context.getMap().getCatchablePokemon().stream()
-                .filter(this::shouldIgnore)
-                .collect(Collectors.toList());
+                    .filter(this::shouldIgnore)
+                    .collect(Collectors.toList());
 
             if (pokemon.size() == 0) {
-               // System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
+                // System.out.println("[CatchPokemon] Ending Loop - No Pokemon Found");
                 return;
             }
 
-            Item ball = itemBag().getItem(getItemForId(Config.getPreferredBall()));
-            if (ball != null && ball.getCount() > 0) {
-                pokeball = getBallForId(Config.getPreferredBall());
-            } else {
-                //find any pokeball we can.
-                for (Pokeball pb : Pokeball.values()) {
-                    ball = itemBag().getItem(pb.getBallType());
-                    if (ball != null && ball.getCount() > 0) {
-                        pokeball = pb;
-                        break;
-                    }
-                }
-            }
+            CatchResult catchResult;
             for (CatchablePokemon target : pokemon) {
+                context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + target.getPokemonId() + " Stuck in catch?");
 
-                if (pokeball == null) {
-                    //System.out.println("[CatchPokemon] No Pokeballs");
-                    return;
-                }
                 Time.sleepRate();
                 Walking.setLocation(context);
                 EncounterResult encounterResult = target.encounterPokemon();
@@ -72,7 +60,24 @@ class CatchPokemon extends Task implements Runnable {
                     continue;
                 }
 
-                CatchResult catchResult = target.catchPokemon(pokeball);
+
+                //get pokedex entry.
+                PokedexEntryOuterClass.PokedexEntry entry = context.getApi().getInventories().getPokedex().getPokedexEntry(target.getPokemonId());
+
+                //if pokemon exist is registered in pokedex
+                if (entry != null) {
+                    //need to get pokeball for each target in case there are no balls left of the last pokeball we used.
+                    Item ball = itemBag().getItem(getItemForId(Config.getPreferredBall()));
+                    if (ball != null && ball.getCount() > 0) {
+                        pokeball = getBallForId(Config.getPreferredBall());
+                    } else {
+                        pokeball = target.getItemBall();
+                    }
+                    catchResult = target.catchPokemon(pokeball);
+                } else {
+                    catchResult = target.catchPokemonWithBestBall();
+                }
+
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
                     context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
                     continue;
@@ -80,26 +85,25 @@ class CatchPokemon extends Task implements Runnable {
 
                 try {
                     final String targetId = target.getPokemonId().name();
-
                     pokemons().stream()
-                        .filter(pkmn -> pkmn.getPokemonId().name().equals(targetId))
-                        .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))
-                        .findFirst()
-                        .ifPresent(p -> {
-                            String output = null;
-                            try {
-                                output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
-                            } catch (LoginFailedException | RemoteServerException e) {
-                                e.printStackTrace();
-                            }
+                            .filter(pkmn -> pkmn.getPokemonId().name().equals(targetId))
+                            .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))
+                            .findFirst()
+                            .ifPresent(p -> {
+                                String output = null;
+                                try {
+                                    output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
+                                } catch (LoginFailedException | RemoteServerException e) {
+                                    e.printStackTrace();
+                                }
 
-                            if (p.getCp() > Config.getMinimumCPForMessage()) {
-                                PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
-                            } else {
-                                log(output + " [IV: " + getIvRatio(p) + "%]");
-                            }
-                            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output + " [IV: " + getIvRatio(p) + "%]");
-                        });
+                                if (p.getCp() > Config.getMinimumCPForMessage()) {
+                                    PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
+                                } else {
+                                    log(output + " [IV: " + getIvRatio(p) + "%]");
+                                }
+                                context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output + " [IV: " + getIvRatio(p) + "%]");
+                            });
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
@@ -107,9 +111,8 @@ class CatchPokemon extends Task implements Runnable {
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
-        } finally {
-            Time.sleepRate();
-            context.addTask(new CatchPokemon(context));
+        } catch (NoSuchItemException e) {
+            //System.out.println("[CatchPokemon] No Pokeballs");
         }
     }
 
@@ -119,11 +122,11 @@ class CatchPokemon extends Task implements Runnable {
     }
 
     private List<Pokemon> pokemons() {
-            return context.getInventories().getPokebank().getPokemons();
+        return context.getInventories().getPokebank().getPokemons();
     }
 
     private ItemBag itemBag() {
-            return context.getInventories().getItemBag();
+        return context.getInventories().getItemBag();
     }
 
     private void log(final String message) {
@@ -136,20 +139,22 @@ class CatchPokemon extends Task implements Runnable {
         return (pokemon.getIndividualAttack() + pokemon.getIndividualDefense() + pokemon.getIndividualStamina()) * 100 / 45;
     }
 
-    private ItemIdOuterClass.ItemId getItemForId(final int id) {
-        return ItemIdOuterClass.ItemId.forNumber(id);
+    private ItemId getItemForId(final int id) {
+        return ItemId.forNumber(id);
     }
 
-    private Pokeball getBallForId(int id) {
+    private Pokeball getBallForId(int id) throws NoSuchItemException {
         switch (id) {
-            case ItemIdOuterClass.ItemId.ITEM_GREAT_BALL_VALUE:
+            case ItemId.ITEM_GREAT_BALL_VALUE:
                 return Pokeball.GREATBALL;
-            case ItemIdOuterClass.ItemId.ITEM_ULTRA_BALL_VALUE:
+            case ItemId.ITEM_ULTRA_BALL_VALUE:
                 return Pokeball.ULTRABALL;
-            case ItemIdOuterClass.ItemId.ITEM_MASTER_BALL_VALUE:
+            case ItemId.ITEM_MASTER_BALL_VALUE:
                 return Pokeball.MASTERBALL;
-            default:
+            case ItemId.ITEM_POKE_BALL_VALUE:
                 return Pokeball.POKEBALL;
+            default:
+                throw new NoSuchItemException();
         }
     }
 

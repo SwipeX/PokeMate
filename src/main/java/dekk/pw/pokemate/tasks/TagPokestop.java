@@ -33,7 +33,6 @@ public class TagPokestop extends Task implements Runnable {
     public void run() {
         try {
             try {
-                Time.sleepRate();
                 map = context.getMap().getMapObjects();
 
             } catch (RemoteServerException e) {
@@ -54,7 +53,6 @@ public class TagPokestop extends Task implements Runnable {
                     Walking.setLocation(context);
                     String result = null;
                     try {
-                        Time.sleepRate();
                         result = resultMessage(near.loot());
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + result);
@@ -76,7 +74,6 @@ public class TagPokestop extends Task implements Runnable {
                     //TODO: walk dynamically to nearest pokemon
                     break;
                 default:
-                    Time.sleepRate();
                     context.addTask(new TagPokestop(context));
             }
         }

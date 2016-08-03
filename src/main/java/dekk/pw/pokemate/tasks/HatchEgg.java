@@ -21,10 +21,8 @@ class HatchEgg extends Task implements Runnable{
     public void run() {
         try {
             List<HatchedEgg> eggs = context.getInventories().getHatchery().queryHatchedEggs();
-            Time.sleepRate();
             eggs.forEach(egg -> {
                 Pokemon hatchedPokemon = null;
-                Time.sleepRate();
                 hatchedPokemon = context.getInventories().getPokebank().getPokemonById(egg.getId());
                 String details = String.format("candy: %s  exp: %s  stardust: %s", egg.getCandy(), egg.getExperience(), egg.getStardust());
                 if (hatchedPokemon == null) {
@@ -41,7 +39,6 @@ class HatchEgg extends Task implements Runnable{
             context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
             //e.printStackTrace();
         } finally {
-            Time.sleepRate();
             context.addTask(new HatchEgg(context));
         }
     }

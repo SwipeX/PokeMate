@@ -20,11 +20,8 @@ public class Update extends Task implements Runnable{
     @Override
     public void run() {
         try {
-            Time.sleepRate();
             context.refreshInventories();
-            Time.sleepRate();
             context.refreshMap();
-            Time.sleepRate();
             context.getProfile().updateProfile();
             context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date())+ "] Cache Updated");
         } catch (LoginFailedException e) {
@@ -39,11 +36,8 @@ public class Update extends Task implements Runnable{
 
     public void runOnce() {
         try {
-            Time.sleepRate();
             context.refreshInventories();
-            Time.sleepRate();
             context.refreshMap();
-            Time.sleepRate();
             context.getProfile().updateProfile();
         } catch (LoginFailedException e) {
             System.out.println("[Update] Login Failed, attempting to login again.");

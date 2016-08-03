@@ -12,8 +12,4 @@ public class Time {
             e.printStackTrace();
         }
     }
-
-    public static void sleepRate() {
-        sleep(300);
-    }
 }

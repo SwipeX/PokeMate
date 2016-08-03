@@ -114,7 +114,6 @@ class CatchPokemon extends Task implements Runnable {
         } catch (NoSuchItemException e) {
             context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] Out of Pokeballs.");;
         } finally {
-            Time.sleepRate();
             context.addTask(new CatchPokemon(context));
         }
     }

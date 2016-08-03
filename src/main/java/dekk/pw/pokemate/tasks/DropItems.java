@@ -28,9 +28,7 @@ class DropItems extends Task implements Runnable {
             Config.getDroppedItems().forEach( (itemToDrop, minAmount) -> {
                 ItemId id = ItemId.valueOf(itemToDrop);
                 try {
-                    Time.sleepRate();
                     int countToDrop = context.getApi().getInventories().getItemBag().getItem(id).getCount() - minAmount;
-                    Time.sleepRate();
                     if (countToDrop > 0) {
                         context.getApi().getInventories().getItemBag().removeItem(id, countToDrop);
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + countToDrop + ")";
@@ -43,7 +41,6 @@ class DropItems extends Task implements Runnable {
                 }
             });
         } finally {
-            Time.sleepRate();
             context.addTask(new DropItems(context));
         }
     }

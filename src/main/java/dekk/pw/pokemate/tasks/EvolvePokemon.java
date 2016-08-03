@@ -65,7 +65,6 @@ class EvolvePokemon extends Task implements Runnable {
             System.out.println("[EvolvePokemon] Hit Rate Limited");
             e1.printStackTrace();
         } finally {
-            Time.sleepRate();
             context.addTask(new EvolvePokemon(context));
         }
     }

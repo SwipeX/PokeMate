@@ -71,7 +71,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     //public static void main(String[] args) {
     //    launch(args);
     //}
-    public static void setPoke(PokeMate p) {
+    static void setPoke(PokeMate p) {
         poke = p;
     }
 
@@ -294,7 +294,7 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
         try {
             for (EggIncubator incubator : context.getInventories().getIncubators()) {
                 String imgSrc = "icons/items/" + (incubator.getUsesRemaining() > 0 ? "902" : "901") + ".png";
-                String walked = new DecimalFormat("#0.#").format(incubator.getKmWalked());
+                String walked = new DecimalFormat("#0.#").format(incubator.getKmCurrentlyWalked());
                 incubatorsList += "<tr><td style='width:72px;'><img style=\'width: 70px; height: 70px;\' " +
                         "src=\'" + imgSrc + "\'" + "></td>" +
                         "<td style='width: 200px;'>Currently: " + (incubator.isInUse() ? "<b style='color:#ff0000;'>In use</b>" : "<b style='color:#00ff00;'>unused</b>") +

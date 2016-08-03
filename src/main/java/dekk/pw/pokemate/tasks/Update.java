@@ -33,7 +33,6 @@ public class Update extends Task implements Runnable{
         } catch (RemoteServerException e) {
             context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + " Exceeded Rate Limit");
         } finally {
-            Time.sleepRate();
             context.addTask(new Update(context));
         }
     }

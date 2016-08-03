@@ -74,13 +74,13 @@ class CatchPokemon extends Task implements Runnable {
                 }
 
                 CatchResult catchResult = target.catchPokemon(pokeball);
-                System.out.println(catchResult.getStatus());
 
                 // TODO: Status has changed, need to get correct values at some point
-                if (catchResult.getStatus() == CATCH_FLEE) {
+                if (catchResult.getStatus()==CATCH_SUCCESS) {
                     context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
                     continue;
                 }
+                System.out.println(catchResult.getStatus());
 
                 try {
                     final String targetId = target.getPokemonId().name();
@@ -102,7 +102,7 @@ class CatchPokemon extends Task implements Runnable {
                             } else {
                                 log(output + " [IV: " + getIvRatio(p) + "%]");
                             }
-                            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + output + " [IV: " + getIvRatio(p) + "%]");
+                            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + output + " [IV: " + getIvRatio(p) + "%]");
                         });
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
@@ -111,6 +111,8 @@ class CatchPokemon extends Task implements Runnable {
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
+        } catch (NoSuchItemException e) {
+            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + " Out of Pokeballs");
         } finally {
             Time.sleepRate();
             context.addTask(new CatchPokemon(context));

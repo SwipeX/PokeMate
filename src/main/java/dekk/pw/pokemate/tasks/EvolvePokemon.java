@@ -54,7 +54,7 @@ class EvolvePokemon extends Task implements Runnable {
                         if (pokemon.getCandy() >= required) {
                             EvolutionResult result = pokemon.evolve();
                             if (result != null && result.isSuccessful()) {
-                                String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies. (+" + result.getCandyAwarded() + (result.getCandyAwarded() > 1 ? " candies " : "candy") + " , " + result.getExpAwarded() + "xp)";
+                                String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies. (+ " + result.getCandyAwarded() + (result.getCandyAwarded() > 1 ? " candies " : " candy") + " , " + result.getExpAwarded() + "xp)";
                                 PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
                                 context.setConsoleString("EvolvePokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + evolutionresult);
                             }

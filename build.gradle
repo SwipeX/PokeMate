@@ -26,6 +26,10 @@ repositories {
 
 dependencies {
 
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.6.2'
+
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.2'
+
     compile 'com.lynden:GMapsFX:2.0.7'
 
     compile 'com.google.maps:google-maps-services:0.1.15'

@@ -76,11 +76,11 @@ public class PokeMateUI extends Application implements MapComponentInitializedLi
     }
 
     public static void toast(String message, String title, String image) {
-        /*
+
         if (Config.isConsoleNotification())
             System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message);
         messagesForLog += "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + message + "\\r\\n\\r\\n";
-        */
+
         if (Config.isShowUI() && Config.isUserInterfaceNotification()) Platform.runLater(() -> mapComponent.getWebview().getEngine().executeScript(String.format(NOTIFY, image, message)));
         if (Config.isShowUI() && Config.isUiSystemNotification()) Platform.runLater(() -> Notifications.create()
                 .graphic(new ImageView(new Image(image, 64, 64, false, false)))

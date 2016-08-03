@@ -42,7 +42,7 @@ class EvolvePokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        // System.out.println("[Evolve] Activating..");
+        context.addTask(new EvolvePokemon(context));
         try {
             CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getInventories().getPokebank().getPokemons());
             for (Pokemon pokemon : pokeList)
@@ -64,9 +64,6 @@ class EvolvePokemon extends Task implements Runnable {
         } catch (RemoteServerException | LoginFailedException e1) {
             System.out.println("[EvolvePokemon] Hit Rate Limited");
             e1.printStackTrace();
-        } finally {
-            Time.sleepRate();
-            context.addTask(new EvolvePokemon(context));
         }
     }
 }

@@ -34,6 +34,7 @@ class CatchPokemon extends Task implements Runnable {
 
     @Override
     public void run() {
+        context.addTask(new CatchPokemon(context));
         //System.out.println("[CatchPokemon] Starting Loop");
         try {
             Pokeball pokeball = null;
@@ -60,7 +61,9 @@ class CatchPokemon extends Task implements Runnable {
                 }
             }
             for (CatchablePokemon target : pokemon) {
+                context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + target.getPokemonId() + " Stuck in catch?");
 
+                Time.sleepRate();
                 if (pokeball == null) {
                     //System.out.println("[CatchPokemon] No Pokeballs");
                     return;
@@ -107,9 +110,6 @@ class CatchPokemon extends Task implements Runnable {
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
-        } finally {
-            Time.sleepRate();
-            context.addTask(new CatchPokemon(context));
         }
     }
 

@@ -19,6 +19,7 @@ class HatchEgg extends Task implements Runnable{
 
     @Override
     public void run() {
+        context.addTask(new HatchEgg(context));
         try {
             List<HatchedEgg> eggs = context.getInventories().getHatchery().queryHatchedEggs();
             Time.sleepRate();
@@ -40,9 +41,6 @@ class HatchEgg extends Task implements Runnable{
         } catch (LoginFailedException | RemoteServerException e) {
             context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
             //e.printStackTrace();
-        } finally {
-            Time.sleepRate();
-            context.addTask(new HatchEgg(context));
         }
     }
 }

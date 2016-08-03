@@ -24,27 +24,23 @@ class DropItems extends Task implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Config.getDroppedItems().forEach(itemToDrop -> {
-                ItemId id = ItemId.valueOf(itemToDrop);
-                try {
-                    Time.sleepRate();
-                    int count = context.getApi().getInventories().getItemBag().getItem(id).getCount() - Config.getMinItemAmount();
-                    Time.sleepRate();
-                    if (count > 0) {
-                        context.getApi().getInventories().getItemBag().removeItem(id, count);
-                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
-                        PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
-                        context.setConsoleString("DropItems", removedItem);
-                    }
-                } catch (RemoteServerException | LoginFailedException e) {
-                    context.setConsoleString("Debug", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + context.getConsoleStrings().get("Debug") + "    [DropItems] Exceeded Rate Limit\n");
-                    e.printStackTrace();
+        context.addTask(new DropItems(context));
+        Config.getDroppedItems().forEach(itemToDrop -> {
+            ItemId id = ItemId.valueOf(itemToDrop);
+            try {
+                Time.sleepRate();
+                int count = context.getApi().getInventories().getItemBag().getItem(id).getCount() - Config.getMinItemAmount();
+                Time.sleepRate();
+                if (count > 0) {
+                    context.getApi().getInventories().getItemBag().removeItem(id, count);
+                    String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
+                    PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
+                    context.setConsoleString("DropItems", removedItem);
                 }
-            });
-        } finally {
-            Time.sleepRate();
-            context.addTask(new DropItems(context));
-        }
+            } catch (RemoteServerException | LoginFailedException e) {
+                context.setConsoleString("Debug", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + context.getConsoleStrings().get("Debug") + "    [DropItems] Exceeded Rate Limit\n");
+                e.printStackTrace();
+            }
+        });
     }
 }

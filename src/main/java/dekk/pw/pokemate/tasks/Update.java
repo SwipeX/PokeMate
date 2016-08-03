@@ -19,6 +19,7 @@ public class Update extends Task implements Runnable{
 
     @Override
     public void run() {
+        context.addTask(new Update(context));
         try {
             Time.sleepRate();
             context.refreshInventories();
@@ -26,15 +27,12 @@ public class Update extends Task implements Runnable{
             context.refreshMap();
             Time.sleepRate();
             context.getProfile().updateProfile();
-            context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date())+ "] Cache Updated");
+            context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] Cache Updated");
         } catch (LoginFailedException e) {
             System.out.println("[Update] Login Failed, attempting to login again.");
             Context.Login(context.getHttp());
         } catch (RemoteServerException e) {
             context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + " Exceeded Rate Limit");
-        } finally {
-            Time.sleepRate();
-            context.addTask(new Update(context));
         }
     }
 

@@ -7,10 +7,7 @@ import dekk.pw.pokemate.tasks.Navigate;
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -211,8 +208,10 @@ public class Config {
         return eggsHatching;
     }
 
-    public static List<String> getDroppedItems() {
-        return droppedItems;
+    public static Map<String,Integer> getDroppedItems() {
+        return droppedItems.stream().collect(
+            Collectors.toMap(s -> s.split(":")[0], s -> Integer.parseInt(s.split(":").length == 2 ? s.split(":")[1] : "0"))
+        );
     }
 
     public static int getMinimumCPForMessage() {
@@ -225,9 +224,5 @@ public class Config {
 
     public static void setTransferPrefersIV(boolean transferPrefersIV) {
         Config.transferPrefersIV = transferPrefersIV;
-    }
-
-    public static int getMinItemAmount() {
-        return minItemAmount;
     }
 }

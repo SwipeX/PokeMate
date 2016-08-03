@@ -85,7 +85,6 @@ class CatchPokemon extends Task implements Runnable {
 
                 try {
                     final String targetId = target.getPokemonId().name();
-
                     pokemons().stream()
                             .filter(pkmn -> pkmn.getPokemonId().name().equals(targetId))
                             .sorted((a, b) -> Long.compare(b.getCreationTimeMs(), a.getCreationTimeMs()))

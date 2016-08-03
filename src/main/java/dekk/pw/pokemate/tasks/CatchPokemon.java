@@ -50,6 +50,9 @@ class CatchPokemon extends Task implements Runnable {
 
             CatchResult catchResult;
             for (CatchablePokemon target : pokemon) {
+                context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + target.getPokemonId() + " Stuck in catch?");
+  
+                Time.sleepRate();
                 if(target == null)
                     continue;
                 
@@ -114,8 +117,6 @@ class CatchPokemon extends Task implements Runnable {
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
         } catch (NoSuchItemException e) {
             //System.out.println("[CatchPokemon] No Pokeballs");
-        } finally {
-            context.addTask(new CatchPokemon(context));
         }
     }
 

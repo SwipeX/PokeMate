@@ -54,6 +54,7 @@ class ReleasePokemon extends Task implements Runnable {
                 });
             }
         } finally {
+            Time.sleepRate();
             context.addTask(new ReleasePokemon(context));
         }
     }

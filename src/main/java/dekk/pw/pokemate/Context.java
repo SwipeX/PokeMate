@@ -107,13 +107,20 @@ public class Context {
                         return new GoogleUserCredentialProvider(httpClient, token, time);
                     }
                 } else {
+                    String access;
                     GoogleUserCredentialProvider provider = new GoogleUserCredentialProvider(httpClient, time);
                     System.out.println("-----------------------------------------");
                     System.out.println("  Please go to the following URL");
                     System.out.println(GoogleUserCredentialProvider.LOGIN_URL);
-                    Desktop.getDesktop().browse(URI.create(GoogleUserCredentialProvider.LOGIN_URL));
-
-                    String access = JOptionPane.showInputDialog("Enter authorization code: ");
+                    if (Config.isShowUI()) {
+                        Desktop.getDesktop().browse(URI.create(GoogleUserCredentialProvider.LOGIN_URL));
+                         access = JOptionPane.showInputDialog("Enter authorization code: ");
+                    }
+                    else {
+                        System.out.println("Enter authorization code: ");
+                        Scanner sc = new Scanner(System.in);
+                        access = sc.nextLine();
+                    }
                     provider.login(access);
                     try (PrintWriter p = new PrintWriter("tokens/" + Context.getUsernameHash() + ".txt")) {
                         p.println(provider.getRefreshToken());

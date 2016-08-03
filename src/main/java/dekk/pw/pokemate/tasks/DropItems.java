@@ -43,6 +43,7 @@ class DropItems extends Task implements Runnable {
                 }
             });
         } finally {
+            Time.sleepRate();
             context.addTask(new DropItems(context));
         }
     }

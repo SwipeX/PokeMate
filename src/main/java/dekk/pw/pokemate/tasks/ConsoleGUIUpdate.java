@@ -3,6 +3,7 @@ package dekk.pw.pokemate.tasks;
 import com.pokegoapi.api.player.PlayerLevelUpRewards;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
@@ -10,7 +11,9 @@ import dekk.pw.pokemate.PokeMateUI;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 
+import static dekk.pw.pokemate.Context.millisToTimeString;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 
 /**
@@ -32,12 +35,9 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
 
     @Override
     public void run() {
-        calcXPH();
-
         // Clears old console output. (Probably won't work on windows)
         System.out.print("\033[H\033[2J");
-        System.out.print("Console GUI: [" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "]\n");
-
+        System.out.println(header());
         context.getConsoleStrings().forEach( (key,value) -> {
             if (value.isEmpty()) {
                 System.out.println(key + ":");
@@ -45,10 +45,9 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                 System.out.printf("%-15.15s %-30s\n", "\t" + key, value);
             }
         });
-        context.addTask(new ConsoleGUIUpdate(context));
     }
 
-    private void calcXPH() {
+    private String header() {
         try {
             long runTime = System.currentTimeMillis() - PokeMate.startTime;
             long curTotalXP = context.getProfile().getStats().getExperience();
@@ -56,22 +55,32 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
             if (curTotalXP > lastExperience) {
                 if (lastExperience != 0) {
                     experienceGained += curTotalXP - lastExperience;
-                    context.setConsoleString("Update", String.format("[%s] %5sXP/H", new SimpleDateFormat("HH:mm:ss").format(new Date()), new DecimalFormat("###,###,###").format((experienceGained / (runTime / 3.6E6)))));
-                }
+                     }
                 lastExperience = curTotalXP;
             }
             int curLevel = context.getProfile().getStats().getLevel();
+            double nextXP = REQUIRED_EXPERIENCES[context.getProfile().getStats().getLevel()] - REQUIRED_EXPERIENCES[context.getProfile().getStats().getLevel() - 1];
+            double curLevelXP = context.getProfile().getStats().getExperience() - REQUIRED_EXPERIENCES[context.getProfile().getStats().getLevel() - 1];
+
             if (curLevel > lastLevel) {
                 PlayerLevelUpRewards rewards = context.getProfile().acceptLevelUpRewards(curLevel - 1);
-                if (rewards.getStatus() == PlayerLevelUpRewards.Status.NEW) {
-                    String levelUp = "New level: " + curLevel;
-                    levelUp += convertItemAwards(rewards.getRewards());
+                if (rewards.getStatus() == PlayerLevelUpRewards.Status.NEW && Config.isShowUI()) {
+                    final String levelUp = "New level: " + curLevel + convertItemAwards(rewards.getRewards());
                     PokeMateUI.toast(levelUp, "Level Up", "icons/items/backpack.png");
                 }
                 lastLevel = curLevel;
             }
+
+            return String.format("Name: %-15s [%s] Level %d - %,.2fXP/H - Next Level in %,.0fXP - Runtime: %s",
+                                    context.getProfile().getPlayerData().getUsername(),
+                                    new SimpleDateFormat("HH:mm:ss").format(new Date()),
+                                    curLevel,
+                                   experienceGained / (runTime / 3.6E6),
+                                    nextXP-curLevelXP,
+                                    millisToTimeString(runTime));
         } catch (LoginFailedException | RemoteServerException e) {
             e.printStackTrace();
+            return "Error Updating Header";
         }
     }
 }

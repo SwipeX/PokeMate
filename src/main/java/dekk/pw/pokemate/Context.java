@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -202,7 +204,7 @@ public class Context {
 
     public void addTask(Task task) { executor.submit(task); }
 
-    public void setConsoleString(String key, String text) { this.consoleStrings.put(key, text); }
+    public void setConsoleString(String key, String text) { this.consoleStrings.put(key, "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + text); }
 
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;

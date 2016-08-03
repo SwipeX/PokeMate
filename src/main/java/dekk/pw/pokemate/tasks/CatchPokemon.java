@@ -17,7 +17,6 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.StringConverter;
-import dekk.pw.pokemate.util.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,7 +38,6 @@ class CatchPokemon extends Task implements Runnable {
     public void run() {
         //System.out.println("[CatchPokemon] Starting Loop");
         try {
-            Pokeball pokeball = null;
 
             List<CatchablePokemon> pokemon = context.getMap().getCatchablePokemon().stream()
                     .filter(this::shouldIgnore)
@@ -49,6 +47,7 @@ class CatchPokemon extends Task implements Runnable {
                 return;
             }
 
+            Pokeball pokeball;
             CatchResult catchResult;
             for (CatchablePokemon target : pokemon) {
 
@@ -77,7 +76,7 @@ class CatchPokemon extends Task implements Runnable {
                 }
 
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
-                    context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
+                    context.setConsoleString("CatchPokemon", target.getPokemonId() + " fled.");
                     continue;
                 }
                 System.out.println(catchResult.getStatus());
@@ -102,7 +101,7 @@ class CatchPokemon extends Task implements Runnable {
                             } else {
                                 log(output + " [IV: " + getIvRatio(p) + "%]");
                             }
-                            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + output + " [IV: " + getIvRatio(p) + "%]");
+                            context.setConsoleString("CatchPokemon", output + " [IV: " + getIvRatio(p) + "%]");
                         });
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
@@ -112,7 +111,7 @@ class CatchPokemon extends Task implements Runnable {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
         } catch (NoSuchItemException e) {
-            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] Out of Pokeballs.");;
+            context.setConsoleString("CatchPokemon","Out of Pokeballs.");
         } finally {
             context.addTask(new CatchPokemon(context));
         }

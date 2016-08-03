@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_FLEE;
 import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS;
 
 /**
@@ -73,7 +74,10 @@ class CatchPokemon extends Task implements Runnable {
                 }
 
                 CatchResult catchResult = target.catchPokemon(pokeball);
-                if (catchResult.getStatus() != CATCH_SUCCESS) {
+                System.out.println(catchResult.getStatus());
+
+                // TODO: Status has changed, need to get correct values at some point
+                if (catchResult.getStatus() == CATCH_FLEE) {
                     context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
                     continue;
                 }

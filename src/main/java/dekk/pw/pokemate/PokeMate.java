@@ -12,6 +12,9 @@ import dekk.pw.pokemate.util.LatLongFromLocation;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,11 +29,14 @@ public class PokeMate {
     public static long startTime;
     private static Context context;
 
+    private static final Logger logger = LogManager.getLogger(PokeMate.class);
+
     private double getSmallRandom() {
         return Math.random() * 0.0003 - 0.0003;
     }
 
     private PokeMate() throws LoginFailedException, RemoteServerException {
+
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.readTimeout(60, TimeUnit.SECONDS);
@@ -49,7 +55,8 @@ public class PokeMate {
             lat = fromLocation.getLatitude();
             lng = fromLocation.getLongitude();
 
-            System.out.println("Using Custom Location");
+            logger.info("Using Custom Location {} with lat/lon {}, {}", namedLocation, lat, lng);
+
         } else { // Use given co-ordindates instead
             AtomicDouble alat = new AtomicDouble();
             alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude"))+getSmallRandom());
@@ -58,10 +65,14 @@ public class PokeMate {
             AtomicDouble alng = new AtomicDouble();
             alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude"))+getSmallRandom());
             lng = alng ;
+
+            logger.info("Using Coordinates {}, {}", lat, lng);
         }
 
         auth = Context.Login(http);
-        System.out.println("Logged in as " + Config.getUsername());
+
+        logger.info("Logged in as {}", Config.getUsername());
+
         //PokemonGo go = new PokemonGo(auth, http);
         PokemonGo go = new PokemonGo(auth, http, new SystemTimeImpl());
 
@@ -83,14 +94,14 @@ public class PokeMate {
         File configProperties;
         if (args.length == 0) {
             configProperties = new File("config.properties");
-            System.out.println("Using default config.properties location");
+            logger.info("Using default config.properties location");
         } else {
             configProperties = new File(args[0]);
-            System.out.println("Using configuration file: " + configProperties.toPath());
+            logger.info("Using configuration file: {}", configProperties.toPath());
         }
 
         if (!configProperties.exists()) {
-            System.out.println("ERROR - Could not find the required config.properties file: " + configProperties.getAbsolutePath());
+            logger.error("ERROR - Could not find the required config.properties file: {}", configProperties.getAbsolutePath());
             System.exit(1);
         }
 

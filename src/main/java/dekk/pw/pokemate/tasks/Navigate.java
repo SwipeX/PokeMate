@@ -70,7 +70,6 @@ public class Navigate extends Task implements Runnable {
      */
     private void populateRoute(Context context) {
         try {
-            Time.sleepRate();
             List<Pokestop> stops = context.getMap().getMapObjects().getPokestops().stream().filter(a ->
                 //only pokestops in our region
                 a.getLatitude() >= min.lat &&

@@ -1,5 +1,5 @@
 group 'pw.tdekk'
-version '0.3.2.4'
+version '0.3.3.1'
 
 buildscript {
 
@@ -21,15 +21,20 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
+    jcenter()
 }
 
 dependencies {
+
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.6.2'
+
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.2'
 
     compile 'com.lynden:GMapsFX:2.0.7'
 
     compile 'com.google.maps:google-maps-services:0.1.15'
 
-    compile 'com.github.Grover-c13:PokeGOAPI-Java:d1cd3f9'
+    compile 'com.github.Grover-c13:PokeGOAPI-Java:8866907'
 
     compile 'com.squareup.okhttp3:okhttp:3.4.0-RC1'
 

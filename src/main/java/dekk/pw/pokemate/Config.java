@@ -7,10 +7,7 @@ import dekk.pw.pokemate.tasks.Navigate;
 import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +43,7 @@ public class Config {
     private static Navigate.NavigationType navigationType;
     private static final Properties properties = new Properties();
     private static int minItemAmount;
+    private static boolean consoleUI;
 
     public static void load(String configPath) {
         try {
@@ -83,6 +81,7 @@ public class Config {
             consoleNotification = Boolean.parseBoolean(properties.getProperty("console_notification", "true"));
             userInterfaceNotification = Boolean.parseBoolean(properties.getProperty("ui_notification", "true"));
             uiSystemNotification = Boolean.parseBoolean(properties.getProperty("sys_notification", "false"));
+            consoleUI = Boolean.parseBoolean(properties.getProperty("console_ui", "false"));
             // dropped items
             dropItems = Boolean.parseBoolean(properties.getProperty("drop_items", "true"));
             String droppedItemNames = properties.getProperty("drop_item_list", "ITEM_POTION,ITEM_SUPER_POTION,ITEM_MAX_POTION,ITEM_HYPER_POTION,ITEM_RAZZ_BERRY,ITEM_REVIVE,ITEM_MAX_REVIVE");
@@ -145,6 +144,8 @@ public class Config {
     public static boolean isShowUI() {
         return showUI;
     }
+
+    public static boolean isConsoleUI() { return consoleUI; }
 
     public static boolean isDropItems() {
         return dropItems;
@@ -211,8 +212,10 @@ public class Config {
         return eggsHatching;
     }
 
-    public static List<String> getDroppedItems() {
-        return droppedItems;
+    public static Map<String,Integer> getDroppedItems() {
+        return droppedItems.stream().collect(
+            Collectors.toMap(s -> s.split(":")[0], s -> Integer.parseInt(s.split(":").length == 2 ? s.split(":")[1] : "0"))
+        );
     }
 
     public static int getMinimumCPForMessage() {
@@ -225,9 +228,5 @@ public class Config {
 
     public static void setTransferPrefersIV(boolean transferPrefersIV) {
         Config.transferPrefersIV = transferPrefersIV;
-    }
-
-    public static int getMinItemAmount() {
-        return minItemAmount;
     }
 }

@@ -25,15 +25,13 @@ class DropItems extends Task implements Runnable {
     @Override
     public void run() {
         try {
-            Config.getDroppedItems().forEach(itemToDrop -> {
+            Config.getDroppedItems().forEach( (itemToDrop, minAmount) -> {
                 ItemId id = ItemId.valueOf(itemToDrop);
                 try {
-                    Time.sleepRate();
-                    int count = context.getApi().getInventories().getItemBag().getItem(id).getCount() - Config.getMinItemAmount();
-                    Time.sleepRate();
-                    if (count > 0) {
-                        context.getApi().getInventories().getItemBag().removeItem(id, count);
-                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + count + ")";
+                    int countToDrop = context.getApi().getInventories().getItemBag().getItem(id).getCount() - minAmount;
+                    if (countToDrop > 0) {
+                        context.getApi().getInventories().getItemBag().removeItem(id, countToDrop);
+                        String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + countToDrop + ")";
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
                         context.setConsoleString("DropItems", removedItem);
                     }

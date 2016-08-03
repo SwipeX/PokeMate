@@ -36,7 +36,7 @@ class DropItems extends Task implements Runnable {
                         context.setConsoleString("DropItems", removedItem);
                     }
                 } catch (RemoteServerException | LoginFailedException e) {
-                    context.setConsoleString("Debug", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + context.getConsoleStrings().get("Debug") + "    [DropItems] Exceeded Rate Limit\n");
+                    context.setConsoleString("Debug", context.getConsoleStrings().get("Debug") + "    [DropItems] Exceeded Rate Limit\n");
                     e.printStackTrace();
                 }
             });

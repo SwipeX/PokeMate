@@ -3,10 +3,6 @@ package dekk.pw.pokemate.tasks;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
-import dekk.pw.pokemate.util.Time;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -23,12 +19,12 @@ public class Update extends Task implements Runnable{
             context.refreshInventories();
             context.refreshMap();
             context.getProfile().updateProfile();
-            context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date())+ "] Cache Updated");
+            context.setConsoleString("Update", "Cache Updated");
         } catch (LoginFailedException e) {
             System.out.println("[Update] Login Failed, attempting to login again.");
             Context.Login(context.getHttp());
         } catch (RemoteServerException e) {
-            context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + " Exceeded Rate Limit");
+            context.setConsoleString("Update","Exceeded Rate Limit");
         } finally {
             context.addTask(new Update(context));
         }
@@ -43,7 +39,7 @@ public class Update extends Task implements Runnable{
             System.out.println("[Update] Login Failed, attempting to login again.");
             Context.Login(context.getHttp());
         } catch (RemoteServerException e) {
-            context.setConsoleString("Update", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + " Exceeded Rate Limit");
+            context.setConsoleString("Update", "Exceeded Rate Limit");
         }
     }
 }

@@ -6,10 +6,7 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
-import dekk.pw.pokemate.util.Time;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 class HatchEgg extends Task implements Runnable{
@@ -32,11 +29,11 @@ class HatchEgg extends Task implements Runnable{
                     PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
                         "Hatched egg!",
                         "icons/items/egg.png");
-                    context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
+                    context.setConsoleString("HatchEgg","Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {
-            context.setConsoleString("HatchEgg", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Hatch Pokemon Exceeded Rate Limit");
+            context.setConsoleString("HatchEgg", "Hatch Pokemon Exceeded Rate Limit");
             //e.printStackTrace();
         } finally {
             context.addTask(new HatchEgg(context));

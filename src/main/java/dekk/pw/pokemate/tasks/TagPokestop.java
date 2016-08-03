@@ -9,11 +9,9 @@ import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.Walking;
-import dekk.pw.pokemate.util.Time;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 import static dekk.pw.pokemate.tasks.Navigate.navigationType;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
@@ -55,13 +53,13 @@ public class TagPokestop extends Task implements Runnable {
                     try {
                         result = resultMessage(near.loot());
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
-                        context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + result);
+                        context.setConsoleString("TagPokestop", result);
                     } catch (LoginFailedException e) {
                         //System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
                         e.printStackTrace();
                     } catch (RemoteServerException e) {
                         //System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
-                        context.setConsoleString("TagPokestop", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + "Exceeded Rate Limit While looting");
+                        context.setConsoleString("TagPokestop","Exceeded Rate Limit While looting");
                         e.printStackTrace();
                     }
                 });

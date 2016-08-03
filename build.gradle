@@ -34,7 +34,7 @@ dependencies {
 
     compile 'com.google.maps:google-maps-services:0.1.15'
 
-    compile 'com.github.Grover-c13:PokeGOAPI-Java:a273fd7'
+    compile 'com.github.Grover-c13:PokeGOAPI-Java:8866907'
 
     compile 'com.squareup.okhttp3:okhttp:3.4.0-RC1'
 

@@ -76,7 +76,7 @@ class CatchPokemon extends Task implements Runnable {
                 CatchResult catchResult = target.catchPokemon(pokeball);
 
                 // TODO: Status has changed, need to get correct values at some point
-                if (catchResult.getStatus()==CATCH_SUCCESS) {
+                if (catchResult.getStatus()!=CATCH_SUCCESS) {
                     context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + target.getPokemonId() + " fled.");
                     continue;
                 }
@@ -111,8 +111,6 @@ class CatchPokemon extends Task implements Runnable {
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
             System.out.println("[CatchPokemon] Exceeded Rate Limit");
-        } catch (NoSuchItemException e) {
-            context.setConsoleString("CatchPokemon", "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + " Out of Pokeballs");
         } finally {
             Time.sleepRate();
             context.addTask(new CatchPokemon(context));

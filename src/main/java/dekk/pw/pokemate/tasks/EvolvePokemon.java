@@ -56,13 +56,13 @@ class EvolvePokemon extends Task implements Runnable {
                             if (result != null && result.isSuccessful()) {
                                 String evolutionresult = StringConverter.titleCase(pokemon.getPokemonId().name()) + " has evolved into " + StringConverter.titleCase(result.getEvolvedPokemon().getPokemonId().name()) + " costing " + required + " candies. (+" + result.getCandyAwarded() + (result.getCandyAwarded() > 1 ? " candies " : "candy") + " , " + result.getExpAwarded() + "xp)";
                                 PokeMateUI.toast(evolutionresult, Config.POKE + "mon evolved!", "icons/" + pokemon.getPokemonId().getNumber() + ".png");
-                                context.setConsoleString("EvolvePokemon",evolutionresult);
+                                context.setConsoleString("EvolvePokemon", evolutionresult);
                             }
                         }
                     }
                 }
         } catch (RemoteServerException | LoginFailedException e1) {
-            System.out.println("[EvolvePokemon] Hit Rate Limited");
+            context.setConsoleString("EvolvePokemon", "Server Error");
             e1.printStackTrace();
         } finally {
             context.addTask(new EvolvePokemon(context));

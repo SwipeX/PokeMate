@@ -24,6 +24,7 @@ class DropItems extends Task implements Runnable {
 
     @Override
     public void run() {
+        String removedItemsString = "";
         try {
             Config.getDroppedItems().forEach( (itemToDrop, minAmount) -> {
                 ItemId id = ItemId.valueOf(itemToDrop);
@@ -32,12 +33,13 @@ class DropItems extends Task implements Runnable {
                     if (countToDrop > 0) {
                         context.getApi().getInventories().getItemBag().removeItem(id, countToDrop);
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + countToDrop + ")";
+                        removedItemsString.concat(removedItem);
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
-                        context.setConsoleString("DropItems", removedItem);
+                        context.setConsoleString("DropItems", removedItemsString);
                     }
                 } catch (RemoteServerException | LoginFailedException e) {
-                    context.setConsoleString("Debug", context.getConsoleStrings().get("Debug") + "    [DropItems] Exceeded Rate Limit\n");
-                    e.printStackTrace();
+                    context.setConsoleString("DropItems", "Server Error");
+                    PokeMateUI.toast("Server Error", "DropItems", "icons/items/" + id.getNumber() + ".png");
                 }
             });
         } finally {

@@ -21,10 +21,10 @@ public class Update extends Task implements Runnable{
             context.getProfile().updateProfile();
             context.setConsoleString("Update", "Cache Updated");
         } catch (LoginFailedException e) {
-            System.out.println("[Update] Login Failed, attempting to login again.");
+            context.setConsoleString("Update", "Login Failed, attempting to login again.");
             Context.Login(context.getHttp());
         } catch (RemoteServerException e) {
-            context.setConsoleString("Update","Exceeded Rate Limit");
+            context.setConsoleString("Update", "Server Error");
         } finally {
             context.addTask(new Update(context));
         }
@@ -36,10 +36,10 @@ public class Update extends Task implements Runnable{
             context.refreshMap();
             context.getProfile().updateProfile();
         } catch (LoginFailedException e) {
-            System.out.println("[Update] Login Failed, attempting to login again.");
+            context.setConsoleString("Update", "Login Error, attempting to login again.");
             Context.Login(context.getHttp());
         } catch (RemoteServerException e) {
-            context.setConsoleString("Update", "Exceeded Rate Limit");
+            context.setConsoleString("Update", "Server Error");
         }
     }
 }

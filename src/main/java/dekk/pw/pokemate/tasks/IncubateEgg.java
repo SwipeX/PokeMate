@@ -38,7 +38,7 @@ class IncubateEgg extends Task implements Runnable{
                 if (result.equals(UseItemEggIncubatorResponseOuterClass.UseItemEggIncubatorResponse.Result.SUCCESS)) {
                     String eggresult = "Now incubating egg ( " + eggs.get(0).getEggKmWalkedTarget() + "km)";
                     PokeMateUI.toast(eggresult, "Egg Incubated!", "icons/items/egg.png");
-                    context.setConsoleString("IncubateEgg",eggresult);
+                    context.setConsoleString("IncubateEgg", eggresult);
                 }
             }
         } catch (Exception e) {

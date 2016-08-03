@@ -19,10 +19,10 @@ import dekk.pw.pokemate.Walking;
 import dekk.pw.pokemate.util.StringConverter;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_FLEE;
 import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse.CatchStatus.CATCH_SUCCESS;
 
 /**
@@ -36,7 +36,6 @@ class CatchPokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        //System.out.println("[CatchPokemon] Starting Loop");
         try {
 
             List<CatchablePokemon> pokemon = context.getMap().getCatchablePokemon().stream()
@@ -76,7 +75,7 @@ class CatchPokemon extends Task implements Runnable {
                 }
 
                 if (catchResult.getStatus() != CATCH_SUCCESS) {
-                    context.setConsoleString("CatchPokemon", target.getPokemonId() + " fled.");
+                    context.setConsoleString("CatchPokemon", target.getPokemonId() + "ran away.");
                     continue;
                 }
 
@@ -91,16 +90,17 @@ class CatchPokemon extends Task implements Runnable {
                             String output = null;
                             try {
                                 output = String.format("Caught a %s [CP: %d] [Candy: %d]", StringConverter.titleCase(targetId), p.getCp(), p.getCandy());
+                                if (p.getCp() > Config.getMinimumCPForMessage()) {
+                                    PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
+                                } else {
+                                    log(output + " [IV: " + getIvRatio(p) + "%]");
+                                }
+                                context.setConsoleString("CatchPokemon", String.format("%s [IV: %d%%]", output, getIvRatio(p)));
                             } catch (LoginFailedException | RemoteServerException e) {
-                                e.printStackTrace();
+                                context.setConsoleString("CatchPokemon", "Server Error.");
                             }
 
-                            if (p.getCp() > Config.getMinimumCPForMessage()) {
-                                PokeMateUI.toast(output, Config.POKE + "mon caught!", "icons/" + target.getPokemonId().getNumber() + ".png");
-                            } else {
-                                log(output + " [IV: " + getIvRatio(p) + "%]");
-                            }
-                            context.setConsoleString("CatchPokemon", output + " [IV: " + getIvRatio(p) + "%]");
+
                         });
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
@@ -108,7 +108,7 @@ class CatchPokemon extends Task implements Runnable {
             }
         } catch (LoginFailedException | RemoteServerException e) {
             //e.printStackTrace();
-            System.out.println("[CatchPokemon] Exceeded Rate Limit");
+            context.setConsoleString("CatchPokemon", "Server Error.");
         } catch (NoSuchItemException e) {
             context.setConsoleString("CatchPokemon","Out of Pokeballs.");
         } finally {

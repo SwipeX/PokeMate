@@ -75,7 +75,7 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
                                     context.getProfile().getPlayerData().getUsername(),
                                     new SimpleDateFormat("HH:mm:ss").format(new Date()),
                                     curLevel,
-                                   experienceGained / (runTime / 3.6E6),
+                                    experienceGained / (runTime / 3.6E6),
                                     nextXP-curLevelXP,
                                     millisToTimeString(runTime));
         } catch (LoginFailedException | RemoteServerException e) {

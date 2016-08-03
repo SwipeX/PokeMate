@@ -30,17 +30,7 @@ public class TagPokestop extends Task implements Runnable {
     @Override
     public void run() {
         try {
-            try {
-                map = context.getMap().getMapObjects();
-
-            } catch (RemoteServerException e) {
-                System.out.println("[Tag PokeStop] Ending Loop - Exceeded Rate Limit Finding PokeStops ");
-                e.printStackTrace();
-                return;
-            } catch (LoginFailedException e) {
-                e.printStackTrace();
-                System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
-            }
+            map = context.getMap().getMapObjects();
             ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
             if (pokestops.size() == 0) {
                 return;
@@ -54,16 +44,14 @@ public class TagPokestop extends Task implements Runnable {
                         result = resultMessage(near.loot());
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         context.setConsoleString("TagPokestop", result);
-                    } catch (LoginFailedException e) {
-                        //System.out.println("[Tag PokeStop] Ending Loop - Login Failed");
-                        e.printStackTrace();
-                    } catch (RemoteServerException e) {
-                        //System.out.println("[Tag PokeStop] Exceeded Rate Limit While looting");
-                        context.setConsoleString("TagPokestop","Exceeded Rate Limit While looting");
+                    } catch (LoginFailedException | RemoteServerException e) {
+                        context.setConsoleString("TagPokestop", "Server Error");
                         e.printStackTrace();
                     }
                 });
             //System.out.println("[Tag PokeStop] Ending Loop");
+        } catch (LoginFailedException | RemoteServerException e) {
+            context.setConsoleString("TagPokestop", "Server Error");
         } finally {
             switch (navigationType) {
                 case POKESTOPS:

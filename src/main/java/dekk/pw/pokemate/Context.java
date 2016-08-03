@@ -204,7 +204,7 @@ public class Context {
 
     public void addTask(Task task) { executor.submit(task); }
 
-    public void setConsoleString(String key, String text) { this.consoleStrings.put(key, "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] - " + text); }
+    public void setConsoleString(String key, String text) { this.consoleStrings.put(key, "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + text); }
 
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;

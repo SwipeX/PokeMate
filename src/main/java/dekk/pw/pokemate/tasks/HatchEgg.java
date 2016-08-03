@@ -29,12 +29,11 @@ class HatchEgg extends Task implements Runnable{
                     PokeMateUI.toast("Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details,
                         "Hatched egg!",
                         "icons/items/egg.png");
-                    context.setConsoleString("HatchEgg","Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
+                    context.setConsoleString("HatchEgg", "Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
                 }
             });
         } catch (LoginFailedException | RemoteServerException e) {
-            context.setConsoleString("HatchEgg", "Hatch Pokemon Exceeded Rate Limit");
-            //e.printStackTrace();
+            context.setConsoleString("HatchEgg", "Server Error");
         } finally {
             context.addTask(new HatchEgg(context));
         }

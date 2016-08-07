@@ -1,5 +1,6 @@
 package dekk.pw.pokemate.tasks;
 
+import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
@@ -23,7 +24,7 @@ public class Update extends Task implements Runnable{
         } catch (LoginFailedException e) {
             context.setConsoleString("Update", "Login Failed, attempting to login again.");
             Context.Login(context.getHttp());
-        } catch (RemoteServerException e) {
+        } catch (RemoteServerException | AsyncPokemonGoException e) {
             context.setConsoleString("Update", "Server Error");
         } finally {
             context.addTask(new Update(context));

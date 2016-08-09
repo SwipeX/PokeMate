@@ -27,7 +27,7 @@ public class Update extends Task implements Runnable{
         } catch (RemoteServerException | AsyncPokemonGoException e) {
             context.setConsoleString("Update", "Server Error");
         } finally {
-            context.addTask(new Update(context));
+            //context.addTask(new Update(context));
         }
     }
 

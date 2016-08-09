@@ -62,6 +62,19 @@ public class TaskController extends Thread {
                 }
             }, 0, 1000);
         }
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                     context.addTask(new Update(context));
+                } catch (Exception e) {
+                    System.out.println("Rate Limit Exceeded");
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 8000);
+
         tasks.forEach(context::addTask);
 
     }

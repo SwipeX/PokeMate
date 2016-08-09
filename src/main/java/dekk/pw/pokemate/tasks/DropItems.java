@@ -24,7 +24,7 @@ class DropItems extends Task implements Runnable {
 
     @Override
     public void run() {
-        String removedItemsString = "";
+        StringBuilder removedItemsString = new StringBuilder();
         try {
             Config.getDroppedItems().forEach( (itemToDrop, minAmount) -> {
                 ItemId id = ItemId.valueOf(itemToDrop);
@@ -33,9 +33,9 @@ class DropItems extends Task implements Runnable {
                     if (countToDrop > 0) {
                         context.getApi().getInventories().getItemBag().removeItem(id, countToDrop);
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + countToDrop + ")";
-                        removedItemsString.concat(removedItem);
+                        removedItemsString.append(removedItem);
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
-                        context.setConsoleString("DropItems", removedItemsString);
+
                     }
                 } catch (RemoteServerException | LoginFailedException e) {
                     context.setConsoleString("DropItems", "Server Error");
@@ -43,6 +43,8 @@ class DropItems extends Task implements Runnable {
                 }
             });
         } finally {
+            if (!removedItemsString.toString().equals(""))
+                context.setConsoleString("DropItems", removedItemsString.toString());
             context.addTask(new DropItems(context));
         }
     }

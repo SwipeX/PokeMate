@@ -1,9 +1,9 @@
 # PTC/Google login credentials
 username=
 password=
-# Location by name: e.g. "Sydney" or "W12 8LP" or "Trafalgar Square, London" - set to true to use
+# Location by name: e.g. Sydney or W12 8LP or Trafalgar Square, London - set to true to use
 use_location_name=false
-location_by_name="Trafalgar Square, London"
+location_by_name=Trafalgar Square, London
 #Lat/Long
 latitude=40.774578
 longitude=-73.972774
@@ -53,3 +53,69 @@ transfer_prefers_iv=false
 navigation_type = POKESTOPS
 # Ignore catching certain pokemons
 ignore_catching_pokemon=
+
+
+
+####### Device Configuration #######
+
+## Pick One Device ## (delete the # in front of one of these lines)
+
+#device=ipad3,1,iPad,J1AP
+#device=ipad3,2,iPad,J2AP
+#device=ipad3,3,iPad,J2AAP
+#device=ipad3,4,iPad,P101AP
+#device=ipad3,5,iPad,P102AP
+#device=ipad3,6,iPad,P103AP
+
+#device=ipad4,1,iPad,J71AP
+#device=ipad4,2,iPad,J72AP
+#device=ipad4,3,iPad,J73AP
+#device=ipad4,4,iPad,J85AP
+#device=ipad4,5,iPad,J86AP
+#device=ipad4,6,iPad,J87AP
+#device=ipad4,7,iPad,J85mAP
+#device=ipad4,8,iPad,J86mAP
+#device=ipad4,9,iPad,J87mAP
+
+#device=ipad5,1,iPad,J96AP
+#device=ipad5,2,iPad,J97AP
+#device=ipad5,3,iPad,J81AP
+#device=ipad5,4,iPad,J82AP
+
+#device=ipad6,7,iPad,J98aAP
+#device=ipad6,8,iPad,J99aAP
+
+#device=iphone5,1,iPhone,N41AP
+#device=iphone5,2,iPhone,N42AP
+#device=iphone5,3,iPhone,N48AP
+#device=iphone5,4,iPhone,N49AP
+
+#device=iphone6,1,iPhone,N51AP
+#device=iphone6,2,iPhone,N53AP
+
+#device=iphone7,1,iPhone,N56AP
+#device=iphone7,2,iPhone,N61AP
+
+#device=iphone8,1,iPhone,N71AP
+
+
+## Pick an OS version ## (delete the # in front of one of the lines)
+
+#os_version=8.1.1
+#os_version=8.1.2
+#os_version=8.1.3
+#os_version=8.2
+#os_version=8.3
+#os_version=8.4
+#os_version=8.4.1
+#os_version=9.0
+#os_version=9.0.1
+#os_version=9.0.2
+#os_version=9.1
+#os_version=9.2
+#os_version=9.2.1
+#os_version=9.3
+#os_version=9.3.1
+#os_version=9.3.2
+#os_version=9.3.3
+#os_version=9.3.4

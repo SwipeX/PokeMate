@@ -2,6 +2,7 @@ package dekk.pw.pokemate;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.pokegoapi.api.PokemonGo;
+import com.pokegoapi.api.device.DeviceInfo;
 import com.pokegoapi.auth.CredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
@@ -9,10 +10,10 @@ import com.pokegoapi.util.SystemTimeImpl;
 import dekk.pw.pokemate.tasks.TaskController;
 import dekk.pw.pokemate.tasks.Update;
 import dekk.pw.pokemate.util.LatLongFromLocation;
-import dekk.pw.pokemate.util.Time;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -60,12 +62,12 @@ public class PokeMate {
 
         } else { // Use given co-ordindates instead
             AtomicDouble alat = new AtomicDouble();
-            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude"))+getSmallRandom());
+            alat.set(Double.parseDouble(Config.getProperties().getProperty("latitude")) + getSmallRandom());
             lat = alat;
 
             AtomicDouble alng = new AtomicDouble();
-            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude"))+getSmallRandom());
-            lng = alng ;
+            alng.set(Double.parseDouble(Config.getProperties().getProperty("longitude")) + getSmallRandom());
+            lng = alng;
 
             logger.info("Using Coordinates {}, {}", lat, lng);
         }
@@ -76,6 +78,20 @@ public class PokeMate {
 
         //PokemonGo go = new PokemonGo(auth, http);
         PokemonGo go = new PokemonGo(auth, http, new SystemTimeImpl());
+        // Generate Device
+        DeviceInfo deviceInfo = new DeviceInfo();
+        byte[] b = new byte[16];
+        new Random().nextBytes(b);
+        deviceInfo.setDeviceId(Hex.encodeHexString(b));
+        deviceInfo.setDeviceBrand("Apple");
+        deviceInfo.setDeviceModel(Config.getDeviceSettings().get(2));
+        deviceInfo.setDeviceModelBoot(Config.getDeviceSettings().get(0) + "," + Config.getDeviceSettings().get(1)); //TODO: Fix this stupid hack
+        deviceInfo.setHardwareManufacturer("Apple");
+        deviceInfo.setHardwareModel(Config.getDeviceSettings().get(3));
+        deviceInfo.setFirmwareBrand("iPhone OS");
+        deviceInfo.setFirmwareType(Config.getOsVersion());
+
+        go.setDeviceInfo(deviceInfo);
 
         context = new Context(go, go.getPlayerProfile(), false, auth, http);
         context.setLat(lat);

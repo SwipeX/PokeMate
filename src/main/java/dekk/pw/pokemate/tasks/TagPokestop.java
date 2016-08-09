@@ -20,8 +20,6 @@ import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
  * Created by TimD on 7/21/2016.
  */
 public class TagPokestop extends Task implements Runnable {
-
-    private MapObjects map;
     
     public TagPokestop(final Context context) {
         super(context);
@@ -30,8 +28,7 @@ public class TagPokestop extends Task implements Runnable {
     @Override
     public void run() {
         try {
-            map = context.getMap().getMapObjects();
-            ArrayList<Pokestop> pokestops = new ArrayList<>(map.getPokestops());
+            ArrayList<Pokestop> pokestops = new ArrayList<>(context.getMap().getMapObjects().getPokestops());
             if (pokestops.size() == 0) {
                 return;
             }

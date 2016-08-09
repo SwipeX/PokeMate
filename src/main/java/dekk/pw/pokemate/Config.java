@@ -31,6 +31,7 @@ public class Config {
     private static List<String> ignoreCatchingPokemon;
     private static List<String> neverTransferPokemon;
     private static List<String> droppedItems;
+    private static List<String> deviceSettings;
     private static boolean consoleNotification;
     private static boolean userInterfaceNotification;
     private static boolean uiSystemNotification;
@@ -42,8 +43,8 @@ public class Config {
     private static int cpMinimumForMessage;
     private static Navigate.NavigationType navigationType;
     private static final Properties properties = new Properties();
-    private static int minItemAmount;
     private static boolean consoleUI;
+    private static String osVersion;
 
     public static void load(String configPath) {
         try {
@@ -90,7 +91,12 @@ public class Config {
             // minimum cp for message
             cpMinimumForMessage = Integer.parseInt(properties.getProperty("minimum_cp_for_ui_message", "0"));
             navigationType = Navigate.NavigationType.valueOf(properties.getProperty("navigation_type","STREETS"));
-            minItemAmount = Integer.parseInt(properties.getProperty("minimum_item_amount", "0"));
+
+            String deviceSetting = properties.getProperty("device", "iphone5,2,iPhone,N42AP");
+            deviceSettings = new ArrayList<>();
+            fillListString(deviceSetting, deviceSettings);
+            osVersion = properties.getProperty("os_version", "9.3.4");
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -167,6 +173,9 @@ public class Config {
         return mapPoints;
     }
 
+    public static List<String> getDeviceSettings() { return deviceSettings.stream().collect(Collectors.toList()); }
+
+    public static String getOsVersion() { return osVersion; }
     public static boolean isWhitelistEnabled() {
         List<PokemonIdOuterClass.PokemonId> poke = getWhitelistedPokemon();
         return poke != null && poke.size() > 0;

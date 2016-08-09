@@ -33,7 +33,7 @@ class DropItems extends Task implements Runnable {
                     if (countToDrop > 0) {
                         context.getApi().getInventories().getItemBag().removeItem(id, countToDrop);
                         String removedItem = "Removed " + StringConverter.titleCase(id.name()) + "(x" + countToDrop + ")";
-                        removedItemsString.append(removedItem);
+                        removedItemsString.append(removedItem + " ");
                         PokeMateUI.toast(removedItem, "Items removed!", "icons/items/" + id.getNumber() + ".png");
 
                     }

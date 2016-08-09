@@ -1,7 +1,6 @@
 package dekk.pw.pokemate.tasks;
 
 import com.google.maps.model.LatLng;
-import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 
@@ -55,7 +54,7 @@ public class TaskController extends Thread {
                 @Override
                 public void run() {
                     try {
-                        new ConsoleGUIUpdate(context).run();
+                        new UpdateInterface(context).run();
                     } catch (Exception e) {
                         System.out.println("Rate Limit Exceeded");
                         e.printStackTrace();

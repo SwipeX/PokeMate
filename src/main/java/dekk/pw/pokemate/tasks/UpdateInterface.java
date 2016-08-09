@@ -19,7 +19,7 @@ import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 /**
  * Created by Andrew Sidhu on 8/1/2016.
  */
-public class ConsoleGUIUpdate extends Task implements Runnable {
+public class UpdateInterface extends Task implements Runnable {
 
     private static final int[] REQUIRED_EXPERIENCES = new int[]{0, 1000, 3000, 6000, 10000, 15000, 21000, 28000, 36000, 45000, 55000, 65000, 75000,
         85000, 100000, 120000, 140000, 160000, 185000, 210000, 260000, 335000, 435000, 560000, 710000, 900000, 1100000,
@@ -29,7 +29,7 @@ public class ConsoleGUIUpdate extends Task implements Runnable {
     private static long lastExperience = 0;
     private static int lastLevel;
 
-    ConsoleGUIUpdate(final Context context) {
+    UpdateInterface(final Context context) {
         super(context);
     }
 

@@ -43,7 +43,7 @@ public class Context {
     private static final SystemTimeImpl time = new SystemTimeImpl();
     private final ExecutorService executor = Executors.newFixedThreadPool(1);
     private int routesIndex;
-    private final LinkedHashMap<String,String> consoleStrings = new LinkedHashMap<>();
+    private final LinkedHashMap<String, String> consoleStrings = new LinkedHashMap<>();
     private Map pokeMap;
     private Inventories pokeInventories;
 
@@ -114,12 +114,10 @@ public class Context {
                     System.out.println("-----------------------------------------");
                     System.out.println("  Please go to the following URL");
                     System.out.println(GoogleUserCredentialProvider.LOGIN_URL);
+                    Desktop.getDesktop().browse(new URI(GoogleUserCredentialProvider.LOGIN_URL));
                     if (Config.isShowUI()) {
-                        Desktop.getDesktop().browse(URI.create(GoogleUserCredentialProvider.LOGIN_URL));
-                         access = JOptionPane.showInputDialog("Enter authorization code: ");
-                    }
-                    else {
-			            Desktop.getDesktop().browse(new URI(GoogleUserCredentialProvider.LOGIN_URL));
+                        access = JOptionPane.showInputDialog("Enter authorization code: ");
+                    } else {
                         System.out.println("Enter authorization code: ");
                         Scanner sc = new Scanner(System.in);
                         access = sc.nextLine();
@@ -164,13 +162,17 @@ public class Context {
         this.http = http;
     }
 
-    public PokemonGo getApi() { return api; }
+    public PokemonGo getApi() {
+        return api;
+    }
 
     public void setApi(PokemonGo api) {
         this.api = api;
     }
 
-    public PlayerProfile getProfile() {return profile; }
+    public PlayerProfile getProfile() {
+        return profile;
+    }
 
     public void setProfile(PlayerProfile profile) {
         this.profile = profile;
@@ -184,28 +186,46 @@ public class Context {
         return walking;
     }
 
-    public int getRoutesIndex() { return routesIndex; }
+    public int getRoutesIndex() {
+        return routesIndex;
+    }
 
-    public Map getMap() {return this.pokeMap; }
+    public Map getMap() {
+        return this.pokeMap;
+    }
 
-    public void refreshMap() { this.pokeMap = this.api.getMap(); }
+    public void refreshMap() {
+        this.pokeMap = this.api.getMap();
+    }
 
-    public Inventories getInventories() {return this.pokeInventories; }
+    public Inventories getInventories() {
+        return this.pokeInventories;
+    }
 
     public void refreshInventories() throws LoginFailedException, RemoteServerException {
         this.api.getInventories().updateInventories(true);
         this.pokeInventories = this.api.getInventories();
     }
 
-    public void increaseRoutesIndex() { this.routesIndex++; }
+    public void increaseRoutesIndex() {
+        this.routesIndex++;
+    }
 
-    public void resetRoutesIndex() { this.routesIndex = 0; }
+    public void resetRoutesIndex() {
+        this.routesIndex = 0;
+    }
 
-    public LinkedHashMap<String, String> getConsoleStrings() { return consoleStrings; }
+    public LinkedHashMap<String, String> getConsoleStrings() {
+        return consoleStrings;
+    }
 
-    public void addTask(Task task) { executor.submit(task); }
+    public void addTask(Task task) {
+        executor.submit(task);
+    }
 
-    public void setConsoleString(String key, String text) { this.consoleStrings.put(key, "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + text); }
+    public void setConsoleString(String key, String text) {
+        this.consoleStrings.put(key, "[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + text);
+    }
 
     public CredentialProvider getCredentialProvider() {
         return credentialProvider;

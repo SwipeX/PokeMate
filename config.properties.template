@@ -53,6 +53,7 @@ transfer_prefers_iv=false
 navigation_type = POKESTOPS
 # Ignore catching certain pokemons
 ignore_catching_pokemon=
+fightGym=false
 
 
 

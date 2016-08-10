@@ -30,6 +30,12 @@ public class TaskController extends Thread {
         }
 
         tasks.add(new TagPokestop(context));
+		
+        // Gym system by wolmain
+        tasks.add(new HealPokemon(context));
+		if(Config.isFightGym()) {
+			tasks.add(new FightGym(context));
+		}
 
         if(Config.isEggsIncubating()) {
             tasks.add(new IncubateEgg(context));

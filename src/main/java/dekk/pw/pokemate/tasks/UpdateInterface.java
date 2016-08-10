@@ -8,11 +8,8 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMate;
 import dekk.pw.pokemate.PokeMateUI;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Formatter;
-
 import static dekk.pw.pokemate.Context.millisToTimeString;
 import static dekk.pw.pokemate.util.StringConverter.convertItemAwards;
 

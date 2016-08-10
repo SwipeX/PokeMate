@@ -119,7 +119,8 @@ public class Context {
                         access = JOptionPane.showInputDialog("Enter authorization code: ");
                     } else {
                         System.out.println("Enter authorization code: ");
-                        Scanner sc = new Scanner(System.in);
+                        @SuppressWarnings("resource")
+						Scanner sc = new Scanner(System.in);
                         access = sc.nextLine();
                     }
                     provider.login(access);

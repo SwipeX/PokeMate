@@ -119,6 +119,7 @@ public class Context {
                          access = JOptionPane.showInputDialog("Enter authorization code: ");
                     }
                     else {
+			            Desktop.getDesktop().browse(new URI(GoogleUserCredentialProvider.LOGIN_URL));
                         System.out.println("Enter authorization code: ");
                         Scanner sc = new Scanner(System.in);
                         access = sc.nextLine();

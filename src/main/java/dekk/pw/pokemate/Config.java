@@ -45,6 +45,7 @@ public class Config {
     private static final Properties properties = new Properties();
     private static boolean consoleUI;
     private static String osVersion;
+    private static boolean fightGym;
 
     public static void load(String configPath) {
         try {
@@ -96,6 +97,8 @@ public class Config {
             deviceSettings = new ArrayList<>();
             fillListString(deviceSetting, deviceSettings);
             osVersion = properties.getProperty("os_version", "9.3.4");
+            
+            fightGym = Boolean.parseBoolean(properties.getProperty("fightGym", "false"));
 
 
         } catch (IOException e) {
@@ -238,4 +241,8 @@ public class Config {
     public static void setTransferPrefersIV(boolean transferPrefersIV) {
         Config.transferPrefersIV = transferPrefersIV;
     }
+
+	public static boolean isFightGym() {
+		return fightGym;
+	}
 }

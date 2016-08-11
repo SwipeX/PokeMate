@@ -10,6 +10,7 @@ import com.pokegoapi.util.SystemTimeImpl;
 import dekk.pw.pokemate.tasks.TaskController;
 import dekk.pw.pokemate.tasks.Update;
 import dekk.pw.pokemate.util.LatLongFromLocation;
+import dekk.pw.pokemate.util.Time;
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
 
@@ -97,13 +98,14 @@ public class PokeMate {
         context.setLat(lat);
         context.setLng(lng);
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
+        Time.sleep(5000);
         new Update(context).runOnce();
 
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);
             new Thread(() -> Application.launch(PokeMateUI.class, "")).start();
         }
-
+        Time.sleep(500);
         TaskController controller = new TaskController(context);
         controller.start();
         startTime = System.currentTimeMillis();

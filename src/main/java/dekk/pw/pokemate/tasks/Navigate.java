@@ -11,6 +11,9 @@ import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Config;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.util.Time;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.util.ArrayList;
@@ -29,10 +32,14 @@ public class Navigate extends Task implements Runnable {
     public static final double VARIANCE = Config.getRange();
     private static final List<DirectionsStep[]> routes = new ArrayList<>();
     private static final List<S2LatLng> route = new ArrayList<>();
-    public static boolean populated;
+    private static final Logger logger = LogManager.getLogger(Navigate.class);
     private static final Object lock = new Object();
-    static final NavigationType navigationType = Config.getNavigationType();
+    public static final NavigationType navigationType = Config.getNavigationType();
+    public static boolean populated;
 
+
+    private S2LatLng last;
+    private final List<String> ids = new ArrayList<>();
 
     public Navigate(final Context context, LatLng min, LatLng max) {
         super(context);
@@ -41,10 +48,12 @@ public class Navigate extends Task implements Runnable {
         switch (navigationType) {
             //Untested
             case POKESTOPS:
-                populateRoute(context);
+                if (context.getRoutesIndex() == 0)
+                    populateRoute(context);
                 break;
             default:
-                populateDirections(context);
+                if (context.getRoutesIndex() == 0)
+                    populateDirections(context);
                 break;
         }
         populated = true;
@@ -58,15 +67,13 @@ public class Navigate extends Task implements Runnable {
         return route;
     }
 
-    private S2LatLng last;
-    private final List<String> ids = new ArrayList<>();
-
     /**
      * Attempts to generate a route to all found pokestops...
      *
      * @param context
      */
     private void populateRoute(Context context) {
+        Time.sleep(300);
         try {
             List<Pokestop> stops = context.getMap().getMapObjects().getPokestops().stream().filter(a ->
                 //only pokestops in our region
@@ -76,7 +83,7 @@ public class Navigate extends Task implements Runnable {
                 a.getLongitude() <= max.lng).collect(Collectors.toList());
 
             int count = stops.size();
-            //System.out.println("Stops found: " + count);
+
             last = S2LatLng.fromDegrees(context.getLat().doubleValue(), context.getLng().doubleValue());
             while (route.size() < count - 1) {
                 List<Pokestop> tempStops = stops.stream().filter(a -> !ids.contains(a.getId())).sorted((a, b) -> {
@@ -88,7 +95,7 @@ public class Navigate extends Task implements Runnable {
                 }).collect(Collectors.toList());
 
                 if (tempStops.size() == 0) {
-                    //System.out.println("CRTICAL POKESTOP LOCATION ERROR BREAKING!");
+                   logger.fatal("Critical Pokestop Error");
                     break;
                 }
                 Pokestop first = tempStops.get(0);
@@ -97,14 +104,14 @@ public class Navigate extends Task implements Runnable {
             }
             route.add(S2LatLng.fromDegrees(context.getLat().get(), context.getLng().get()));
         } catch (RemoteServerException e) {
-            System.out.println("[Navigate] Error - Hit Rate limiter.");
+            logger.error("Remote server error", e);
             //e.printStackTrace();
         } catch (LoginFailedException e) {
-            System.out.println("[Navigate] Login Failed.");
+            logger.error("Login failed.", e);
             //e.printStackTrace();
         } catch (NullPointerException e) {
-            System.out.println("[Navigate] Null Pointer Exception.");
-            e.printStackTrace();
+            logger.error("Null pointer error.", e);
+            //e.printStackTrace();
         }
     }
 
@@ -115,7 +122,7 @@ public class Navigate extends Task implements Runnable {
             return;
         } else if (navigationType == (NavigationType.STREETS) && context.getRoutesIndex() >= getDirections().size()) {
             context.resetRoutesIndex();
-        } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= route.size()) {
+        } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= getRoute().size()) {
             context.resetRoutesIndex();
         }
         switch (navigationType) {
@@ -162,6 +169,7 @@ public class Navigate extends Task implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Remote Server Exception", e);
         }
         return stepsToTake;
     }

@@ -35,7 +35,7 @@ public class UpdateInterface extends Task implements Runnable {
 
     @Override
     public void run() {
-        // Clears old console output. (Probably won't work on windows)
+        // Clears old console output.
         System.out.print("\033[H\033[2J");
         System.out.println(header());
         context.getConsoleStrings().forEach( (key,value) -> {
@@ -71,11 +71,13 @@ public class UpdateInterface extends Task implements Runnable {
                 lastLevel = curLevel;
             }
 
-            return String.format("Name: %-15s [%s] Level %d - %,.2fXP/H - Next Level in %,.0fXP - Runtime: %s",
+            return String.format("Name: %-15s [%s] Level %d - %,.2fXP/H (%,.0f/%,.0f) - Next Level in %,.0fXP - Runtime: %s",
                                     context.getProfile().getPlayerData().getUsername(),
                                     new SimpleDateFormat("HH:mm:ss").format(new Date()),
                                     curLevel,
                                     experienceGained / (runTime / 3.6E6),
+                                    curLevelXP,
+                                    nextXP,
                                     nextXP-curLevelXP,
                                     millisToTimeString(runTime));
         } catch (LoginFailedException | RemoteServerException e) {

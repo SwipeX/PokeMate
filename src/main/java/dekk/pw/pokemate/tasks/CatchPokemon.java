@@ -12,11 +12,10 @@ import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.NoSuchItemException;
 import com.pokegoapi.exceptions.RemoteServerException;
-import dekk.pw.pokemate.Config;
-import dekk.pw.pokemate.Context;
-import dekk.pw.pokemate.PokeMateUI;
-import dekk.pw.pokemate.Walking;
+import dekk.pw.pokemate.*;
 import dekk.pw.pokemate.util.StringConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +28,8 @@ import static POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.Cat
  * Created by TimD on 7/21/2016.
  */
 class CatchPokemon extends Task implements Runnable {
+
+    private static final Logger logger = LogManager.getLogger(CatchPokemon.class);
 
     CatchPokemon(final Context context) {
         super(context);
@@ -96,26 +97,33 @@ class CatchPokemon extends Task implements Runnable {
                                     log(output + " [IV: " + getIvRatio(p) + "%]");
                                 }
                                 context.setConsoleString("CatchPokemon", String.format("%s [IV: %d%%]", output, getIvRatio(p)));
-                            } catch (LoginFailedException | RemoteServerException e) {
+                            } catch (LoginFailedException e) {
+                                logger.error("Login Failed", e);
+
+                            } catch (RemoteServerException e) {
                                 context.setConsoleString("CatchPokemon", "Server Error.");
+                                logger.error("Remote Server Exception", e);
                             }
 
 
                         });
-                } catch (NullPointerException ex) {
-                    ex.printStackTrace();
+                } catch (NullPointerException e) {
+                    logger.error("NullPointerException.", e);
                 }
             }
-        } catch (LoginFailedException | RemoteServerException e) {
-            //e.printStackTrace();
+        } catch (LoginFailedException e) {
+            logger.error("Login Failed", e);
+
+        } catch (RemoteServerException e) {
             context.setConsoleString("CatchPokemon", "Server Error.");
+            logger.error("Remote Server Exception", e);
         } catch (NoSuchItemException e) {
+            logger.error("Out of Pokeballs", e);
             context.setConsoleString("CatchPokemon","Out of Pokeballs.");
         } finally {
             context.addTask(new CatchPokemon(context));
         }
     }
-
 
     private boolean shouldIgnore(final CatchablePokemon p) {
         return !Config.getIgnoreCatchingPokemon().contains(p.getPokemonId());

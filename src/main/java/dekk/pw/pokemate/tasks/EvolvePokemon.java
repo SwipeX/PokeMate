@@ -9,6 +9,8 @@ import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
 import dekk.pw.pokemate.util.StringConverter;
 import dekk.pw.pokemate.util.Time;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.DataInputStream;
 import java.text.SimpleDateFormat;
@@ -20,6 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by TimD on 7/22/2016.
  */
 class EvolvePokemon extends Task implements Runnable {
+
+    private static final Logger logger = LogManager.getLogger(EvolvePokemon.class);
     private static final ConcurrentHashMap<Integer, Integer> CANDY_AMOUNTS = new ConcurrentHashMap<>();
 
     static {
@@ -32,7 +36,7 @@ class EvolvePokemon extends Task implements Runnable {
                 CANDY_AMOUNTS.put(dis.readInt(), dis.readInt());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("Error", e);
         }
     }
 
@@ -42,7 +46,6 @@ class EvolvePokemon extends Task implements Runnable {
 
     @Override
     public void run() {
-        // System.out.println("[Evolve] Activating..");
         try {
             CopyOnWriteArrayList<Pokemon> pokeList = new CopyOnWriteArrayList<>(context.getInventories().getPokebank().getPokemons());
             for (Pokemon pokemon : pokeList)
@@ -61,9 +64,12 @@ class EvolvePokemon extends Task implements Runnable {
                         }
                     }
                 }
-        } catch (RemoteServerException | LoginFailedException e1) {
-            context.setConsoleString("EvolvePokemon", "Server Error");
-            e1.printStackTrace();
+        } catch (LoginFailedException e) {
+            logger.error("Login Failed", e);
+
+        } catch (RemoteServerException e) {
+            context.setConsoleString("CatchPokemon", "Server Error.");
+            logger.debug("Remote Server Exception", e);
         } finally {
             context.addTask(new EvolvePokemon(context));
         }

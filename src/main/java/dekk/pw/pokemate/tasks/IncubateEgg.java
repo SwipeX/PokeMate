@@ -3,8 +3,12 @@ package dekk.pw.pokemate.tasks;
 import POGOProtos.Networking.Responses.UseItemEggIncubatorResponseOuterClass;
 import com.pokegoapi.api.inventory.EggIncubator;
 import com.pokegoapi.api.pokemon.EggPokemon;
+import com.pokegoapi.exceptions.LoginFailedException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.util.List;
@@ -14,6 +18,8 @@ import java.util.stream.Collectors;
  * Created by $ Tim Dekker on 7/23/2016.
  */
 class IncubateEgg extends Task implements Runnable{
+
+    private static final Logger logger = LogManager.getLogger(IncubateEgg.class);
 
     IncubateEgg(final Context context) {
         super(context);
@@ -26,7 +32,7 @@ class IncubateEgg extends Task implements Runnable{
                 try {
                     return !i.isInUse();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Incubator Error", e);
                     return false;
                 }
             }).collect(Collectors.toList());
@@ -41,8 +47,12 @@ class IncubateEgg extends Task implements Runnable{
                     context.setConsoleString("IncubateEgg", eggresult);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (LoginFailedException e) {
+            logger.error("Login Failed", e);
+            context.setConsoleString("IncubateEgg", "Login Error.");
+        } catch (RemoteServerException e) {
+            context.setConsoleString("IncubateEgg", "Server Error.");
+            logger.error("Remote Server Exception", e);
         } finally {
             context.addTask(new IncubateEgg(context));
         }

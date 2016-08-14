@@ -4,6 +4,7 @@ import com.pokegoapi.exceptions.AsyncPokemonGoException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
+import dekk.pw.pokemate.util.Time;
 
 /**
  * Created by TimD on 7/22/2016.
@@ -24,23 +25,10 @@ public class Update extends Task implements Runnable{
         } catch (LoginFailedException e) {
             context.setConsoleString("Update", "Login Failed, attempting to login again.");
             Context.Login(context.getHttp());
-        } catch (RemoteServerException | AsyncPokemonGoException e) {
-            context.setConsoleString("Update", "Server Error");
-        } finally {
-            //context.addTask(new Update(context));
-        }
-    }
-
-    public void runOnce() {
-        try {
-            context.refreshInventories();
-            context.refreshMap();
-            context.getProfile().updateProfile();
-        } catch (LoginFailedException e) {
-            context.setConsoleString("Update", "Login Error, attempting to login again.");
-            Context.Login(context.getHttp());
         } catch (RemoteServerException e) {
             context.setConsoleString("Update", "Server Error");
+        }  catch (AsyncPokemonGoException e) {
+            context.setConsoleString("Update", "API Async Error");
         }
     }
 }

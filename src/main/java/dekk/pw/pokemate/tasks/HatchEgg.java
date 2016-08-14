@@ -6,10 +6,15 @@ import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 import dekk.pw.pokemate.Context;
 import dekk.pw.pokemate.PokeMateUI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 class HatchEgg extends Task implements Runnable{
+
+    private static final Logger logger = LogManager.getLogger(HatchEgg.class);
+
     HatchEgg(final Context context) {
         super(context);
     }
@@ -32,8 +37,12 @@ class HatchEgg extends Task implements Runnable{
                     context.setConsoleString("HatchEgg", "Hatched " + hatchedPokemon.getPokemonId() + " with " + hatchedPokemon.getCp() + " CP " + " - " + details);
                 }
             });
-        } catch (LoginFailedException | RemoteServerException e) {
+        } catch (LoginFailedException e) {
+            logger.error("Login Failed", e);
+
+        } catch (RemoteServerException e) {
             context.setConsoleString("HatchEgg", "Server Error");
+            logger.error("Remote Server Exception", e);
         } finally {
             context.addTask(new HatchEgg(context));
         }

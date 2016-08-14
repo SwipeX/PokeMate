@@ -99,7 +99,7 @@ public class PokeMate {
         context.setLng(lng);
         go.setLocation(context.getLat().get(), context.getLng().get(), 0);
         Time.sleep(5000);
-        new Update(context).runOnce();
+        new Update(context).run();
 
         if (Config.isShowUI()) {
             PokeMateUI.setPoke(this);

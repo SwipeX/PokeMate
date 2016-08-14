@@ -1,6 +1,5 @@
 package dekk.pw.pokemate.tasks;
 
-import com.pokegoapi.api.map.MapObjects;
 import com.pokegoapi.api.map.fort.Pokestop;
 import com.pokegoapi.api.map.fort.PokestopLootResult;
 import com.pokegoapi.exceptions.LoginFailedException;
@@ -42,7 +41,7 @@ public class TagPokestop extends Task implements Runnable {
                         PokeMateUI.toast(result, Config.POKE + "Stop interaction!", "icons/pokestop.png");
                         context.setConsoleString("TagPokestop", result);
                     } catch (LoginFailedException | RemoteServerException e) {
-                        context.setConsoleString("TagPokestop", "Server Error");
+                        context.setConsoleString("TagPokestop", "Server Error.");
                         e.printStackTrace();
                     }
                 });

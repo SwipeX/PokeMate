@@ -122,14 +122,14 @@ public class Navigate extends Task implements Runnable {
             return;
         } else if (navigationType == (NavigationType.STREETS) && context.getRoutesIndex() >= getDirections().size()) {
             context.resetRoutesIndex();
-        } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= getRoute().size()) {
+        } else if (navigationType == (NavigationType.POKESTOPS) && context.getRoutesIndex() >= getRoute().size()-1) {
             context.resetRoutesIndex();
         }
         switch (navigationType) {
             case POKESTOPS:
                 context.increaseRoutesIndex();
                 Walking.walk(context, route.get(context.getRoutesIndex()));
-                context.setConsoleString("Navigate", String.format("Navigating to waypoint %d of %d", context.getRoutesIndex(), route.size()));
+                context.setConsoleString("Navigate", String.format("Navigating to waypoint %d of %d", context.getRoutesIndex(), route.size()-1));
                 break;
             case POKEMON:
                 //TODO: walk dynamically to nearest pokemon
